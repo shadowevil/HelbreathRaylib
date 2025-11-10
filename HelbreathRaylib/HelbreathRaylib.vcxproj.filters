@@ -4,6 +4,9 @@
     <Filter Include="core">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scenes">
+      <UniqueIdentifier>{7BA4E9C2-8D6F-4E1A-9F3B-1C5A7D8E4F9A}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -24,6 +27,15 @@
     </ClCompile>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Helbreath.cpp" />
+    <ClCompile Include="scenes\MenuScene.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\GameplayScene.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\PauseScene.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Application.h">
@@ -49,5 +61,14 @@
     </ClInclude>
     <ClInclude Include="Game.h" />
     <ClInclude Include="Helbreath.h" />
+    <ClInclude Include="scenes\MenuScene.h">
+      <Filter>scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\GameplayScene.h">
+      <Filter>scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\PauseScene.h">
+      <Filter>scenes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

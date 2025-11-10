@@ -167,6 +167,9 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Helbreath.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="scenes\GameplayScene.cpp" />
+    <ClCompile Include="scenes\MenuScene.cpp" />
+    <ClCompile Include="scenes\PauseScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Application.h" />
@@ -178,6 +181,9 @@
     <ClInclude Include="core\Window.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Helbreath.h" />
+    <ClInclude Include="scenes\GameplayScene.h" />
+    <ClInclude Include="scenes\MenuScene.h" />
+    <ClInclude Include="scenes\PauseScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
