@@ -1,7 +1,7 @@
 #pragma once
 #include "raylib_include.h"
-#include "core/Scene.h"
-#include "core/Event.h"
+#include "../core/Scene.h"
+#include "../core/Event.h"
 
 // Pause Scene - Pause menu overlay
 class PauseScene : public core::Scene {

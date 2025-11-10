@@ -1,7 +1,7 @@
 #pragma once
 #include "raylib_include.h"
-#include "core/Scene.h"
-#include "core/Event.h"
+#include "../core/Scene.h"
+#include "../core/Event.h"
 
 // Menu Scene - Main menu for the game
 class MenuScene : public core::Scene {

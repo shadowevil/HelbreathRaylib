@@ -17,8 +17,7 @@ namespace core {
 		m_window = std::make_unique<Window>(props);
 		m_window->SetEventCallback([this](Event& e) { OnEvent(e); });
 
-		// Call user initialization
-		OnInitialize();
+		// Note: OnInitialize() is called in Run() after object is fully constructed
 	}
 
 	Application::~Application() {
@@ -32,6 +31,9 @@ namespace core {
 	}
 
 	void Application::Run() {
+		// Call user initialization (after derived class is fully constructed)
+		OnInitialize();
+
 		// Initialize all layers before starting the loop
 		m_layerStack.InitializeAll();
 		m_initialized = true;
