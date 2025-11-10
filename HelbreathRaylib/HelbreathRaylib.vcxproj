@@ -159,7 +159,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\Application.cpp" />
+    <ClCompile Include="core\Layer.cpp" />
+    <ClCompile Include="core\Window.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\Application.h" />
+    <ClInclude Include="core\Event.h" />
+    <ClInclude Include="core\Layer.h" />
+    <ClInclude Include="core\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
