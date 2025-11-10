@@ -5,7 +5,7 @@ namespace core {
 	Application* Application::s_instance = nullptr;
 
 	Application::Application(const WindowProperties& props)
-		: m_running(true), m_minimized(false), m_time(0.0f), m_deltaTime(0.0f), m_lastFrameTime(0.0f) {
+		: m_running(true), m_minimized(false), m_time(0.0f), m_deltaTime(0.0f), m_lastFrameTime(0.0f), m_initialized(false) {
 
 		// Ensure only one instance exists
 		if (s_instance != nullptr) {
@@ -19,9 +19,6 @@ namespace core {
 
 		// Call user initialization
 		OnInitialize();
-
-		// Initialize all layers
-		m_layerStack.InitializeAll();
 	}
 
 	Application::~Application() {
@@ -35,6 +32,10 @@ namespace core {
 	}
 
 	void Application::Run() {
+		// Initialize all layers before starting the loop
+		m_layerStack.InitializeAll();
+		m_initialized = true;
+
 		m_lastFrameTime = static_cast<float>(GetTime());
 
 		while (m_running && !m_window->ShouldClose()) {
@@ -63,22 +64,6 @@ namespace core {
 
 	void Application::Close() {
 		m_running = false;
-	}
-
-	void Application::PushLayer(std::unique_ptr<Layer> layer) {
-		m_layerStack.PushLayer(std::move(layer));
-		// Initialize the layer if the application is already running
-		if (m_running) {
-			m_layerStack.InitializeAll();
-		}
-	}
-
-	void Application::PushOverlay(std::unique_ptr<Layer> overlay) {
-		m_layerStack.PushOverlay(std::move(overlay));
-		// Initialize the overlay if the application is already running
-		if (m_running) {
-			m_layerStack.InitializeAll();
-		}
 	}
 
 	void Application::PopLayer(Layer* layer) {

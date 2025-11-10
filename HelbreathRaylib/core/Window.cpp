@@ -14,9 +14,9 @@ namespace core {
 		m_data.title = props.title;
 		m_data.width = props.width;
 		m_data.height = props.height;
-		m_data.vsync = props.vsync;
-		m_data.resizable = props.resizable;
-		m_data.fullscreen = props.fullscreen;
+		m_data.vsync = props.IsVSync();
+		m_data.resizable = props.IsResizable();
+		m_data.fullscreen = props.IsFullscreen();
 		m_data.minimized = false;
 		m_data.maximized = false;
 		m_data.focused = true;
@@ -30,25 +30,43 @@ namespace core {
 		m_data.lastMousePosition = { 0.0f, 0.0f };
 
 		// Set config flags before InitWindow
-		uint32_t flags = 0;
-		if (m_data.resizable)
-			flags |= FLAG_WINDOW_RESIZABLE;
-		if (m_data.vsync)
-			flags |= FLAG_VSYNC_HINT;
+		uint32_t raylibFlags = 0;
+		if (props.IsResizable())
+			raylibFlags |= FLAG_WINDOW_RESIZABLE;
+		if (props.IsVSync())
+			raylibFlags |= FLAG_VSYNC_HINT;
+		if (props.HasFlag(WINDOW_BORDERLESS))
+			raylibFlags |= FLAG_WINDOW_UNDECORATED;
+		if (props.HasFlag(WINDOW_HIDDEN))
+			raylibFlags |= FLAG_WINDOW_HIDDEN;
+		if (props.HasFlag(WINDOW_MINIMIZED))
+			raylibFlags |= FLAG_WINDOW_MINIMIZED;
+		if (props.HasFlag(WINDOW_MAXIMIZED))
+			raylibFlags |= FLAG_WINDOW_MAXIMIZED;
+		if (props.HasFlag(WINDOW_UNFOCUSED))
+			raylibFlags |= FLAG_WINDOW_UNFOCUSED;
+		if (props.HasFlag(WINDOW_TOPMOST))
+			raylibFlags |= FLAG_WINDOW_TOPMOST;
+		if (props.HasFlag(WINDOW_HIGHDPI))
+			raylibFlags |= FLAG_WINDOW_HIGHDPI;
+		if (props.HasFlag(WINDOW_ALWAYS_RUN))
+			raylibFlags |= FLAG_WINDOW_ALWAYS_RUN;
+		if (props.IsTransparent())
+			raylibFlags |= FLAG_WINDOW_TRANSPARENT;
 
-		if (flags != 0)
-			SetConfigFlags(flags);
+		if (raylibFlags != 0)
+			SetConfigFlags(raylibFlags);
 
 		// Initialize the window
 		InitWindow(m_data.width, m_data.height, m_data.title.c_str());
 
 		// Apply fullscreen if needed
-		if (m_data.fullscreen) {
+		if (props.IsFullscreen()) {
 			ToggleFullscreen();
 		}
 
 		// Set target FPS if vsync is not enabled
-		if (!m_data.vsync) {
+		if (!props.IsVSync()) {
 			SetTargetFPS(60);
 		}
 	}

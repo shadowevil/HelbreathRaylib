@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\Application.cpp" />
+    <ClCompile Include="core\Font.cpp" />
     <ClCompile Include="core\Layer.cpp" />
     <ClCompile Include="core\Window.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -168,7 +169,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Application.h" />
+    <ClInclude Include="core\Dependency.h" />
     <ClInclude Include="core\Event.h" />
+    <ClInclude Include="core\Font.h" />
     <ClInclude Include="core\Layer.h" />
     <ClInclude Include="core\Window.h" />
     <ClInclude Include="Game.h" />

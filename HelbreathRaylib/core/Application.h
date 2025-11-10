@@ -23,9 +23,13 @@ namespace core {
 		// Stop the application
 		void Close();
 
-		// Layer management
-		void PushLayer(std::unique_ptr<Layer> layer);
-		void PushOverlay(std::unique_ptr<Layer> overlay);
+		// Layer management - template methods for easy layer creation
+		template<typename T, typename... Args>
+		T* PushLayer(Args&&... args);
+
+		template<typename T, typename... Args>
+		T* PushOverlay(Args&&... args);
+
 		void PopLayer(Layer* layer);
 		void PopOverlay(Layer* overlay);
 
@@ -60,9 +64,42 @@ namespace core {
 		float m_time;
 		float m_deltaTime;
 		float m_lastFrameTime;
+		bool m_initialized;
 	};
 
-	// To be defined in client application
-	Application* CreateApplication();
+	// Template implementations
+	template<typename T, typename... Args>
+	T* Application::PushLayer(Args&&... args) {
+		static_assert(std::is_base_of<Layer, T>::value, "T must derive from Layer");
+
+		auto layer = std::make_unique<T>(std::forward<Args>(args)...);
+		T* layerPtr = layer.get();
+
+		m_layerStack.PushLayer(std::move(layer));
+
+		// Initialize the layer if application is already running
+		if (m_initialized && !layerPtr->IsInitialized()) {
+			layerPtr->Initialize();
+		}
+
+		return layerPtr;
+	}
+
+	template<typename T, typename... Args>
+	T* Application::PushOverlay(Args&&... args) {
+		static_assert(std::is_base_of<Layer, T>::value, "T must derive from Layer");
+
+		auto overlay = std::make_unique<T>(std::forward<Args>(args)...);
+		T* overlayPtr = overlay.get();
+
+		m_layerStack.PushOverlay(std::move(overlay));
+
+		// Initialize the overlay if application is already running
+		if (m_initialized && !overlayPtr->IsInitialized()) {
+			overlayPtr->Initialize();
+		}
+
+		return overlayPtr;
+	}
 
 } // namespace core
