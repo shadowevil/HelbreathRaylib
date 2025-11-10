@@ -45,6 +45,13 @@ namespace core {
 		// Singleton access
 		static Application& Get() { return *s_instance; }
 
+		// Singleton access with type casting to derived application
+		template<typename T = Application>
+		static T& GetAs() {
+			static_assert(std::is_base_of<Application, T>::value, "T must derive from Application");
+			return *static_cast<T*>(s_instance);
+		}
+
 	protected:
 		// Override this in derived classes for custom initialization
 		virtual void OnInitialize() {}

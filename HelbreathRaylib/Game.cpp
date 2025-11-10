@@ -6,12 +6,12 @@ Game::Game()
 
 }
 
-void Game::Initialize() {
-
+void Game::OnInitialize() {
+	// Initialize game resources here
 }
 
-void Game::Uninitialize() {
-
+void Game::OnUninitialize() {
+	// Cleanup game resources here
 }
 
 void Game::Update(float deltaTime) {

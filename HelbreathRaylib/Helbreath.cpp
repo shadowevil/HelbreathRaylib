@@ -11,7 +11,7 @@ Helbreath::Helbreath()
 }
 
 void Helbreath::OnInitialize() {
-	m_fontManager.RegisterFont(FontType::Default, "C:/Windows/Fonts/Tahoma.ttf", 14);
+	m_fontManager.RegisterFont(FontType::Regular, "C:/Windows/Fonts/Tahoma.ttf", 14);
 
 	// m_fontManager.LoadAll();
 }
