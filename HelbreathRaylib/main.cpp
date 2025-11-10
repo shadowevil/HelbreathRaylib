@@ -1,17 +1,8 @@
-#include "raylib_include.h"
+#include <memory>
 #include "core/Application.h"
 #include "Helbreath.h"
 
-// Entry point
-namespace core {
-	Application* CreateApplication() {
-		return new Helbreath();
-	}
-}
-
 int main() {
-	auto app = core::CreateApplication();
+	auto app = std::make_unique<Helbreath>();
 	app->Run();
-	delete app;
-	return 0;
 }
