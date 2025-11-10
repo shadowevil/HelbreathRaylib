@@ -162,6 +162,8 @@
     <ClCompile Include="core\Application.cpp" />
     <ClCompile Include="core\Layer.cpp" />
     <ClCompile Include="core\Window.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Helbreath.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +171,8 @@
     <ClInclude Include="core\Event.h" />
     <ClInclude Include="core\Layer.h" />
     <ClInclude Include="core\Window.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Helbreath.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

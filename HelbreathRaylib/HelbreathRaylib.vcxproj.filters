@@ -16,6 +16,8 @@
     <ClCompile Include="core\Window.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Helbreath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Application.h">
@@ -30,5 +32,7 @@
     <ClInclude Include="core\Window.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Helbreath.h" />
   </ItemGroup>
 </Project>
