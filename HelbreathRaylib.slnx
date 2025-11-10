@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="HelbreathRaylib/HelbreathRaylib.vcxproj" Id="d2afdfd2-06aa-4e5f-bdde-1043ca03b29d" />
+  <Project Path="Sources/HelbreathRaylib/HelbreathRaylib.vcxproj" Id="d2afdfd2-06aa-4e5f-bdde-1043ca03b29d" />
 </Solution>
