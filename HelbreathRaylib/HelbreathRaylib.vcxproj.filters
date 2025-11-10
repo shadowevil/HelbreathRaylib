@@ -10,6 +10,9 @@
     <ClCompile Include="core\Application.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="core\Font.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
     <ClCompile Include="core\Layer.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -23,7 +26,13 @@
     <ClInclude Include="core\Application.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="core\Dependency.h">
+      <Filter>core</Filter>
+    </ClInclude>
     <ClInclude Include="core\Event.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Font.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="core\Layer.h">

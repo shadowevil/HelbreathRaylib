@@ -4,23 +4,53 @@
 
 namespace core {
 
+	// Window flags for configuration
+	enum WindowFlags : uint32_t {
+		WINDOW_NONE = 0,
+		WINDOW_VSYNC = 1 << 0,
+		WINDOW_RESIZABLE = 1 << 1,
+		WINDOW_FULLSCREEN = 1 << 2,
+		WINDOW_BORDERLESS = 1 << 3,
+		WINDOW_HIDDEN = 1 << 4,
+		WINDOW_MINIMIZED = 1 << 5,
+		WINDOW_MAXIMIZED = 1 << 6,
+		WINDOW_UNFOCUSED = 1 << 7,
+		WINDOW_TOPMOST = 1 << 8,
+		WINDOW_HIGHDPI = 1 << 9,
+		WINDOW_ALWAYS_RUN = 1 << 10,
+		WINDOW_TRANSPARENT = 1 << 11
+	};
+
+	// Bitwise OR operator for WindowFlags
+	inline WindowFlags operator|(WindowFlags a, WindowFlags b) {
+		return static_cast<WindowFlags>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+	}
+
+	// Bitwise AND operator for WindowFlags
+	inline WindowFlags operator&(WindowFlags a, WindowFlags b) {
+		return static_cast<WindowFlags>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
+	}
+
 	// Window properties structure
 	struct WindowProperties {
 		std::string title;
 		int32_t width;
 		int32_t height;
-		bool vsync;
-		bool resizable;
-		bool fullscreen;
+		uint32_t flags;
 
 		WindowProperties(const std::string& title = "Helbreath",
 			int32_t width = 800,
 			int32_t height = 600,
-			bool vsync = true,
-			bool resizable = false,
-			bool fullscreen = false)
-			: title(title), width(width), height(height),
-			vsync(vsync), resizable(resizable), fullscreen(fullscreen) {}
+			uint32_t flags = WINDOW_VSYNC)
+			: title(title), width(width), height(height), flags(flags) {}
+
+		// Helper methods to check flags
+		bool HasFlag(WindowFlags flag) const { return (flags & flag) != 0; }
+		bool IsVSync() const { return HasFlag(WINDOW_VSYNC); }
+		bool IsResizable() const { return HasFlag(WINDOW_RESIZABLE); }
+		bool IsFullscreen() const { return HasFlag(WINDOW_FULLSCREEN); }
+		bool IsBorderless() const { return HasFlag(WINDOW_BORDERLESS); }
+		bool IsTransparent() const { return HasFlag(WINDOW_TRANSPARENT); }
 	};
 
 	// Window class - handles window creation and events
