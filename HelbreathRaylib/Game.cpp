@@ -4,14 +4,12 @@ Game::Game()
 	: Layer("Game") {
 }
 
-void Game::Initialize() {
-	Layer::Initialize();
+void Game::OnInitialize() {
 	// Initialize game resources here
 }
 
-void Game::Uninitialize() {
+void Game::OnUninitialize() {
 	// Cleanup game resources here
-	Layer::Uninitialize();
 }
 
 void Game::Update(float deltaTime) {

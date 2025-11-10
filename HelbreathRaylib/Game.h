@@ -9,11 +9,13 @@ public:
 	Game();
 	~Game() override = default;
 
-	void Initialize() override;
-	void Uninitialize() override;
 	void Update(float deltaTime) override;
 	void Render() override;
 	void OnEvent(core::Event& event) override;
+
+protected:
+	void OnInitialize() override;
+	void OnUninitialize() override;
 
 private:
 	// Game state and resources will go here

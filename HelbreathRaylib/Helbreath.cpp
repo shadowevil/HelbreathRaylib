@@ -14,7 +14,7 @@ void Helbreath::OnInitialize() {
 	// Register fonts with paths and sizes
 	// TODO: Replace these paths with actual font files
 	// For now, these will fall back to the default font if the files don't exist
-	m_fontManager.RegisterFont(FontType::Default, "assets/fonts/default.ttf", 32);
+	m_fontManager.RegisterFont(FontType::Regular, "assets/fonts/regular.ttf", 32);
 	m_fontManager.RegisterFont(FontType::Title, "assets/fonts/title.ttf", 48);
 	m_fontManager.RegisterFont(FontType::UI, "assets/fonts/ui.ttf", 24);
 	m_fontManager.RegisterFont(FontType::Combat, "assets/fonts/combat.ttf", 28);

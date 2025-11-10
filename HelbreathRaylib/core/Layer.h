@@ -14,13 +14,23 @@ namespace core {
 
 		virtual ~Layer() = default;
 
-		// Called when the layer is attached to the layer stack
-		// This is where you should load resources and initialize state
-		virtual void Initialize() { m_initialized = true; }
+		// Non-virtual wrapper that handles initialization state
+		// Calls OnInitialize() which derived classes should override
+		void Initialize() {
+			if (!m_initialized) {
+				OnInitialize();
+				m_initialized = true;
+			}
+		}
 
-		// Called when the layer is detached from the layer stack
-		// This is where you should unload resources and cleanup
-		virtual void Uninitialize() { m_initialized = false; }
+		// Non-virtual wrapper that handles cleanup state
+		// Calls OnUninitialize() which derived classes should override
+		void Uninitialize() {
+			if (m_initialized) {
+				OnUninitialize();
+				m_initialized = false;
+			}
+		}
 
 		// Called every frame for logic updates
 		// deltaTime is the time in seconds since the last frame
@@ -31,13 +41,17 @@ namespace core {
 		virtual void Render() {}
 
 		// Called when an event occurs
-		// Return true if the event was handled and should not propagate to lower layers
 		virtual void OnEvent(Event& event) {}
 
 		inline const std::string& GetName() const { return m_debugName; }
 		inline bool IsInitialized() const { return m_initialized; }
 
 	protected:
+		// Override these in derived classes for custom initialization/cleanup
+		// No need to call base class versions
+		virtual void OnInitialize() {}
+		virtual void OnUninitialize() {}
+
 		std::string m_debugName;
 		bool m_initialized;
 	};

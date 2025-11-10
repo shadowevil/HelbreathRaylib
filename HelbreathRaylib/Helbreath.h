@@ -5,7 +5,7 @@
 
 // Font types for the Helbreath application
 enum class FontType : uint16_t {
-	Default = 0,
+	Regular = 0,
 	Title,
 	UI,
 	Combat,

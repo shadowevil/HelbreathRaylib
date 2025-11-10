@@ -162,6 +162,7 @@
     <ClCompile Include="core\Application.cpp" />
     <ClCompile Include="core\Font.cpp" />
     <ClCompile Include="core\Layer.cpp" />
+    <ClCompile Include="core\Scene.cpp" />
     <ClCompile Include="core\Window.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Helbreath.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="core\Event.h" />
     <ClInclude Include="core\Font.h" />
     <ClInclude Include="core\Layer.h" />
+    <ClInclude Include="core\Scene.h" />
     <ClInclude Include="core\Window.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Helbreath.h" />

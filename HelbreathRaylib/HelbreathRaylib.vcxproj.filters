@@ -16,6 +16,9 @@
     <ClCompile Include="core\Layer.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="core\Scene.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
     <ClCompile Include="core\Window.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -36,6 +39,9 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="core\Layer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Scene.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="core\Window.h">
