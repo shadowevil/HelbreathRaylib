@@ -1,7 +1,9 @@
 #include "Game.h"
+#include "Helbreath.h"
 
 Game::Game()
 	: Layer("Game") {
+
 }
 
 void Game::OnInitialize() {
@@ -13,13 +15,13 @@ void Game::OnUninitialize() {
 }
 
 void Game::Update(float deltaTime) {
-	// Update game logic here
+
 }
 
 void Game::Render() {
-	// Render game here
+
 }
 
 void Game::OnEvent(core::Event& event) {
-	// Handle game events here
+
 }
