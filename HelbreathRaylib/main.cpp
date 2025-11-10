@@ -1,4 +1,4 @@
-#include "Dependencies/Includes/raylib_include.h"
+#include "raylib_include.h"
 #include "core/Application.h"
 #include "core/Layer.h"
 
@@ -56,8 +56,8 @@ public:
 class HelbreathApp : public core::Application {
 public:
 	HelbreathApp()
-		: Application(core::WindowProperties("Helbreath Raylib", 800, 600, true, true, false)) {
-		// Push layers here
+		: Application(core::WindowProperties("Helbreath Raylib", 800, 600, true, true, false))
+	{
 		PushLayer(std::make_unique<ExampleLayer>());
 	}
 

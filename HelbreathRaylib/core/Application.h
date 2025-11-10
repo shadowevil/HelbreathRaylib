@@ -1,5 +1,5 @@
 #pragma once
-#include "../Dependencies/Includes/raylib_include.h"
+#include "raylib_include.h"
 #include "Window.h"
 #include "Layer.h"
 #include "Event.h"
