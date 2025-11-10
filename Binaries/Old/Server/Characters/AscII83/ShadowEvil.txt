@@ -1,0 +1,103 @@
+[FILE-DATE]
+
+file-saved-date: 2025 11 8 10 39
+
+[NAME-ACCOUNT]
+
+character-name     = ShadowEvil
+account-name       = ShadowEvil
+
+[STATUS]
+
+character-profile 	=__________
+character-location   = NONE
+character-guild-name = NONE
+character-guild-GUID = -1
+character-guild-rank = -1
+character-loc-map = default
+character-loc-x   = 79
+character-loc-y   = 90
+
+character-HP       = 75
+character-MP       = 57
+character-SP       = 42
+character-LEVEL    = 16
+character-RATING   = 0
+character-STR      = 14
+character-INT      = 10
+character-VIT      = 12
+character-DEX      = 14
+character-MAG      = 10
+character-CHARISMA = 10
+character-LUCK     = 10
+character-EXP      = 7619
+character-LU_Pool  = 48
+character-EK-Count = 0
+character-PK-Count = 0
+character-reward-gold = 0
+character-downskillindex = -1
+character-IDnum1 = -6445
+character-IDnum2 = 1015
+character-IDnum3 = 1
+sex-status       = 1
+skin-status      = 3
+hairstyle-status = 1
+haircolor-status = 14
+underwear-status = 4
+hunger-status    = 100
+timeleft-shutup  = 0
+timeleft-rating  = 0
+timeleft-force-recall  = 900
+timeleft-firm-staminar = 0
+admin-user-level = 0
+penalty-block-date = 0 0 0
+character-quest-number = 0
+character-quest-ID     = 0
+current-quest-count    = 0
+quest-reward-type      = 0
+quest-reward-amount    = 0
+character-contribution = 0
+character-war-contribution = 0
+character-quest-completed = 0
+special-event-id = 0
+super-attack-left = 1
+reserved-fightzone-id = 0 0 0
+special-ability-time = 276
+locked-map-name = NONE
+locked-map-time = 0
+crusade-job = 0
+crusade-GUID = 0
+construct-point = 0
+dead-penalty-time = 0
+party-id = 0
+gizon-item-upgade-left = 0
+
+
+appr1 = 484
+appr2 = 0
+appr3 = 0
+appr4 = 0
+appr-color = 0
+
+[ITEMLIST]
+
+
+
+
+
+[MAGIC-SKILL-MASTERY]
+
+//------------------012345678901234567890123456789012345678901234567890
+magic-mastery     = 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+skill-mastery     = 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+skill-SSN     = 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+[ITEM-EQUIP-STATUS]
+
+item-equip-status = 00000000000000000000000000000000000000000000000000
+item-position-x = 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 
+item-position-y = 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 
+
+[EOF]
+
+
+

@@ -1,4 +1,5 @@
 #pragma once
+#include "SceneManager.h"
 #include "Layer.h"
 #include "Helbreath.h"
 
@@ -9,5 +10,8 @@ public:
 	void OnUninitialize() override;
 	void OnUpdate() override;
 	void OnRender() override;
+
+protected:
+	std::unique_ptr<core::SceneManager> m_pSceneManager{ nullptr };
 };
 

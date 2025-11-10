@@ -2,6 +2,7 @@
 #include "raylib_include.h"
 #include "Window.h"
 #include "Layer.h"
+#include "SceneManager.h"
 #include <vector>
 #include <memory>
 
@@ -30,11 +31,13 @@ namespace core {
                 }
 
                 BeginDrawing();
-				ClearBackground(BLACK);
+                ClearBackground(BLACK);
+
                 for (auto& layer : m_layers) {
                     layer->OnRender();
                 }
-				EndDrawing();
+
+                EndDrawing();
             }
 
             for (auto& layer : m_layers) {
@@ -77,7 +80,7 @@ namespace core {
             auto layer = std::make_unique<T>(*this, std::forward<Args>(args)...);
             T* ptr = layer.get();
             m_layers.push_back(std::move(layer));
-			ptr->OnInitialize();
+            ptr->OnInitialize();
             return ptr;
         }
 

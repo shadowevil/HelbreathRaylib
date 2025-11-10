@@ -10,7 +10,7 @@ public:
 	~Helbreath() override;
 
 protected:
-    Game* m_pGame;
+    Game* m_pGame = nullptr;
 
     void InitializeComponents() override;
 

@@ -1,0 +1,1854 @@
+[
+  {
+    "OriginName": "Dagger",
+    "Name": "Dagger"
+  },
+  {
+    "OriginName": "Dagger+1",
+    "Name": "Dagger+1"
+  },
+  {
+    "OriginName": "Dagger+2",
+    "Name": "Dagger+2"
+  },
+  {
+    "OriginName": "ShortSword",
+    "Name": "Short Sword"
+  },
+  {
+    "OriginName": "ShortSword+1",
+    "Name": "Short Sword+1"
+  },
+  {
+    "OriginName": "ShortSword+2",
+    "Name": "Short Sword+2"
+  },
+  {
+    "OriginName": "MainGauche",
+    "Name": "Main Gauche"
+  },
+  {
+    "OriginName": "MainGauche+1",
+    "Name": "Main Gauche+1"
+  },
+  {
+    "OriginName": "Gradius",
+    "Name": "Gradius"
+  },
+  {
+    "OriginName": "Gradius+1",
+    "Name": "Gradius+1"
+  },
+  {
+    "OriginName": "LongSword",
+    "Name": "Long Sword"
+  },
+  {
+    "OriginName": "LongSword+1",
+    "Name": "Long Sword+1"
+  },
+  {
+    "OriginName": "LongSword+2",
+    "Name": "Long Sword+2"
+  },
+  {
+    "OriginName": "Excaliber",
+    "Name": "Excaliber"
+  },
+  {
+    "OriginName": "Sabre",
+    "Name": "Sabre"
+  },
+  {
+    "OriginName": "Sabre+1",
+    "Name": "Sabre+1"
+  },
+  {
+    "OriginName": "Scimitar",
+    "Name": "Scimitar"
+  },
+  {
+    "OriginName": "Scimitar+1",
+    "Name": "Scimitar+1"
+  },
+  {
+    "OriginName": "Scimitar+2",
+    "Name": "Scimitar+2"
+  },
+  {
+    "OriginName": "Falchion",
+    "Name": "Falchion"
+  },
+  {
+    "OriginName": "Falchion+1",
+    "Name": "Falchion+1"
+  },
+  {
+    "OriginName": "Falchion+2",
+    "Name": "Falchion+2"
+  },
+  {
+    "OriginName": "Esterk",
+    "Name": "Esterk"
+  },
+  {
+    "OriginName": "Esterk+1",
+    "Name": "Esterk+1"
+  },
+  {
+    "OriginName": "Esterk+2",
+    "Name": "Esterk+2"
+  },
+  {
+    "OriginName": "Rapier",
+    "Name": "Rapier"
+  },
+  {
+    "OriginName": "Rapier+1",
+    "Name": "Rapier+1"
+  },
+  {
+    "OriginName": "Rapier+2",
+    "Name": "Rapier+2"
+  },
+  {
+    "OriginName": "TemplerSword",
+    "Name": "Templar Sword"
+  },
+  {
+    "OriginName": "BroadSword",
+    "Name": "Broad Sword"
+  },
+  {
+    "OriginName": "BroadSword+1",
+    "Name": "Broad Sword+1"
+  },
+  {
+    "OriginName": "BroadSword+2",
+    "Name": "Broad Sword+2"
+  },
+  {
+    "OriginName": "BastadSword",
+    "Name": "Bastad Sword"
+  },
+  {
+    "OriginName": "BastadSword+1",
+    "Name": "Bastad Sword+1"
+  },
+  {
+    "OriginName": "BastadSword+2",
+    "Name": "Bastad Sword+2"
+  },
+  {
+    "OriginName": "Claymore",
+    "Name": "Claymore"
+  },
+  {
+    "OriginName": "Claymore+1",
+    "Name": "Claymore+1"
+  },
+  {
+    "OriginName": "Claymore+2",
+    "Name": "Claymore+2"
+  },
+  {
+    "OriginName": "GreatSword",
+    "Name": "Great Sword"
+  },
+  {
+    "OriginName": "GreatSword+1",
+    "Name": "Great Sword+1"
+  },
+  {
+    "OriginName": "GreatSword+2",
+    "Name": "Great Sword+2"
+  },
+  {
+    "OriginName": "Flameberge",
+    "Name": "Flameberge"
+  },
+  {
+    "OriginName": "Flameberge+1",
+    "Name": "Flameberge+1"
+  },
+  {
+    "OriginName": "Flameberge+2",
+    "Name": "Flameberge+2"
+  },
+  {
+    "OriginName": "GiantSword",
+    "Name": "Giant Sword"
+  },
+  {
+    "OriginName": "LightAxe",
+    "Name": "Light Axe"
+  },
+  {
+    "OriginName": "LightAxe+1",
+    "Name": "Light Axe+1"
+  },
+  {
+    "OriginName": "LightAxe+2",
+    "Name": "Light Axe+2"
+  },
+  {
+    "OriginName": "Tomahoc",
+    "Name": "Tomahoc"
+  },
+  {
+    "OriginName": "Tomahoc+1",
+    "Name": "Tomahoc+1"
+  },
+  {
+    "OriginName": "Tomahoc+2",
+    "Name": "Tomahoc+2"
+  },
+  {
+    "OriginName": "SexonAxe",
+    "Name": "Saxon Axe"
+  },
+  {
+    "OriginName": "SexonAxe+1",
+    "Name": "Saxon Axe+1"
+  },
+  {
+    "OriginName": "SexonAxe+2",
+    "Name": "Saxon Axe+2"
+  },
+  {
+    "OriginName": "DoubleAxe",
+    "Name": "Double Axe"
+  },
+  {
+    "OriginName": "DoubleAxe+1",
+    "Name": "Double Axe+1"
+  },
+  {
+    "OriginName": "DoubleAxe+2",
+    "Name": "Double Axe+2"
+  },
+  {
+    "OriginName": "WarAxe",
+    "Name": "War Axe"
+  },
+  {
+    "OriginName": "WarAxe+1",
+    "Name": "War Axe+1"
+  },
+  {
+    "OriginName": "WarAxe+2",
+    "Name": "War Axe+2"
+  },
+  {
+    "OriginName": "ShortBow",
+    "Name": "Short Bow"
+  },
+  {
+    "OriginName": "LongBow",
+    "Name": "Long Bow"
+  },
+  {
+    "OriginName": "Arrow",
+    "Name": "Arrow"
+  },
+  {
+    "OriginName": "10Arrows",
+    "Name": "10 Arrows"
+  },
+  {
+    "OriginName": "100Arrows",
+    "Name": "100 Arrows"
+  },
+  {
+    "OriginName": "PoisonArrow",
+    "Name": "Poison Arrow"
+  },
+  {
+    "OriginName": "WoodShield",
+    "Name": "Wood Shield"
+  },
+  {
+    "OriginName": "LeatherShield",
+    "Name": "Leather Shield"
+  },
+  {
+    "OriginName": "TargeShield",
+    "Name": "Targe Shield"
+  },
+  {
+    "OriginName": "ScootermShield",
+    "Name": "Scooterm Shield"
+  },
+  {
+    "OriginName": "BlondeShield",
+    "Name": "Blonde Shield"
+  },
+  {
+    "OriginName": "IronShield",
+    "Name": "Iron Shield"
+  },
+  {
+    "OriginName": "LagiShield",
+    "Name": "Lagi Shield"
+  },
+  {
+    "OriginName": "KnightShield",
+    "Name": "Kite Shield"
+  },
+  {
+    "OriginName": "TowerShield",
+    "Name": "Tower Shield"
+  },
+  {
+    "OriginName": "GuildAdmissionTicket",
+    "Name": "Guild Admission Ticket"
+  },
+  {
+    "OriginName": "GuildSecessionTicket",
+    "Name": "Guild Secession Ticket"
+  },
+  {
+    "OriginName": "Gold",
+    "Name": "Gold"
+  },
+  {
+    "OriginName": "RedPotion",
+    "Name": "Health Potion"
+  },
+  {
+    "OriginName": "BigRedPotion",
+    "Name": "Big Health Potion"
+  },
+  {
+    "OriginName": "BluePotion",
+    "Name": "Mana Potion"
+  },
+  {
+    "OriginName": "BigBluePotion",
+    "Name": "Big Mana Potion"
+  },
+  {
+    "OriginName": "GreenPotion",
+    "Name": "Revitalizing Potion"
+  },
+  {
+    "OriginName": "BigGreenPotion",
+    "Name": "Big Revitalizing Potion"
+  },
+  {
+    "OriginName": "DilutionPotion",
+    "Name": "Dilution Potion"
+  },
+  {
+    "OriginName": "Baguette",
+    "Name": "Baguette"
+  },
+  {
+    "OriginName": "Meat",
+    "Name": "Meat"
+  },
+  {
+    "OriginName": "Fish",
+    "Name": "Fish"
+  },
+  {
+    "OriginName": "RedFish",
+    "Name": "Red Fish"
+  },
+  {
+    "OriginName": "GreenFish",
+    "Name": "Green Fish"
+  },
+  {
+    "OriginName": "YellowFish",
+    "Name": "Yellow Fish"
+  },
+  {
+    "OriginName": "Map",
+    "Name": "Map"
+  },
+  {
+    "OriginName": "FishingRod",
+    "Name": "Fishing Rod"
+  },
+  {
+    "OriginName": "PretendCorpseManual",
+    "Name": "Pretend Corpse Manual"
+  },
+  {
+    "OriginName": "ArcheryManual",
+    "Name": "Arrow Attack Manual"
+  },
+  {
+    "OriginName": "ShieldManual",
+    "Name": "Shield Manual"
+  },
+  {
+    "OriginName": "LongSwordManual",
+    "Name": "Long Sword Manual"
+  },
+  {
+    "OriginName": "FencingManual",
+    "Name": "Fencing Manual"
+  },
+  {
+    "OriginName": "FishingManual",
+    "Name": "Fishing Manual"
+  },
+  {
+    "OriginName": "AxeManual",
+    "Name": "Axe Manual"
+  },
+  {
+    "OriginName": "RecallScroll",
+    "Name": "Recall Scroll"
+  },
+  {
+    "OriginName": "InvisibilityScroll",
+    "Name": "Invisibility Scroll"
+  },
+  {
+    "OriginName": "DetectInviScroll",
+    "Name": "Detect-Invi Scroll"
+  },
+  {
+    "OriginName": "BleedingIslandTicket",
+    "Name": "Bleeding Island Ticket"
+  },
+  {
+    "OriginName": "SnakeMeat",
+    "Name": "Snake Meat"
+  },
+  {
+    "OriginName": "SnakeSkin",
+    "Name": "Snake Skin"
+  },
+  {
+    "OriginName": "SnakeTeeth",
+    "Name": "Snake Teeth"
+  },
+  {
+    "OriginName": "SnakeTongue",
+    "Name": "Snake Tongue"
+  },
+  {
+    "OriginName": "AntLeg",
+    "Name": "Ant Leg"
+  },
+  {
+    "OriginName": "AntFeeler",
+    "Name": "Ant Antenna"
+  },
+  {
+    "OriginName": "CyclopsEye",
+    "Name": "Cyclops Eye"
+  },
+  {
+    "OriginName": "CyclopsHandEdge",
+    "Name": "Cyclops Hand Edge"
+  },
+  {
+    "OriginName": "CyclopsHeart",
+    "Name": "Cyclops Heart"
+  },
+  {
+    "OriginName": "CyclopsMeat",
+    "Name": "Cyclops Meat"
+  },
+  {
+    "OriginName": "CyclopsLeather",
+    "Name": "Cyclops Leather"
+  },
+  {
+    "OriginName": "HelboundHeart",
+    "Name": "Helhound Heart"
+  },
+  {
+    "OriginName": "HelboundLeather",
+    "Name": "Helhound Leather"
+  },
+  {
+    "OriginName": "HelboundTail",
+    "Name": "Helhound Tail"
+  },
+  {
+    "OriginName": "HelboundTeeth",
+    "Name": "Helhound Teeth"
+  },
+  {
+    "OriginName": "HelboundClaw",
+    "Name": "Helhound Claw"
+  },
+  {
+    "OriginName": "HelboundTongue",
+    "Name": "Helhound Tongue"
+  },
+  {
+    "OriginName": "LumpofClay",
+    "Name": "Lump of Clay"
+  },
+  {
+    "OriginName": "OrcMeat",
+    "Name": "Orc Meat"
+  },
+  {
+    "OriginName": "OrcLeather",
+    "Name": "Orc Leather"
+  },
+  {
+    "OriginName": "OrcTeeth",
+    "Name": "Orc Teeth"
+  },
+  {
+    "OriginName": "OgreHair",
+    "Name": "Ogre Hair"
+  },
+  {
+    "OriginName": "OgreHeart",
+    "Name": "Ogre Heart"
+  },
+  {
+    "OriginName": "OgreMeat",
+    "Name": "Ogre Meat"
+  },
+  {
+    "OriginName": "OgreLeather",
+    "Name": "Ogre Leather"
+  },
+  {
+    "OriginName": "OgreTeeth",
+    "Name": "Ogre Teeth"
+  },
+  {
+    "OriginName": "OgreClaw",
+    "Name": "Ogre Claw"
+  },
+  {
+    "OriginName": "ScorpionPincers",
+    "Name": "Scorpion Pincers"
+  },
+  {
+    "OriginName": "ScorpionMeat",
+    "Name": "Scorpion Meat"
+  },
+  {
+    "OriginName": "ScorpionSting",
+    "Name": "Scorpion Sting"
+  },
+  {
+    "OriginName": "ScorpionSkin",
+    "Name": "Scorpion Skin"
+  },
+  {
+    "OriginName": "SkeletonBones",
+    "Name": "Skeleton Bones"
+  },
+  {
+    "OriginName": "SlimeJelly",
+    "Name": "Slime Jelly"
+  },
+  {
+    "OriginName": "StoneGolemPiece",
+    "Name": "Stone Golem Piece"
+  },
+  {
+    "OriginName": "TrollHeart",
+    "Name": "Troll Heart"
+  },
+  {
+    "OriginName": "TrollMeat",
+    "Name": "Troll Meat"
+  },
+  {
+    "OriginName": "TrollLeather",
+    "Name": "Troll Leather"
+  },
+  {
+    "OriginName": "TrollClaw",
+    "Name": "Troll Claw"
+  },
+  {
+    "OriginName": "AlchemyManual",
+    "Name": "Alchemy Manual"
+  },
+  {
+    "OriginName": "AlchemyBowl",
+    "Name": "Alchemy Bowl"
+  },
+  {
+    "OriginName": "MiningManual",
+    "Name": "Mining Manual"
+  },
+  {
+    "OriginName": "PickAxe",
+    "Name": "Pick Axe"
+  },
+  {
+    "OriginName": "ManufacturingManual",
+    "Name": "Manufacturing Manual"
+  },
+  {
+    "OriginName": "ManufacturingHammer",
+    "Name": "Smiths Anvil"
+  },
+  {
+    "OriginName": "AresdenFlag(Master)",
+    "Name": "Aresden Master Flag"
+  },
+  {
+    "OriginName": "ElvineFlag(Master)",
+    "Name": "Elvine Master Flag"
+  },
+  {
+    "OriginName": "AresdenFlag",
+    "Name": "Aresden Flag"
+  },
+  {
+    "OriginName": "ElvineFlag",
+    "Name": "Elvine Flag"
+  },
+  {
+    "OriginName": "WandAttackManual",
+    "Name": "Staff Attack Manual"
+  },
+  {
+    "OriginName": "MagicWand(MS20)",
+    "Name": "Magic Wand(MS20)"
+  },
+  {
+    "OriginName": "MagicWand(MS10)",
+    "Name": "Magic Wand(MS10)"
+  },
+  {
+    "OriginName": "MagicWand(MS0)",
+    "Name": "Magic Wand(MS0)"
+  },
+  {
+    "OriginName": "MagicWand(M.Shield)",
+    "Name": "Magic Wand(M.Shield)"
+  },
+  {
+    "OriginName": "HairColorPotion",
+    "Name": "Hair Color Potion"
+  },
+  {
+    "OriginName": "HairStylePotion",
+    "Name": "Hair Style Potion"
+  },
+  {
+    "OriginName": "SkinColorPotion",
+    "Name": "Skin Color Potion"
+  },
+  {
+    "OriginName": "InvisibilityPotion",
+    "Name": "Invisibility Potion"
+  },
+  {
+    "OriginName": "SexChangePotion",
+    "Name": "Sex Change Potion"
+  },
+  {
+    "OriginName": "OgrePotion",
+    "Name": "Ogre Potion"
+  },
+  {
+    "OriginName": "Flameberge+3(LLF)",
+    "Name": "Flameberge+3(LLF)"
+  },
+  {
+    "OriginName": "DemonSlayer",
+    "Name": "Demon Slayer"
+  },
+  {
+    "OriginName": "MagicWand(MS30-LLF)",
+    "Name": "Magic Wand(MS30-LLF)"
+  },
+  {
+    "OriginName": "GoldenAxe(LLF)",
+    "Name": "Golden Axe(LLF)"
+  },
+  {
+    "OriginName": "MagicNecklace(RM10)",
+    "Name": "Magic Necklace(RM10)"
+  },
+  {
+    "OriginName": "MagicNecklace(DM+1)",
+    "Name": "Magic Necklace(DM+1)"
+  },
+  {
+    "OriginName": "MagicNecklace(MS10)",
+    "Name": "Magic Necklace(MS10)"
+  },
+  {
+    "OriginName": "MagicNecklace(DF+10)",
+    "Name": "Magic Necklace(DF+10)"
+  },
+  {
+    "OriginName": "GoldNecklace",
+    "Name": "Gold Necklace"
+  },
+  {
+    "OriginName": "SilverNecklace",
+    "Name": "Silver Necklace"
+  },
+  {
+    "OriginName": "GoldRing",
+    "Name": "Gold Ring"
+  },
+  {
+    "OriginName": "SilverRing",
+    "Name": "Silver Ring"
+  },
+  {
+    "OriginName": "PlatinumRing",
+    "Name": "Platinum Ring"
+  },
+  {
+    "OriginName": "LuckyGoldRing",
+    "Name": "Lucky Gold Ring"
+  },
+  {
+    "OriginName": "EmeraldRing",
+    "Name": "Emerald Ring"
+  },
+  {
+    "OriginName": "SapphireRing",
+    "Name": "Sapphire Ring"
+  },
+  {
+    "OriginName": "RubyRing",
+    "Name": "Ruby Ring"
+  },
+  {
+    "OriginName": "MemorialRing",
+    "Name": "Memorial Ring"
+  },
+  {
+    "OriginName": "Diamond",
+    "Name": "Diamond"
+  },
+  {
+    "OriginName": "Ruby",
+    "Name": "Ruby"
+  },
+  {
+    "OriginName": "Sapphire",
+    "Name": "Sapphire"
+  },
+  {
+    "OriginName": "Emerald",
+    "Name": "Emerald"
+  },
+  {
+    "OriginName": "GoldNugget",
+    "Name": "Gold Nugget"
+  },
+  {
+    "OriginName": "Coal",
+    "Name": "Coal"
+  },
+  {
+    "OriginName": "SilverNugget",
+    "Name": "Silver Nugget"
+  },
+  {
+    "OriginName": "IronOre",
+    "Name": "Iron Ore"
+  },
+  {
+    "OriginName": "Crystal",
+    "Name": "Crystal"
+  },
+  {
+    "OriginName": "Dye(Indigo)",
+    "Name": "Dye(Indigo)"
+  },
+  {
+    "OriginName": "Dye(Green)",
+    "Name": "Dye(Green)"
+  },
+  {
+    "OriginName": "Dye(Gray)",
+    "Name": "Dye(Gray)"
+  },
+  {
+    "OriginName": "Dye(Aqua)",
+    "Name": "Dye(Aqua)"
+  },
+  {
+    "OriginName": "Dye(Pink)",
+    "Name": "Dye(Pink)"
+  },
+  {
+    "OriginName": "Dye(Violet)",
+    "Name": "Dye(Violet)"
+  },
+  {
+    "OriginName": "Dye(Blue)",
+    "Name": "Dye(Blue)"
+  },
+  {
+    "OriginName": "Dye(Tan)",
+    "Name": "Dye(Tan)"
+  },
+  {
+    "OriginName": "Dye(Khaki)",
+    "Name": "Dye(Khaki)"
+  },
+  {
+    "OriginName": "Dye(Yellow)",
+    "Name": "Dye(Yellow)"
+  },
+  {
+    "OriginName": "Dye(Red)",
+    "Name": "Dye(Red)"
+  },
+  {
+    "OriginName": "Dye(Gold)",
+    "Name": "Dye(Gold)"
+  },
+  {
+    "OriginName": "DecolorationPotion",
+    "Name": "Decoloration Potion"
+  },
+  {
+    "OriginName": "IceStormManual",
+    "Name": "Ice Storm Manual"
+  },
+  {
+    "OriginName": "MassFireStrikeManual",
+    "Name": "Mass Fire Strike Manual"
+  },
+  {
+    "OriginName": "BloodyShockW.Manual",
+    "Name": "Bloody Shock Wave Manual"
+  },
+  {
+    "OriginName": "HandAttackManual",
+    "Name": "Hand Attack Manual"
+  },
+  {
+    "OriginName": "ShortSwordManual",
+    "Name": "Short Sword Manual"
+  },
+  {
+    "OriginName": "PowerGreenPotion",
+    "Name": "Power Green Potion"
+  },
+  {
+    "OriginName": "SuperGreenPotion",
+    "Name": "Super Power Green Potion"
+  },
+  {
+    "OriginName": "AresdenHeroCape",
+    "Name": "Aresden-Hero's Cape"
+  },
+  {
+    "OriginName": "ElvineHeroCape",
+    "Name": "Elvine-Hero's Cape"
+  },
+  {
+    "OriginName": "Cape",
+    "Name": "Cape"
+  },
+  {
+    "OriginName": "Cape+1",
+    "Name": "Combatant Cape"
+  },
+  {
+    "OriginName": "Shoes",
+    "Name": "Shoes"
+  },
+  {
+    "OriginName": "LongBoots",
+    "Name": "Long Boots"
+  },
+  {
+    "OriginName": "Shirt(M)",
+    "Name": "Shirt(M)"
+  },
+  {
+    "OriginName": "Hauberk(M)",
+    "Name": "Hauberk(M)"
+  },
+  {
+    "OriginName": "LeatherArmor(M)",
+    "Name": "Leather(M)"
+  },
+  {
+    "OriginName": "ChainMail(M)",
+    "Name": "Chain Mail(M)"
+  },
+  {
+    "OriginName": "ScaleMail(M)",
+    "Name": "Scale Mail(M)"
+  },
+  {
+    "OriginName": "PlateMail(M)",
+    "Name": "Plate Mail(M)"
+  },
+  {
+    "OriginName": "Trousers(M)",
+    "Name": "Trousers(M)"
+  },
+  {
+    "OriginName": "KneeTrousers(M)",
+    "Name": "Knee Trousers(M)"
+  },
+  {
+    "OriginName": "ChainHose(M)",
+    "Name": "Chain Hose(M)"
+  },
+  {
+    "OriginName": "PlateLeggings(M)",
+    "Name": "Plate Leggings(M)"
+  },
+  {
+    "OriginName": "Chemise(W)",
+    "Name": "Chemise(W)"
+  },
+  {
+    "OriginName": "Shirt(W)",
+    "Name": "Shirt(W)"
+  },
+  {
+    "OriginName": "Hauberk(W)",
+    "Name": "Hauberk(W)"
+  },
+  {
+    "OriginName": "Bodice(W)",
+    "Name": "Bodice(W)"
+  },
+  {
+    "OriginName": "LongBodice(W)",
+    "Name": "Long Bodice(W)"
+  },
+  {
+    "OriginName": "LeatherArmor(W)",
+    "Name": "Leather Armor(W)"
+  },
+  {
+    "OriginName": "ChainMail(W)",
+    "Name": "Chain Mail(W)"
+  },
+  {
+    "OriginName": "ScaleMail(W)",
+    "Name": "Scale Mail(W)"
+  },
+  {
+    "OriginName": "PlateMail(W)",
+    "Name": "Plate Mail(W)"
+  },
+  {
+    "OriginName": "Skirt(W)",
+    "Name": "Skirt(W)"
+  },
+  {
+    "OriginName": "Trousers(W)",
+    "Name": "Trousers(W)"
+  },
+  {
+    "OriginName": "KneeTrousers(W)",
+    "Name": "Knee Trousers(W)"
+  },
+  {
+    "OriginName": "ChainHose(W)",
+    "Name": "Chain Hose(W)"
+  },
+  {
+    "OriginName": "PlateLeggings(W)",
+    "Name": "Plate Leggings(W)"
+  },
+  {
+    "OriginName": "Tunic(M)",
+    "Name": "Tunic(M)"
+  },
+  {
+    "OriginName": "BloodSword",
+    "Name": "Blood Sword"
+  },
+  {
+    "OriginName": "BloodAxe",
+    "Name": "Blood Axe"
+  },
+  {
+    "OriginName": "BloodRapier",
+    "Name": "Blood Rapier"
+  },
+  {
+    "OriginName": "IronIngot",
+    "Name": "Iron Bar"
+  },
+  {
+    "OriginName": "SuperCoal",
+    "Name": "Super Coal"
+  },
+  {
+    "OriginName": "UltraCoal",
+    "Name": "Ultra Coal"
+  },
+  {
+    "OriginName": "GoldIngot",
+    "Name": "Gold Bar"
+  },
+  {
+    "OriginName": "SilverIngot",
+    "Name": "Silver Bar"
+  },
+  {
+    "OriginName": "BlondeIngot",
+    "Name": "Blonde Bar"
+  },
+  {
+    "OriginName": "MithralIngot",
+    "Name": "Mithral Bar"
+  },
+  {
+    "OriginName": "BlondeStone",
+    "Name": "Blonde Bar"
+  },
+  {
+    "OriginName": "Mithral",
+    "Name": "Mithral"
+  },
+  {
+    "OriginName": "ArenaTicket",
+    "Name": "Arena Ticket"
+  },
+  {
+    "OriginName": "ArenaTicket(2)",
+    "Name": "Arena Ticket(2)"
+  },
+  {
+    "OriginName": "ArenaTicket(3)",
+    "Name": "Arena Ticket(3)"
+  },
+  {
+    "OriginName": "ArenaTicket(4)",
+    "Name": "Arena Ticket(4)"
+  },
+  {
+    "OriginName": "ArenaTicket(5)",
+    "Name": "Arena Ticket(5)"
+  },
+  {
+    "OriginName": "ArenaTicket(6)",
+    "Name": "Arena Ticket(6)"
+  },
+  {
+    "OriginName": "ArenaTicket(7)",
+    "Name": "Arena Ticket(7)"
+  },
+  {
+    "OriginName": "ArenaTicket(8)",
+    "Name": "Arena Ticket(8)"
+  },
+  {
+    "OriginName": "ArenaTicket(9)",
+    "Name": "Arena Ticket(9)"
+  },
+  {
+    "OriginName": "Bouquette",
+    "Name": "Bouquette"
+  },
+  {
+    "OriginName": "FlowerBasket",
+    "Name": "Flower Basket"
+  },
+  {
+    "OriginName": "Flowerpot",
+    "Name": "Flowerpot"
+  },
+  {
+    "OriginName": "DemonEye",
+    "Name": "Demon Eye"
+  },
+  {
+    "OriginName": "DemonHeart",
+    "Name": "Demon Heart"
+  },
+  {
+    "OriginName": "DemonMeat",
+    "Name": "Demon Meat"
+  },
+  {
+    "OriginName": "DemonLeather",
+    "Name": "Demon Leather"
+  },
+  {
+    "OriginName": "UnicornHeart",
+    "Name": "Unicorn Heart"
+  },
+  {
+    "OriginName": "UnicornHorn",
+    "Name": "Unicorn Antenna"
+  },
+  {
+    "OriginName": "UnicornMeat",
+    "Name": "Unicorn Meat"
+  },
+  {
+    "OriginName": "UnicornLeather",
+    "Name": "Unicorn Leather"
+  },
+  {
+    "OriginName": "WerewolfHeart",
+    "Name": "Werewolf Heart"
+  },
+  {
+    "OriginName": "WerewolfNail",
+    "Name": "Werewolf Nail"
+  },
+  {
+    "OriginName": "WerewolfMeat",
+    "Name": "Werewolf Meat"
+  },
+  {
+    "OriginName": "WerewolfTail",
+    "Name": "Werewolf Tail"
+  },
+  {
+    "OriginName": "WerewolfTeeth",
+    "Name": "Werewolf Teeth"
+  },
+  {
+    "OriginName": "WerewolfLeather",
+    "Name": "Werewolf Leather"
+  },
+  {
+    "OriginName": "WerewolfClaw",
+    "Name": "Werewolf Claw"
+  },
+  {
+    "OriginName": "BattleAxe",
+    "Name": "Battle Axe"
+  },
+  {
+    "OriginName": "RedCarp",
+    "Name": "Red Carp"
+  },
+  {
+    "OriginName": "GreenCarp",
+    "Name": "Green Carp"
+  },
+  {
+    "OriginName": "GoldCarp",
+    "Name": "Gold Carp"
+  },
+  {
+    "OriginName": "CrucianCarp",
+    "Name": "Crucian Carp"
+  },
+  {
+    "OriginName": "BlueSeaBream",
+    "Name": "Blue Sea Bream"
+  },
+  {
+    "OriginName": "Salmon",
+    "Name": "Salmon"
+  },
+  {
+    "OriginName": "RedSeaBream",
+    "Name": "Red Sea Bream"
+  },
+  {
+    "OriginName": "GrayMullet",
+    "Name": "Gray Mullet"
+  },
+  {
+    "OriginName": "BattleAxe+1",
+    "Name": "Battle Axe+1"
+  },
+  {
+    "OriginName": "BattleAxe+2",
+    "Name": "Battle Axe+2"
+  },
+  {
+    "OriginName": "Sabre+2",
+    "Name": "Sabre+2"
+  },
+  {
+    "OriginName": "Robe(M)",
+    "Name": "Robe(M)"
+  },
+  {
+    "OriginName": "Robe(W)",
+    "Name": "Robe(W)"
+  },
+  {
+    "OriginName": "Helm(M)",
+    "Name": "Helm(M)"
+  },
+  {
+    "OriginName": "FullHelm(M)",
+    "Name": "Full-Helm(M)"
+  },
+  {
+    "OriginName": "Helm(W)",
+    "Name": "Helm(W)"
+  },
+  {
+    "OriginName": "FullHelm(W)",
+    "Name": "Full-Helm(W)"
+  },
+  {
+    "OriginName": "XelimaBlade",
+    "Name": "Xelima's Blade"
+  },
+  {
+    "OriginName": "XelimaAxe",
+    "Name": "Xelima's Axe"
+  },
+  {
+    "OriginName": "XelimaRapier",
+    "Name": "Xelima's Rapier"
+  },
+  {
+    "OriginName": "SwordofMedusa",
+    "Name": "Sword of Medusa"
+  },
+  {
+    "OriginName": "SwordofIceElemental",
+    "Name": "Sword of Ice Elemental"
+  },
+  {
+    "OriginName": "MerienShield",
+    "Name": "Merien's Shield"
+  },
+  {
+    "OriginName": "MerienPlateMail(M)",
+    "Name": "Merien's plate mail(M)"
+  },
+  {
+    "OriginName": "MerienPlateMail(W)",
+    "Name": "Merien's plate mail(M)"
+  },
+  {
+    "OriginName": "RingoftheXelima",
+    "Name": "Ring of the Xelima"
+  },
+  {
+    "OriginName": "RingoftheAbaddon",
+    "Name": "Ring of the Abaddon"
+  },
+  {
+    "OriginName": "RingofOgrepower",
+    "Name": "Ring of Ogre power"
+  },
+  {
+    "OriginName": "RingofDemonpower",
+    "Name": "Ring of Demon power"
+  },
+  {
+    "OriginName": "RingofWizard",
+    "Name": "Ring of Wizard"
+  },
+  {
+    "OriginName": "RingofMage",
+    "Name": "Ring of Mage"
+  },
+  {
+    "OriginName": "RingofGrandMage",
+    "Name": "Ring of Grand Mage"
+  },
+  {
+    "OriginName": "RingofDragonpower",
+    "Name": "Ring of Dragon Power"
+  },
+  {
+    "OriginName": "RingofArcmage",
+    "Name": "Ring of ArcMage"
+  },
+  {
+    "OriginName": "KnecklaceOfLightPro",
+    "Name": "Necklace of Light Protection"
+  },
+  {
+    "OriginName": "KnecklaceOfFirePro",
+    "Name": "Necklace of Fire Protection"
+  },
+  {
+    "OriginName": "KnecklaceOfPoisonPro",
+    "Name": "Necklace of Poison Protection"
+  },
+  {
+    "OriginName": "KnecklaceOfSufferent",
+    "Name": "Necklace of Sufferent"
+  },
+  {
+    "OriginName": "KnecklaceOfMedusa",
+    "Name": "Necklace of Medusa"
+  },
+  {
+    "OriginName": "KnecklaceOfIcePro",
+    "Name": "Necklace of Ice Protection"
+  },
+  {
+    "OriginName": "KnecklaceOfIceEle",
+    "Name": "Necklace of Ice Elemental"
+  },
+  {
+    "OriginName": "KnecklaceOfAirEle",
+    "Name": "Necklace of Air Elemental"
+  },
+  {
+    "OriginName": "KnecklaceOfEfreet",
+    "Name": "Necklace of Efreet"
+  },
+  {
+    "OriginName": "NecklaceOfStoneGol",
+    "Name": "Necklace of Stone Golem"
+  },
+  {
+    "OriginName": "NecklaceOfBeholder",
+    "Name": "Necklace of Beholder"
+  },
+  {
+    "OriginName": "ZemstoneofSacrifice",
+    "Name": "Zemstone of Sacrifice"
+  },
+  {
+    "OriginName": "KnightRapier",
+    "Name": "Knight Rapier"
+  },
+  {
+    "OriginName": "KnightGreatSword",
+    "Name": "Knight Great Sword"
+  },
+  {
+    "OriginName": "KnightFlameberge",
+    "Name": "Knight Flameberge"
+  },
+  {
+    "OriginName": "KnightWarAxe",
+    "Name": "Knight War Axe"
+  },
+  {
+    "OriginName": "KnightPlateMail(M)",
+    "Name": "Knight Plate Mail(M)"
+  },
+  {
+    "OriginName": "KnightPlateMail(W)",
+    "Name": "Knight Plate Mail(W)"
+  },
+  {
+    "OriginName": "KnightPlateLeg(M)",
+    "Name": "Knight Plate Leggings(M)"
+  },
+  {
+    "OriginName": "KnightPlateLeg(W)",
+    "Name": "Knight Plate Leggings(W)"
+  },
+  {
+    "OriginName": "KnightFullHelm(M)",
+    "Name": "Knight Full-Helm(M)"
+  },
+  {
+    "OriginName": "KnightFullHelm(W)",
+    "Name": "Knight Full-Helm(W)"
+  },
+  {
+    "OriginName": "WizardHauberk(M)",
+    "Name": "Wizard Hauberk(M)"
+  },
+  {
+    "OriginName": "WizardHauberk(W)",
+    "Name": "Wizard Hauberk(W)"
+  },
+  {
+    "OriginName": "WizMagicWand(MS20)",
+    "Name": "Wizard Magic Staff(MS20)"
+  },
+  {
+    "OriginName": "WizMagicWand(MS10)",
+    "Name": "Wizard Magic Staff(MS10)"
+  },
+  {
+    "OriginName": "WizardRobe(M)",
+    "Name": "Wizard Robe(M)"
+  },
+  {
+    "OriginName": "WizardRobe(W)",
+    "Name": "Wizard Robe(W)"
+  },
+  {
+    "OriginName": "KnightHauberk(M)",
+    "Name": "Knight Hauberk(M)"
+  },
+  {
+    "OriginName": "KnightHauberk(W)",
+    "Name": "Knight Hauberk(W)"
+  },
+  {
+    "OriginName": "DarkElfBow",
+    "Name": "Dark Elf's Bow"
+  },
+  {
+    "OriginName": "CompositeBow",
+    "Name": "Composite Bow"
+  },
+  {
+    "OriginName": "Horned-Helm(M)",
+    "Name": "Horned Helm(M)"
+  },
+  {
+    "OriginName": "Wings-Helm(M)",
+    "Name": "Wings Helm(M)"
+  },
+  {
+    "OriginName": "Wizard-Cap(M)",
+    "Name": "Wizard Cap(M)"
+  },
+  {
+    "OriginName": "Wizard-Hat(M)",
+    "Name": "Wizard Hat(M)"
+  },
+  {
+    "OriginName": "Horned-Helm(W)",
+    "Name": "Horned Helm(W)"
+  },
+  {
+    "OriginName": "Wings-Helm(W)",
+    "Name": "Wings Helm(W)"
+  },
+  {
+    "OriginName": "Wizard-Cap(W)",
+    "Name": "Wizard Cap(W)"
+  },
+  {
+    "OriginName": "Wizard-Hat(W)",
+    "Name": "Wizard Hat(W)"
+  },
+  {
+    "OriginName": "GM-Shield",
+    "Name": "GM Shield"
+  },
+  {
+    "OriginName": "GreenBall",
+    "Name": "Green Ball"
+  },
+  {
+    "OriginName": "RedBall",
+    "Name": "Red Ball"
+  },
+  {
+    "OriginName": "YellowBall",
+    "Name": "Yellow Ball"
+  },
+  {
+    "OriginName": "BlueBall",
+    "Name": "Blue Ball"
+  },
+  {
+    "OriginName": "PearlBall",
+    "Name": "Pearl Ball"
+  },
+  {
+    "OriginName": "Hammer",
+    "Name": "Hammer"
+  },
+  {
+    "OriginName": "BattleHammer",
+    "Name": "Battle Hammer"
+  },
+  {
+    "OriginName": "HammerAttackManual",
+    "Name": "Hammer Attack Manual"
+  },
+  {
+    "OriginName": "UnderWearPotion",
+    "Name": "UnderWear Potion"
+  },
+  {
+    "OriginName": "UnfreezePotion",
+    "Name": "Unfreeze Potion"
+  },
+  {
+    "OriginName": "StoneOfMerien",
+    "Name": "Stone of Merien"
+  },
+  {
+    "OriginName": "StoneOfXelima",
+    "Name": "Stone of Xelima"
+  },
+  {
+    "OriginName": "SantaCostume(M)",
+    "Name": "SantaCostume(M)"
+  },
+  {
+    "OriginName": "SantaCostume(W)",
+    "Name": "SantaCostume(W)"
+  },
+  {
+    "OriginName": "RedCandy",
+    "Name": "Red Candy"
+  },
+  {
+    "OriginName": "BlueCandy",
+    "Name": "BlueCandy"
+  },
+  {
+    "OriginName": "GreenCandy",
+    "Name": "GreenCandy"
+  },
+  {
+    "OriginName": "FarmingManual",
+    "Name": "FarmingManual"
+  },
+  {
+    "OriginName": "SeedBag(WaterMelon)",
+    "Name": "SeedBag (WaterMelon)"
+  },
+  {
+    "OriginName": "SeedBag(Punpkin)",
+    "Name": "SeedBag (Punpkin)"
+  },
+  {
+    "OriginName": "SeedBag(Garlic)",
+    "Name": "SeedBag(Garlic)"
+  },
+  {
+    "OriginName": "SeedBag(Barley)",
+    "Name": "SeedBag(Barley)"
+  },
+  {
+    "OriginName": "Hoe",
+    "Name": "Hoe"
+  },
+  {
+    "OriginName": "WaterMelon",
+    "Name": "WaterMelon"
+  },
+  {
+    "OriginName": "Garlic",
+    "Name": "Garlic"
+  },
+  {
+    "OriginName": "Barley",
+    "Name": "Barley"
+  },
+  {
+    "OriginName": "Punpkin",
+    "Name": "Punpkin"
+  },
+  {
+    "OriginName": "SeedBag(Carrot)",
+    "Name": "SeedBag(Carrot)"
+  },
+  {
+    "OriginName": "SeedBag(Radish)",
+    "Name": "SeedBag(Radish)"
+  },
+  {
+    "OriginName": "SeedBag(Corn)",
+    "Name": "SeedBag(Corn)"
+  },
+  {
+    "OriginName": "SeedBag(Cbellflower)",
+    "Name": "SeedBag(ChineseBellflower)"
+  },
+  {
+    "OriginName": "SeedBag(Melon)",
+    "Name": "SeedBag(Melon)"
+  },
+  {
+    "OriginName": "SeedBag(Tomato)",
+    "Name": "SeedBag(Tomato)"
+  },
+  {
+    "OriginName": "SeedBag(Grapes)",
+    "Name": "SeedBag(Grapes)"
+  },
+  {
+    "OriginName": "SeedBag(Bluegrapes)",
+    "Name": "SeedBag(Bluegrapes)"
+  },
+  {
+    "OriginName": "SeedBag(Mushroom)",
+    "Name": "SeedBag(Mushroom)"
+  },
+  {
+    "OriginName": "SeedBag(Ginseng)",
+    "Name": "SeedBag(Ginseng)"
+  },
+  {
+    "OriginName": "Carrot",
+    "Name": "Carrot"
+  },
+  {
+    "OriginName": "Radish",
+    "Name": "Radish"
+  },
+  {
+    "OriginName": "Corn",
+    "Name": "Corn"
+  },
+  {
+    "OriginName": "ChineseBellflower",
+    "Name": "Chinese Bellflower"
+  },
+  {
+    "OriginName": "Melon",
+    "Name": "Melon"
+  },
+  {
+    "OriginName": "Tomato",
+    "Name": "Tomato"
+  },
+  {
+    "OriginName": "Grapes",
+    "Name": "Grapes"
+  },
+  {
+    "OriginName": "BlueGrapes",
+    "Name": "BlueGrapes"
+  },
+  {
+    "OriginName": "Mushroom",
+    "Name": "Mushroom"
+  },
+  {
+    "OriginName": "SuperRedPotion",
+    "Name": "Super Health Potion"
+  },
+  {
+    "OriginName": "SuperBluePotion",
+    "Name": "Super Mana Potion"
+  },
+  {
+    "OriginName": "SuperGreenPotion",
+    "Name": "Super Revitalizing Potion"
+  },
+  {
+    "OriginName": "aHeroOfHelm(M)",
+    "Name": "Aresden Hero Helm"
+  },
+  {
+    "OriginName": "aHeroOfHelm(W)",
+    "Name": "Aresden Hero Helm"
+  },
+  {
+    "OriginName": "eHeroOfHelm(M)",
+    "Name": "Elvine Hero Helm"
+  },
+  {
+    "OriginName": "eHeroOfHelm(W)",
+    "Name": "Elvine Hero Helm"
+  },
+  {
+    "OriginName": "aHeroOfCap(M)",
+    "Name": "Aresden Hero Cap"
+  },
+  {
+    "OriginName": "aHeroOfCap(W)",
+    "Name": "Aresden Hero Cap"
+  },
+  {
+    "OriginName": "eHeroOfCap(M)",
+    "Name": "Elvine Hero Cap"
+  },
+  {
+    "OriginName": "eHeroOfCap(W)",
+    "Name": "Elvine Hero Cap"
+  },
+  {
+    "OriginName": "aHeroOfArmor(M)",
+    "Name": "Aresden Hero Armor"
+  },
+  {
+    "OriginName": "aHeroOfArmor(W)",
+    "Name": "Aresden Hero Armor"
+  },
+  {
+    "OriginName": "eHeroOfArmor(M)",
+    "Name": "Elvine Hero Armor"
+  },
+  {
+    "OriginName": "eHeroOfArmor(W)",
+    "Name": "Elvine Hero Armor"
+  },
+  {
+    "OriginName": "aHeroOfRobe(M)",
+    "Name": "Aresden Hero Robe"
+  },
+  {
+    "OriginName": "aHeroOfRobe(W)",
+    "Name": "Aresden Hero Robe"
+  },
+  {
+    "OriginName": "eHeroOfRobe(M)",
+    "Name": "Elvine Hero Robe"
+  },
+  {
+    "OriginName": "eHeroOfRobe(W)",
+    "Name": "Elvine Hero Robe"
+  },
+  {
+    "OriginName": "aHeroOfHauberk(M)",
+    "Name": "Aresden Hero Hauberk"
+  },
+  {
+    "OriginName": "aHeroOfHauberk(W)",
+    "Name": "Aresden Hero Hauberk"
+  },
+  {
+    "OriginName": "eHeroOfHauberk(M)",
+    "Name": "Elvine Hero Hauberk"
+  },
+  {
+    "OriginName": "eHeroOfHauberk(W)",
+    "Name": "Elvine Hero Hauberk"
+  },
+  {
+    "OriginName": "aHeroOfLeggings(M)",
+    "Name": "Aresden Hero Leggings"
+  },
+  {
+    "OriginName": "aHeroOfLeggings(W)",
+    "Name": "Aresden Hero Leggings"
+  },
+  {
+    "OriginName": "eHeroOfLeggings(M)",
+    "Name": "Elvine Hero Leggings"
+  },
+  {
+    "OriginName": "eHeroOfLeggings(W)",
+    "Name": "Elvine Hero Leggings"
+  },
+  {
+    "OriginName": "AresdenHeroCape+1",
+    "Name": "Aresden-Hero's Cape+1"
+  },
+  {
+    "OriginName": "ElvineHeroCape+1",
+    "Name": "Elvine-Hero's Cape+1"
+  },
+  {
+    "OriginName": "BarbarianHammer",
+    "Name": "Barbarian Hammer"
+  },
+  {
+    "OriginName": "BlackShadowSword",
+    "Name": "Black Shadow Sword"
+  },
+  {
+    "OriginName": "StormBringer",
+    "Name": "Storm Bringer"
+  },
+  {
+    "OriginName": "The_Devastator",
+    "Name": "The Devastator"
+  },
+  {
+    "OriginName": "DarkExecutor",
+    "Name": "Dark Executor"
+  },
+  {
+    "OriginName": "LightingBlade",
+    "Name": "Lighting Blade"
+  },
+  {
+    "OriginName": "KlonessBlade",
+    "Name": "Kloness Blade"
+  },
+  {
+    "OriginName": "KlonessAxe",
+    "Name": "Kloness Axe"
+  },
+  {
+    "OriginName": "KlonessEsterk",
+    "Name": "Kloness Esterk"
+  },
+  {
+    "OriginName": "CancelManual",
+    "Name": "Cancellation Manual"
+  },
+  {
+    "OriginName": "E.S.W.Manual",
+    "Name": "Earth shock Wave Manual"
+  },
+  {
+    "OriginName": "I.M.CManual",
+    "Name": "Inhibition Magic Casting Manual"
+  },
+  {
+    "OriginName": "NecklaceOfMerien",
+    "Name": "Necklace Of Merien"
+  },
+  {
+    "OriginName": "NecklaceOfKloness",
+    "Name": "Necklace Of Kloness"
+  },
+  {
+    "OriginName": "NecklaceOfXelima",
+    "Name": "Necklace Of Xelima"
+  },
+  {
+    "OriginName": "BerserkWand(MS.20)",
+    "Name": "Berserk Magic Wand(MS.20)"
+  },
+  {
+    "OriginName": "BerserkWand(MS.10)",
+    "Name": "Berserk Magic Wand(MS.10)"
+  },
+  {
+    "OriginName": "KlonessWand(MS.20)",
+    "Name": "Kloness Magic Wand(MS.20)"
+  },
+  {
+    "OriginName": "KlonessWand(MS.10)",
+    "Name": "Kloness Magic Wand(MS.10)"
+  },
+  {
+    "OriginName": "ResurWand(MS.20)",
+    "Name": "Resurruction Magic Wand(MS.20)"
+  },
+  {
+    "OriginName": "ResurWand(MS.10)",
+    "Name": "Resurruction Magic Wand(MS.10)"
+  },
+  {
+    "OriginName": "AcientTablet",
+    "Name": "Ancient Tablet"
+  },
+  {
+    "OriginName": "AcientTablet(LU)",
+    "Name": "a ancient piece of Stone"
+  },
+  {
+    "OriginName": "AcientTablet(LD)",
+    "Name": "a ancient piece of Stone"
+  },
+  {
+    "OriginName": "AcientTablet(RU)",
+    "Name": "a ancient piece of Stone"
+  },
+  {
+    "OriginName": "AcientTablet(RD)",
+    "Name": "a ancient piece of Stone"
+  },
+  {
+    "OriginName": "SummonScroll(SOR)",
+    "Name": "Sorceress SummonScroll"
+  },
+  {
+    "OriginName": "SummonScroll(ATK)",
+    "Name": "A.T.Knight SummonScroll"
+  },
+  {
+    "OriginName": "SummonScroll(ELF)",
+    "Name": "Elf Master SummonScroll"
+  },
+  {
+    "OriginName": "SummonScroll(DSK)",
+    "Name": "D.S.Knight SummonScroll"
+  },
+  {
+    "OriginName": "SummonScroll(HBT)",
+    "Name": "Heavy Battle SummonScroll"
+  },
+  {
+    "OriginName": "SummonScroll(BAR)",
+    "Name": "Barbarian SummonScroll"
+  }
+]

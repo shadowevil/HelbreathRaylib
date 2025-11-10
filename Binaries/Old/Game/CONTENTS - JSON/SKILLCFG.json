@@ -1,0 +1,146 @@
+[
+    {
+        "SkillID": 0,
+        "SkillName": "Mining",
+        "Usable": false,
+        "UseMethod": 1
+    },
+    {
+        "SkillID": 1,
+        "SkillName": "Fishing",
+        "Usable": false,
+        "UseMethod": 1
+    },
+    {
+        "SkillID": 2,
+        "SkillName": "Farming",
+        "Usable": false,
+        "UseMethod": 1
+    },
+    {
+        "SkillID": 3,
+        "SkillName": "Magic-Resistance",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 4,
+        "SkillName": "Magic",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 5,
+        "SkillName": "Hand-Attack",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 6,
+        "SkillName": "Archery",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 7,
+        "SkillName": "Short-Sword",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 8,
+        "SkillName": "Long-Sword",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 9,
+        "SkillName": "Fencing",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 10,
+        "SkillName": "Axe-Attack",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 11,
+        "SkillName": "Shield",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 12,
+        "SkillName": "Alchemy",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 13,
+        "SkillName": "Manufacturing",
+        "Usable": false,
+        "UseMethod": 2
+    },
+    {
+        "SkillID": 14,
+        "SkillName": "Hammer",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 15,
+        "SkillName": "????",
+        "Usable": true,
+        "UseMethod": 1
+    },
+    {
+        "SkillID": 16,
+        "SkillName": "????",
+        "Usable": true,
+        "UseMethod": 1
+    },
+    {
+        "SkillID": 17,
+        "SkillName": "????",
+        "Usable": true,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 18,
+        "SkillName": "????",
+        "Usable": true,
+        "UseMethod": 1
+    },
+    {
+        "SkillID": 19,
+        "SkillName": "Pretend-Corpse",
+        "Usable": true,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 20,
+        "SkillName": "????",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 21,
+        "SkillName": "Staff-Attack",
+        "Usable": false,
+        "UseMethod": 0
+    },
+    {
+        "SkillID": 22,
+        "SkillName": "????",
+        "Usable": true,
+        "UseMethod": 2
+    },
+    {
+        "SkillID": 23,
+        "SkillName": "Poison-Resistance",
+        "Usable": false,
+        "UseMethod": 0
+    }
+]

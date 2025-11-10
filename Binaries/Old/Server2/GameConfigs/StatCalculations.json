@@ -1,0 +1,5 @@
+{
+    "health": "{VIT} * 3 + 1 * 2 + {STR} / 2",
+    "mana": "{MAG} * 2 + 1 * 2 + {INT} / 2",
+    "stamina": "1 * 2 + {STR} * 2"
+}
