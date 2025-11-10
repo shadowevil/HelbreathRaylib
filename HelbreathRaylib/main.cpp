@@ -1,4 +1,4 @@
-#include "Dependencies/Includes/raylib_include.h"
+#include "raylib_include.h"
 #include "core/Application.h"
 #include "core/Layer.h"
 
