@@ -7,6 +7,10 @@
 namespace core {
     class SceneManager {
     public:
+        constexpr static float FAST_FADE_DURATION = 0.15f;
+        constexpr static float DEFAULT_FADE_DURATION = 0.25f;
+		constexpr static float SLOW_FADE_DURATION = 0.5f;
+
         enum class TransitionState {
             None,
             FadeOut,

@@ -8,8 +8,8 @@ Helbreath::Helbreath()
 	: Application(core::Window::Config{
 		"Helbreath Raylib",
 		800, 600,
-		FLAG_VSYNC_HINT,
-		60
+		FLAG_WINDOW_RESIZABLE,
+		0
 		}) {
 #ifdef _WIN32
 	// init winsock
@@ -20,6 +20,7 @@ Helbreath::Helbreath()
 }
 
 Helbreath::~Helbreath() {
+	StopPulse();
 #ifdef _WIN32
 	WSACleanup();
 #endif
@@ -36,6 +37,17 @@ void Helbreath::InitializeComponents() {
 #endif
 
 	m_pGame = PushLayer<Game>();
+	StartPulse();
+}
+
+void Helbreath::FocusLost()
+{
+	rlx::UnlockCursor();
+}
+
+void Helbreath::FocusGained()
+{
+	rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
 }
 
 #ifdef _WIN32
@@ -71,3 +83,11 @@ void Helbreath::OnGameServerReceiveImpl(const MsgData& msg)
 
 }
 #endif
+
+void Helbreath::PulseLoop() {
+	while (running) {
+		// Perform periodic tasks here
+		m_pGame->OnPulse();
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+}

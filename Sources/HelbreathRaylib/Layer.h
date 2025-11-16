@@ -18,6 +18,8 @@ namespace core {
         virtual void OnUninitialize() = 0;
         virtual void OnUpdate() = 0;
         virtual void OnRender() = 0;
+        virtual void OnRender_BeforeUpscale() {}
+        virtual void OnRender_AfterUpscale() {}
 
     protected:
         Application& m_application;

@@ -7,68 +7,67 @@
     <Filter Include="scenes">
       <UniqueIdentifier>{7BA4E9C2-8D6F-4E1A-9F3B-1C5A7D8E4F9A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="constants">
+      <UniqueIdentifier>{bc7e80b7-cd5e-4a76-8d8e-7bcc09f92f10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="core\Application.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\Font.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\Layer.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\Scene.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\Window.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Helbreath.cpp" />
-    <ClCompile Include="scenes\MenuScene.cpp">
+    <ClCompile Include="LoadingScene.cpp">
       <Filter>scenes</Filter>
     </ClCompile>
-    <ClCompile Include="scenes\GameplayScene.cpp">
-      <Filter>scenes</Filter>
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Scene.cpp">
+      <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="scenes\PauseScene.cpp">
+    <ClCompile Include="FontManager.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuScene.cpp">
       <Filter>scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\Application.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\Dependency.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\Event.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\Font.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\Layer.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\Scene.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\Window.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="Game.h" />
     <ClInclude Include="Helbreath.h" />
-    <ClInclude Include="scenes\MenuScene.h">
+    <ClInclude Include="Layer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
       <Filter>scenes</Filter>
     </ClInclude>
-    <ClInclude Include="scenes\GameplayScene.h">
+    <ClInclude Include="FontManager.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="global_constants.h">
+      <Filter>constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteIDs.h">
+      <Filter>constants</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuScene.h">
       <Filter>scenes</Filter>
     </ClInclude>
-    <ClInclude Include="scenes\PauseScene.h">
+    <ClInclude Include="Scenes.h">
       <Filter>scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FontIDs.h">
+      <Filter>constants</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

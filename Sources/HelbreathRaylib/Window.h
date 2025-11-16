@@ -31,7 +31,8 @@ namespace core {
                 SetConfigFlags(m_config.flags);
 
             InitWindow(m_config.width, m_config.height, m_config.title.c_str());
-            SetTargetFPS(m_config.targetFPS);
+			if (m_config.targetFPS > 0)
+                SetTargetFPS(m_config.targetFPS);
 
             m_isOpen = true;
         }

@@ -1,12 +1,16 @@
 #pragma once
 #include "raylib_include.h"
+#include "Sprite.h"
+
+class Game;
 
 namespace core {
     class Application;
+	class SceneManager;
 
     class Scene {
     public:
-        explicit Scene(Application& app) : m_application(app) {}
+        Scene(Application& app);
         virtual ~Scene() = default;
 
         Scene(const Scene&) = delete;
@@ -21,5 +25,8 @@ namespace core {
 
     protected:
         Application& m_application;
+        Game& m_game;
+		SceneManager& m_sceneManager;
+        CSpriteCollection& m_sprites;
     };
 }
