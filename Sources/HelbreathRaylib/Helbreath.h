@@ -12,6 +12,13 @@ public:
     Helbreath();
 	~Helbreath() override;
 
+    static Helbreath& Instance() {
+        if (!s_Instance) {
+            throw std::runtime_error("Helbreath instance is not initialized.");
+        }
+        return *s_Instance;
+	}
+
 protected:
     Game* m_pGame = nullptr;
 

@@ -1,8 +1,10 @@
 #pragma once
 #include "raylib_include.h"
 #include "Sprite.h"
+#include <vector>
 
 class Game;
+struct ItemMetadataEntry;
 
 namespace core {
     class Application;
@@ -10,7 +12,7 @@ namespace core {
 
     class Scene {
     public:
-        Scene(Application& app);
+        Scene();
         virtual ~Scene() = default;
 
         Scene(const Scene&) = delete;
@@ -28,5 +30,8 @@ namespace core {
         Game& m_game;
 		SceneManager& m_sceneManager;
         CSpriteCollection& m_sprites;
+		CSpriteCollection& m_modelSprites;
+		CSpriteCollection& m_mapTiles;
+		std::vector<ItemMetadataEntry>& m_itemMetadata;
     };
 }

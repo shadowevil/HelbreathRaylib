@@ -8,7 +8,7 @@ Helbreath::Helbreath()
 	: Application(core::Window::Config{
 		"Helbreath Raylib",
 		800, 600,
-		FLAG_WINDOW_RESIZABLE,
+		FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT,
 		0
 		}) {
 #ifdef _WIN32

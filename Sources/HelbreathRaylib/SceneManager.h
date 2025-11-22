@@ -24,13 +24,13 @@ namespace core {
             Color fadeColor = BLACK;
         };
 
-        explicit SceneManager(Application& app) : m_application(app) {}
+        explicit SceneManager() = default;
 
         template<typename T, typename... Args>
         void SetScene(Args&&... args) {
             static_assert(std::is_base_of_v<Scene, T>, "T must derive from Scene");
-            m_pendingScene = [this, ... args = std::forward<Args>(args)]() mutable {
-                return std::make_unique<T>(m_application, std::forward<Args>(args)...);
+            m_pendingScene = [... args = std::forward<Args>(args)]() mutable {
+                return std::make_unique<T>(std::forward<Args>(args)...);
                 };
             m_transitionState = TransitionState::FadeOut;
             m_transitionTime = 0.0f;
@@ -42,7 +42,7 @@ namespace core {
 
             if (!m_currentScene) return;
 
-            auto overlay = std::make_unique<T>(m_application, std::forward<Args>(args)...);
+            auto overlay = std::make_unique<T>(std::forward<Args>(args)...);
             overlay->OnInitialize();
             m_overlay = std::move(overlay);
         }
@@ -107,7 +107,6 @@ namespace core {
             if (m_overlay) {
                 m_overlay->OnRender();
             }
-
             RenderTransition();
         }
 
@@ -145,7 +144,6 @@ namespace core {
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), fadeColor);
         }
 
-        Application& m_application;
         std::unique_ptr<Scene> m_currentScene;
         std::unique_ptr<Scene> m_overlay;
         std::function<std::unique_ptr<Scene>()> m_pendingScene;

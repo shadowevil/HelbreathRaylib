@@ -1,0 +1,137 @@
+[
+    {
+        "pak_file": "shoes.pak",
+        "id": 0,
+        "equip_type": "feet",
+        "male": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 52,
+            "ground_frame_index": 175,
+            "pack_frame_index": 175
+        },
+        "female": {
+            "pak_index_start": 12,
+            "pak_index_end": 23,
+            "equip_frame_index": 44,
+            "ground_frame_index": 175,
+            "pack_frame_index": 175
+        }
+    },{
+        "pak_file": "trousers.pak",
+        "id": 1,
+        "equip_type": "legs",
+        "male": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 92,
+            "ground_frame_index": 337,
+            "pack_frame_index": 337
+        },
+        "female": {
+            "pak_index_start": 12,
+            "pak_index_end": 23,
+            "equip_frame_index": 203,
+            "ground_frame_index": 40,
+            "pack_frame_index": 40
+        }
+    },{
+        "pak_file": "shorts.pak",
+        "id": 2,
+        "equip_type": "legs",
+        "male": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 93,
+            "ground_frame_index": 338,
+            "pack_frame_index": 338
+        },
+        "female": {
+            "pak_index_start": 12,
+            "pak_index_end": 23,
+            "equip_frame_index": 204,
+            "ground_frame_index": 41,
+            "pack_frame_index": 41
+        }
+    },{
+        "pak_file": "shirt.pak",
+        "id": 3,
+        "equip_type": "shirt",
+        "male": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 88,
+            "ground_frame_index": 333,
+            "pack_frame_index": 333
+        },
+        "female": {
+            "pak_index_start": 12,
+            "pak_index_end": 23,
+            "equip_frame_index": 198,
+            "ground_frame_index": 35,
+            "pack_frame_index": 35
+        }
+    },{
+        "pak_file": "skirt.pak",
+        "id": 4,
+        "equip_type": "legs",
+        "female": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 202,
+            "ground_frame_index": 39,
+            "pack_frame_index": 39
+        }
+    },{
+        "pak_file": "dress.pak",
+        "id": 5,
+        "equip_type": "shirt",
+        "female": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 197,
+            "ground_frame_index": 34,
+            "pack_frame_index": 34
+        }
+    },{
+        "pak_file": "bodice1.pak",
+        "id": 6,
+        "equip_type": "shirt",
+        "female": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 209,
+            "ground_frame_index": 46,
+            "pack_frame_index": 46
+        }
+    },{
+        "pak_file": "bodice2.pak",
+        "id": 7,
+        "equip_type": "shirt",
+        "female": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 210,
+            "ground_frame_index": 47,
+            "pack_frame_index": 47
+        }
+    },{
+        "pak_file": "boots.pak",
+        "id": 8,
+        "equip_type": "feet",
+        "male": {
+            "pak_index_start": 0,
+            "pak_index_end": 11,
+            "equip_frame_index": 87,
+            "ground_frame_index": 176,
+            "pack_frame_index": 176
+        },
+        "female": {
+            "pak_index_start": 12,
+            "pak_index_end": 23,
+            "equip_frame_index": 188,
+            "ground_frame_index": 176,
+            "pack_frame_index": 176
+        }
+    }
+]

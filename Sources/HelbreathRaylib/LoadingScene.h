@@ -11,4 +11,12 @@ public:
 
 private:
 	uint8_t m_loadingStep = 0;
+
+	void LoadSprite(size_t uStart, size_t uCount, const std::string& file, CSpriteCollection& collection);
+	void LoadScenes();
+	void LoadInterface();
+	void LoadMaleGameModels();
+	void LoadFemaleGameModels();
+	void LoadItems();
+	void LoadRegisterMaps();
 };

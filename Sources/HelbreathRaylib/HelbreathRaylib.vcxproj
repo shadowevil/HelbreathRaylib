@@ -159,30 +159,48 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CMap.cpp" />
+    <ClCompile Include="entity.cpp" />
+    <ClCompile Include="ExitGameScene.cpp" />
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Helbreath.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenuScene.cpp" />
+    <ClCompile Include="MapIDs.h" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="CMap.h" />
+    <ClInclude Include="Colors.h" />
+    <ClInclude Include="entities.h" />
+    <ClInclude Include="entity.h" />
+    <ClInclude Include="ExitGameScene.h" />
+    <ClInclude Include="extension_methods.h" />
     <ClInclude Include="FontIDs.h" />
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="global_constants.h" />
     <ClInclude Include="Helbreath.h" />
+    <ClInclude Include="IDs.h" />
+    <ClInclude Include="ItemMetadata.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MainMenuScene.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Scenes.h" />
+    <ClInclude Include="SoundPlayer.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteIDs.h" />
+    <ClInclude Include="TestScene.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

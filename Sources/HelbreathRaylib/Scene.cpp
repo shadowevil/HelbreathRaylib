@@ -6,8 +6,13 @@
 
 using namespace core;
 
-core::Scene::Scene(Application& app)
-	: m_application(app), m_game(app.GetPrimaryLayer<Game>()),
-	m_sprites(m_game.m_sprites), m_sceneManager(*m_game.m_pSceneManager.get())
+core::Scene::Scene()
+	: m_application(Helbreath::Instance()),
+	m_game(m_application.GetPrimaryLayer<Game>()),
+	m_sprites(m_game.m_sprites),
+	m_modelSprites(m_game.m_modelSprites),
+	m_sceneManager(*m_game.m_pSceneManager.get()),
+	m_mapTiles(m_game.m_mapTiles),
+	m_itemMetadata(m_game.m_itemMetadata)
 {
 }

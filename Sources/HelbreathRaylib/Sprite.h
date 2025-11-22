@@ -2,6 +2,7 @@
 #include "raylib_include.h"
 #include "PAK.h"
 #include "global_constants.h"
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <functional>
@@ -13,11 +14,8 @@ public:
 	inline static std::unique_ptr<CSprite> Create(const PAKLib::pak& pak, size_t index) {
 		std::unique_ptr<CSprite> sprite(new CSprite());
 
-		std::string filename = get_filename(pak.pak_file_path);
-		std::string filepath = path_combine(constant::SPRITE_PATH, filename);
-
 		sprite->m_sprite_rectangles = pak.sprites[index].sprite_rectangles;
-		sprite->file_path = filepath;
+		sprite->file_path = pak.pak_file_path;
 		sprite->sprite_index = index;
 		return sprite;
 	}
@@ -27,6 +25,8 @@ public:
 	}
 
 	void Preload() {
+        //if (!this || !file_path.size())  // or a dedicated 'is valid' flag
+        //    return;
 		last_used_time = GetTime();
 		if (IsTextureValid(m_texture))
 			return;
@@ -46,6 +46,15 @@ public:
 	}
 
 	void Draw(int x, int y, size_t frame);
+    void Draw(int x, int y, size_t frame, Color tint);
+
+    PAKLib::sprite_rect GetFrameRectangle(size_t frame) const {
+        size_t frame_count = m_sprite_rectangles.size();
+        if (frame_count == 0 || frame >= frame_count)
+            throw std::out_of_range("Frame index is out of range.");
+        const auto& rect = m_sprite_rectangles[frame];
+        return rect;
+	}
 
 private:
 	CSprite() = default;
@@ -60,11 +69,9 @@ protected:
 
 class CSpriteLoader {
 public:
-	static void OpenPAK(const std::string& PAKFile, const std::function<void(CSpriteLoader&)>& use) {
+	static void OpenPAK(const std::filesystem::path& PAKFile, const std::function<void(CSpriteLoader&)>& use) {
 		CSpriteLoader loader;
-		loader.m_currentPAK = PAKLib::loadpak_fast(
-			path_combine(get_executable_dir(), constant::SPRITE_PATH, PAKFile)
-		);
+		loader.m_currentPAK = PAKLib::loadpak_fast(PAKFile.string());
 		loader.m_isPAKOpen = true;
 
 		try {
@@ -77,6 +84,22 @@ public:
 
 		loader.m_isPAKOpen = false;
 	}
+
+    static void OpenPAK(const std::filesystem::path& PAKFile, const std::function<void(CSpriteLoader&, PAKLib::pak&)>& use) {
+        CSpriteLoader loader;
+        loader.m_currentPAK = PAKLib::loadpak_fast(PAKFile.string());
+        loader.m_isPAKOpen = true;
+
+        try {
+            use(loader, loader.m_currentPAK);
+        }
+        catch (...) {
+            loader.m_isPAKOpen = false;
+            throw;
+        }
+
+        loader.m_isPAKOpen = false;
+    }
 
 	std::unique_ptr<CSprite> GetSprite(size_t index) {
 		if (!m_isPAKOpen)

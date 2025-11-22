@@ -10,6 +10,15 @@
     <Filter Include="constants">
       <UniqueIdentifier>{bc7e80b7-cd5e-4a76-8d8e-7bcc09f92f10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="entities">
+      <UniqueIdentifier>{516089e0-2fb4-44f3-82ea-205d8a8f2494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game">
+      <UniqueIdentifier>{a1bc6bd9-3737-4b40-97ac-b7e174066de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="items">
+      <UniqueIdentifier>{d7e9c625-52e1-4d75-ae36-0fb1aa597991}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -27,6 +36,24 @@
     </ClCompile>
     <ClCompile Include="MainMenuScene.cpp">
       <Filter>scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ExitGameScene.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>entities</Filter>
+    </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>entities</Filter>
+    </ClCompile>
+    <ClCompile Include="MapIDs.h">
+      <Filter>constants</Filter>
+    </ClCompile>
+    <ClCompile Include="CMap.cpp">
+      <Filter>game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +95,42 @@
     </ClInclude>
     <ClInclude Include="FontIDs.h">
       <Filter>constants</Filter>
+    </ClInclude>
+    <ClInclude Include="ExitGameScene.h">
+      <Filter>scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Colors.h">
+      <Filter>constants</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>entities</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>entities</Filter>
+    </ClInclude>
+    <ClInclude Include="entities.h">
+      <Filter>entities</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundPlayer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="CMap.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="IDs.h">
+      <Filter>constants</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemMetadata.h">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="extension_methods.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

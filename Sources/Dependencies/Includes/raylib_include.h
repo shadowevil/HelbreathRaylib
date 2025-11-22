@@ -330,7 +330,7 @@ inline std::string get_filename_no_ext(const std::string& path) {
 
 namespace rlx {
 	struct RGB {
-		RGB(uint8_t r, uint8_t g, uint8_t b) {
+		constexpr RGB(uint8_t r, uint8_t g, uint8_t b) {
 			rgb8 = (uint8_t)(((r & 0xE0)) | ((g >> 3) & 0x1C) | (b >> 6));
 			rgb16 = (uint16_t)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
 			rgb32 = (uint32_t)(((uint8_t)(r) | ((uint16_t)((uint8_t)(g)) << 8)) | (((uint32_t)(uint8_t)(b)) << 16));
@@ -355,26 +355,63 @@ namespace rlx {
 	};
 
 	struct RGBA {
-		RGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-			rgba8 = (uint8_t)(((r & 0xE0)) | ((g >> 3) & 0x1C) | (b >> 6)); // RGB 3-3-2
-			rgba16 = (uint16_t)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3)); // RGB 5-6-5
-			rgba32 = (uint32_t)(r | (g << 8) | (b << 16) | (a << 24)); // RGBA8888
+		constexpr RGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+			rgba8 = (uint8_t)(((r & 0xE0)) | ((g >> 3) & 0x1C) | (b >> 6));
+			rgba16 = (uint16_t)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
+			rgba32 = (uint32_t)(r | (g << 8) | (b << 16) | (a << 24));
 		}
 
-		constexpr operator uint8_t() const { return rgba8; }
+		constexpr uint8_t GetR() const { return  rgba32 & 0xFF; }
+		constexpr uint8_t GetG() const { return (rgba32 >> 8) & 0xFF; }
+		constexpr uint8_t GetB() const { return (rgba32 >> 16) & 0xFF; }
+		constexpr uint8_t GetA() const { return (rgba32 >> 24) & 0xFF; }
+
+		constexpr operator uint8_t()  const { return rgba8; }
 		constexpr operator uint16_t() const { return rgba16; }
 		constexpr operator uint32_t() const { return rgba32; }
+
 		constexpr operator Color() const {
-			return { (unsigned char)(rgba32 & 0xFF), (unsigned char)((rgba32 >> 8) & 0xFF), (unsigned char)((rgba32 >> 16) & 0xFF), (unsigned char)((rgba32 >> 24) & 0xFF) };
+			return {
+				(unsigned char)GetR(),
+				(unsigned char)GetG(),
+				(unsigned char)GetB(),
+				(unsigned char)GetA()
+			};
 		}
+
 #ifdef _WIN32
 		constexpr operator COLORREF() const {
 			return (COLORREF)(rgba32 & 0x00FFFFFF);
 		}
 #endif
 
+		static constexpr RGBA Lerp(const RGBA& a, const RGBA& b, float t)
+		{
+			uint8_t r = (uint8_t)(a.GetR() + (b.GetR() - a.GetR()) * t);
+			uint8_t g = (uint8_t)(a.GetG() + (b.GetG() - a.GetG()) * t);
+			uint8_t bl = (uint8_t)(a.GetB() + (b.GetB() - a.GetB()) * t);
+			uint8_t al = (uint8_t)(a.GetA() + (b.GetA() - a.GetA()) * t);
+
+			return RGBA(r, g, bl, al);
+		}
+
+		static constexpr rlx::RGBA Lerp3(const rlx::RGBA& A,
+			const rlx::RGBA& B, const rlx::RGBA& C, float t)
+		{
+			float mid = 0.5f;
+
+			// First half: A -> B
+			rlx::RGBA AB = rlx::RGBA::Lerp(A, B, t / mid);
+
+			// Second half: B -> C
+			rlx::RGBA BC = rlx::RGBA::Lerp(B, C, (t - mid) / (1.0f - mid));
+
+			// Blend the two halves together
+			return (t <= mid) ? AB : BC;
+		}
+
 	private:
-		uint8_t rgba8;
+		uint8_t  rgba8;
 		uint16_t rgba16;
 		uint32_t rgba32;
 	};
@@ -781,15 +818,21 @@ namespace rlx {
 		BeginMode2D(Camera2D{ .zoom = scale });
 	}
 
-	inline std::tuple<float, float, float, float> GetUpscaledTargetArea(int width, int height)
+	inline float GetScale(uint16_t base_x, uint16_t base_y)
 	{
 		float windowW = (float)GetScreenWidth();
 		float windowH = (float)GetScreenHeight();
-		float scale = std::min(windowW / width, windowH / height);
+		float scale = std::min(windowW / base_x, windowH / base_y);
+		return scale;
+	}
+
+	inline std::tuple<float, float, float, float> GetUpscaledTargetArea(int width, int height)
+	{
+		float scale = GetScale(width, height);
 		float renderW = width * scale;
 		float renderH = height * scale;
-		float offsetX = (windowW - renderW) * 0.5f;
-		float offsetY = (windowH - renderH) * 0.5f;
+		float offsetX = (GetScreenWidth() - renderW) * 0.5f;
+		float offsetY = (GetScreenHeight() - renderH) * 0.5f;
 		return { offsetX, offsetY, renderW, renderH };
 	}
 
@@ -813,6 +856,33 @@ namespace rlx {
 		if (after)
 			after();
 		EndDrawing();
+	}
+
+	template<typename T>
+	inline bool RectangleContainsScaledMouse(const rlx::Rectangle<T>& rect, uint16_t base_x, uint16_t base_y)
+	{
+		float scale = GetScale(base_x, base_y);
+		auto [offsetX, offsetY, renderW, renderH] = GetUpscaledTargetArea(base_x, base_y);
+
+		rlx::Rectangle<T> scaled_rect{
+			static_cast<T>(rect.x * scale + offsetX),
+			static_cast<T>(rect.y * scale + offsetY),
+			static_cast<T>(rect.width * scale),
+			static_cast<T>(rect.height * scale)
+		};
+
+		auto [mouseX, mouseY] = GetMousePosition();
+		return scaled_rect.contains(mouseX, mouseY);
+	}
+
+	inline Vector2 GetScaledMousePosition(uint16_t base_x, uint16_t base_y)
+	{
+		float scale = GetScale(base_x, base_y);
+		auto [offsetX, offsetY, renderW, renderH] = GetUpscaledTargetArea(base_x, base_y);
+		auto [mouseX, mouseY] = GetMousePosition();
+		float scaledX = (mouseX - offsetX) / scale;
+		float scaledY = (mouseY - offsetY) / scale;
+		return Vector2{ scaledX, scaledY };
 	}
 
 	inline void LockCursor(int width, int height) {
@@ -840,5 +910,10 @@ namespace rlx {
 
 	inline void UnlockCursor() {
 		ClipCursor(nullptr);
+	}
+
+	inline bool HasElapsed(double timer, double interval)
+	{
+		return GetTime() - timer >= interval;
 	}
 }

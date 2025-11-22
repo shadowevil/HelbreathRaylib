@@ -1,0 +1,42 @@
+[
+  {
+    "x": 5,
+    "y": 3,
+    "width": 28,
+    "height": 19,
+    "pivotX": -14,
+    "pivotY": -8
+  },
+  {
+    "x": 37,
+    "y": 5,
+    "width": 26,
+    "height": 15,
+    "pivotX": -14,
+    "pivotY": -6
+  },
+  {
+    "x": 67,
+    "y": 4,
+    "width": 26,
+    "height": 18,
+    "pivotX": -14,
+    "pivotY": -8
+  },
+  {
+    "x": 101,
+    "y": 2,
+    "width": 27,
+    "height": 21,
+    "pivotX": -16,
+    "pivotY": -9
+  },
+  {
+    "x": 130,
+    "y": 4,
+    "width": 27,
+    "height": 21,
+    "pivotX": -16,
+    "pivotY": -9
+  }
+]

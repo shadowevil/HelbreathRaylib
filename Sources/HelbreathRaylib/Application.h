@@ -103,7 +103,7 @@ namespace core {
                 layer->OnInitialize();
             }
 
-            while (m_window.IsOpen() && !WindowShouldClose()) {
+            while (m_window.IsOpen() && !m_exitRequested) {
                 if(IsWindowFocused()) {
                     FocusGained();
                 } else {
@@ -208,6 +208,10 @@ namespace core {
             return m_isUpscaled;
 		}
 
+        void Exit() {
+			m_exitRequested = true;
+        }
+
     protected:
         virtual void InitializeComponents() = 0;
         virtual void FocusLost() {}
@@ -218,5 +222,6 @@ namespace core {
         std::vector<std::unique_ptr<Layer>> m_layers;
         Layer* m_primaryLayer = nullptr;
         bool m_isUpscaled = false;
+		bool m_exitRequested = false;
     };
 }

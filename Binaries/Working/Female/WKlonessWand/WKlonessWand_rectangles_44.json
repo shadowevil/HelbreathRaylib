@@ -1,0 +1,34 @@
+[
+  {
+    "x": 0,
+    "y": 0,
+    "width": 18,
+    "height": 54,
+    "pivotX": -20,
+    "pivotY": -66
+  },
+  {
+    "x": 18,
+    "y": 0,
+    "width": 17,
+    "height": 53,
+    "pivotX": -21,
+    "pivotY": -65
+  },
+  {
+    "x": 35,
+    "y": 0,
+    "width": 17,
+    "height": 53,
+    "pivotX": -21,
+    "pivotY": -65
+  },
+  {
+    "x": 52,
+    "y": 0,
+    "width": 17,
+    "height": 53,
+    "pivotX": -22,
+    "pivotY": -64
+  }
+]
