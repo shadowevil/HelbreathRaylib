@@ -886,6 +886,7 @@ namespace rlx {
 	}
 
 	inline void LockCursor(int width, int height) {
+#ifdef _WIN32
 		auto [offsetX, offsetY, renderW, renderH] = GetUpscaledTargetArea(width, height);
 
 		HWND hwnd = GetActiveWindow();
@@ -906,10 +907,13 @@ namespace rlx {
 		clipRect.bottom = clipRect.top + static_cast<LONG>(renderH);
 
 		ClipCursor(&clipRect);
+#endif
 	}
 
 	inline void UnlockCursor() {
+#ifdef _WIN32
 		ClipCursor(nullptr);
+#endif
 	}
 
 	inline bool HasElapsed(double timer, double interval)
