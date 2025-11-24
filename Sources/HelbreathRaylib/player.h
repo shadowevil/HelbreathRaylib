@@ -5,7 +5,8 @@
 #include <functional>
 #include "ItemMetadata.h"
 
-enum HairStyle : uint8_t {
+enum HairStyle : int8_t {
+    HAIR_STYLE_0 = -1,       // Bald
 	HAIR_STYLE_1,
 	HAIR_STYLE_2,
 	HAIR_STYLE_3,
@@ -90,30 +91,37 @@ struct Equipment {
     }
 };
 
+struct PlayerAppearance {
+    Gender gender = GENDER_MALE;
+	Color skin_color = SkinColor::YellowTone1;
+	HairStyle hair_style = HAIR_STYLE_1;
+	Color hair_color = HairColor::Brown;
+	Color underwear_color = UnderwearColor::White;
+
+	Equipment equipment{};
+};
+
 class Player : public Entity {
 public:
-	Player();
+	Player(const PlayerAppearance& appear);
 	void OnUpdate() override;
 	void OnRender() const override;
 	void OnRenderShadow() const override;
 	PAKLib::sprite_rect GetEntityBounds() const override;
 
+    void UpdateAppearance(const PlayerAppearance& appear) {
+        appearance = appear;
+	}
+
 protected:
 	void SetAnimation(AnimationType newType, WeaponUsed newWeapon) override;
 	void DrawModelItem(int16_t item_id, Color item_color, bool is_shadow = false) const;
 
-	Stance current_stance = PEACE;
-	WeaponUsed current_weapon_used = HAND;
-
-    Gender gender = GENDER_FEMALE;
-	Color skin_color = SkinColor::YellowTone1;
-	HairStyle hair_style = HAIR_STYLE_1;
-	Color hair_color = HairColor::Blonde;
-	Color underwear_color = UnderwearColor::Red;
-
-	Equipment equipment{};
+	PlayerAppearance appearance{};
 
 private:
+    Stance current_stance = PEACE;
+    WeaponUsed current_weapon_type = HAND;
 	const Animation stand_animation		    = Animation(0, 8, 0.1);
 	const Animation walk_animation		    = Animation(0, 8, 0.085);
 	const Animation run_animation		    = Animation(0, 8, 0.070);

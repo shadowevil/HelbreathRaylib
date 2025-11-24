@@ -3,8 +3,7 @@
 #include "entities.h"
 #include "CMap.h"
 #include <unordered_set>
-
-class ::Entity;
+#include "Helbreath.h"
 
 struct DrawEntry
 {
@@ -19,7 +18,7 @@ inline std::unordered_set<uint32_t> ShadowlessObjects = {
 	242, 243, 244
 };
 
-class TestScene : public core::Scene {
+class MainGameScene : public core::Scene {
 public:
 	using Scene::Scene;
 	void OnInitialize() override;
@@ -27,12 +26,14 @@ public:
 	void OnUpdate() override;
 	void OnRender() override;
 
+protected:
+	Helbreath& m_application = Helbreath::Instance();
+
 private:
 	Player* m_player{};
-	std::unique_ptr<CMapData> m_mapData{};
 	Camera2D m_camera{};
-	std::string m_debugText{};
+	std::unique_ptr<CMapData> m_mapData{};
 
-    void DrawObjectsWithShadow();
-    void DrawAll(const std::vector<DrawEntry>& list);
+	void DrawObjectsWithShadow();
+	void DrawAll(const std::vector<DrawEntry>& list);
 };

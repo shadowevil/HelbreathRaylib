@@ -38,6 +38,8 @@ void Game::OnInitialize()
 	);
 
 	m_pSceneManager->SetScene<LoadingScene>();
+
+	//m_application.ConnectToLoginServer();
 }
 
 void Game::OnUninitialize()

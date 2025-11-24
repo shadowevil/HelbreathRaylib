@@ -5,6 +5,7 @@
 
 class Game;
 struct ItemMetadataEntry;
+class Entity;
 
 namespace core {
     class Application;
@@ -33,5 +34,6 @@ namespace core {
 		CSpriteCollection& m_modelSprites;
 		CSpriteCollection& m_mapTiles;
 		std::vector<ItemMetadataEntry>& m_itemMetadata;
+		std::vector<std::unique_ptr<Entity>>& m_entities;
     };
 }

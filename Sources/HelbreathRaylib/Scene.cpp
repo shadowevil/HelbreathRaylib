@@ -13,6 +13,7 @@ core::Scene::Scene()
 	m_modelSprites(m_game.m_modelSprites),
 	m_sceneManager(*m_game.m_pSceneManager.get()),
 	m_mapTiles(m_game.m_mapTiles),
-	m_itemMetadata(m_game.m_itemMetadata)
+	m_itemMetadata(m_game.m_itemMetadata),
+	m_entities(m_game.m_entities)
 {
 }

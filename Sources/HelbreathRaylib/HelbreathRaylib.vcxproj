@@ -71,22 +71,22 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)Sources\Dependencies\Includes\;$(SolutionDir)Sources\Dependencies\Networking\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)Sources\Dependencies\Includes\;$(SolutionDir)Sources\Dependencies\Networking\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\Dependencies\Shared\</IncludePath>
     <LibraryPath>$(SolutionDir)Sources\Dependencies\Libs\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)Sources\Dependencies\Includes\;$(SolutionDir)Sources\Dependencies\Networking\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)Sources\Dependencies\Includes\;$(SolutionDir)Sources\Dependencies\Networking\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\Dependencies\Shared\</IncludePath>
     <LibraryPath>$(SolutionDir)Sources\Dependencies\Libs\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Sources\Dependencies\Includes\;$(SolutionDir)Sources\Dependencies\Networking\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)Sources\Dependencies\Includes\;$(SolutionDir)Sources\Dependencies\Networking\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\Dependencies\Shared\</IncludePath>
     <LibraryPath>$(SolutionDir)Sources\Dependencies\Libs\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Sources\Dependencies\Includes\;$(SolutionDir)Sources\Dependencies\Networking\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)Sources\Dependencies\Includes\;$(SolutionDir)Sources\Dependencies\Networking\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\Dependencies\Shared\</IncludePath>
     <LibraryPath>$(SolutionDir)Sources\Dependencies\Libs\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -105,6 +105,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>raylib.lib;winmm.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>msbuild "$(SolutionDir)Sources\GenerateItemIDHeader\GenerateItemIDHeader.csproj" /p:Configuration=$(Configuration) &amp;&amp; "$(SolutionDir)Sources\GenerateItemIDHeader\bin\$(Configuration)\net8.0\GenerateItemIDHeader.exe" "$(SolutionDir.TrimEnd('\'))"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -123,6 +126,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>raylib.lib;winmm.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>msbuild "$(SolutionDir)Sources\GenerateItemIDHeader\GenerateItemIDHeader.csproj" /p:Configuration=$(Configuration) &amp;&amp; "$(SolutionDir)Sources\GenerateItemIDHeader\bin\$(Configuration)\net8.0\GenerateItemIDHeader.exe" "$(SolutionDir.TrimEnd('\'))"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -139,6 +145,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>raylib.lib;winmm.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>msbuild "$(SolutionDir)Sources\GenerateItemIDHeader\GenerateItemIDHeader.csproj" /p:Configuration=$(Configuration) &amp;&amp; "$(SolutionDir)Sources\GenerateItemIDHeader\bin\$(Configuration)\net8.0\GenerateItemIDHeader.exe" "$(SolutionDir.TrimEnd('\'))"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -157,6 +166,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>raylib.lib;winmm.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>msbuild "$(SolutionDir)Sources\GenerateItemIDHeader\GenerateItemIDHeader.csproj" /p:Configuration=$(Configuration) &amp;&amp; "$(SolutionDir)Sources\GenerateItemIDHeader\bin\$(Configuration)\net8.0\GenerateItemIDHeader.exe" "$(SolutionDir.TrimEnd('\'))"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CMap.cpp" />
@@ -167,6 +179,7 @@
     <ClCompile Include="Helbreath.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainGameScene.cpp" />
     <ClCompile Include="MainMenuScene.cpp" />
     <ClCompile Include="MapIDs.h" />
     <ClCompile Include="player.cpp" />
@@ -192,6 +205,7 @@
     <ClInclude Include="ItemMetadata.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LoadingScene.h" />
+    <ClInclude Include="MainGameScene.h" />
     <ClInclude Include="MainMenuScene.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Scene.h" />

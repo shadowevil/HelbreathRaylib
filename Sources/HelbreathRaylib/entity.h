@@ -6,7 +6,8 @@
 #include "Colors.h"
 #include "FontIDs.h"
 #include "Sprite.h"
-#include "Scenes.h"
+#include <unordered_set>
+#include "Application.h"
 
 enum Dir : uint8_t {
     NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST, DIRECTION_COUNT
@@ -156,6 +157,8 @@ public:
     void SetActiveMap(CMapData* map);
 
     void MoveTo(const GamePosition& target, bool run = false);
+    GamePosition FindValidTarget(const GamePosition& target);
+    bool IsTileOccupied(int tile_x, int tile_y) const;
     bool IsMoving() const { return m_isMoving; }
     void StopMovement();
     void RenderDebugMovement();
@@ -165,6 +168,7 @@ protected:
     Game& m_game;
     CSpriteCollection& m_modelSprites;
 	std::vector<ItemMetadataEntry>& m_itemMetadata;
+    std::vector<std::unique_ptr<Entity>>& m_entities;
 
     Animation current_animation{};
     Dir current_direction = NORTH;
@@ -186,9 +190,17 @@ protected:
     float m_baseSpeed = 1.0f;
     float m_internalSpeedMultiplier = 100.0f;
     bool m_isRunning = false;
-    bool m_canCancelMovement = false;
+    //bool m_canCancelMovement = false;
+	bool m_stopRequested = false;
     GamePosition m_finalTarget{};
     float m_currentStepDistance = constant::TILE_SIZE;
+
+    std::unordered_set<uint64_t>* m_reservedTiles = nullptr; // Shared across all entities
+    uint64_t m_reservedTileKey = 0; // Current reservation
+
+    static uint64_t MakeTileKey(int x, int y) {
+        return ((uint64_t)x << 32) | (uint64_t)y;
+    }
 
     // Entity Bounds
 	virtual PAKLib::sprite_rect GetEntityBounds() const = 0;
@@ -199,6 +211,7 @@ protected:
     int16_t m_mapHeight = 0;
 
     void UpdateMovement();
+    void RequestStopMovement();
     void BuildPath(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end);
     bool BuildPathDirect(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end);
     void StartNextStep();

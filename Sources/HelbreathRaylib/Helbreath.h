@@ -1,6 +1,5 @@
 #pragma once
 #include "Application.h"
-#include "XSocket.h"
 #include <thread>
 #include <atomic>
 #include <chrono>
@@ -28,15 +27,6 @@ protected:
 
 private:
     static Helbreath* s_Instance;
-#ifdef _WIN32
-    std::unique_ptr<XSocket> m_pLoginServer{ nullptr };
-	static void OnLoginServerReceive(const MsgData& msg);
-	void OnLoginServerReceiveImpl(const MsgData& msg);
-
-    std::unique_ptr<XSocket> m_pGameServer{ nullptr };
-	static void OnGameServerReceive(const MsgData& msg);
-	void OnGameServerReceiveImpl(const MsgData& msg);
-#endif
 
 private:
     std::thread pulseThread;

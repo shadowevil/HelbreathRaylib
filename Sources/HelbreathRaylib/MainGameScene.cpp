@@ -1,4 +1,4 @@
-#include "TestScene.h"
+#include "MainGameScene.h"
 #include "PAK.h"
 #include "Sprite.h"
 #include "SceneManager.h"
@@ -9,100 +9,26 @@
 #include "entity.h"
 #include "ItemIDs.h"
 
-inline Player* other_player = nullptr;
-
-void TestScene::OnInitialize()
-{
-	// m_player is the local client player
-	m_player = dynamic_cast<Player*>(m_entities.emplace_back(std::make_unique<Player>(PlayerAppearance{
-		.gender = GENDER_MALE,
-		.skin_color = SkinColor::WhiteTone2,
-		.hair_style = HAIR_STYLE_0,
-		.hair_color = HairColor::Black,
-		.underwear_color = UnderwearColor::Black,
-		.equipment = [this]() {
-			Equipment eq{};
-			eq.legs.TryEquip(ItemID::SHORTS, m_itemMetadata);
-			eq.feet.TryEquip(ItemID::BOOTS, m_itemMetadata);
-			return eq;
-		}()
-		})).get());
-	other_player = dynamic_cast<Player*>(m_entities.emplace_back(std::make_unique<Player>(PlayerAppearance{
-		.gender = GENDER_FEMALE,
-		.skin_color = SkinColor::WhiteTone4,
-		.hair_style = HAIR_STYLE_6,
-		.hair_color = HairColor::Red,
-		.underwear_color = UnderwearColor::Purple
-		})).get());
-
-	m_mapData = CMapLoader::LoadByIndex(MapID::gshop_1);
-
-	m_player->SetPosition({ 54, 39 });
-	m_player->SetActiveMap(m_mapData.get());
-
-	other_player->SetPosition({ 50, 39 });
-	other_player->SetActiveMap(m_mapData.get());
-
-	m_camera.target = { (float)(m_player->GetPosition().get_pixel_x()), (float)(m_player->GetPosition().get_pixel_y()) };
-	m_camera.offset = { constant::BASE_WIDTH * 0.5f, constant::BASE_HEIGHT * 0.5f };
-	m_camera.zoom = 1.0f;
-	m_camera.rotation = 0.0f;
-
-	m_player->AttachCamera(m_camera);
-}
-
-void TestScene::OnUninitialize()
+void MainGameScene::OnInitialize()
 {
 
 }
 
-void TestScene::OnUpdate()
+void MainGameScene::OnUninitialize()
 {
-	static double move_timer = 0.0;
-	if (GetTime() - move_timer >= 5.0 && !other_player->IsMoving())
-	{
-		if (other_player->GetPosition() == GamePosition{ 50, 39 })
-		{
-			other_player->MoveTo({ 50, 45 });
-		}
-		else {
-			other_player->MoveTo({ 50, 39 });
-		}
 
-		move_timer = GetTime();
-	}
-
-	for (auto& entity : m_entities) {
-		entity->Update();
-	}
-
-	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE))
-	{
-		GamePosition tilePos = GetTileWorldMousePosition(m_camera);
-		m_player->SetPosition(tilePos);
-		m_debugText += " Tile X: " + std::to_string(tilePos.get_tile_x()) + "\n";
-		m_debugText += " Tile Y: " + std::to_string(tilePos.get_tile_y()) + "\n";
-		printf(m_debugText.c_str());
-	//	auto tile = m_mapData->GetTile(tilePos.get_tile_x(), tilePos.get_tile_y());
-
-	//	// non-visual debug
-	//	m_debugText = "Tile information:\n";
-	//	m_debugText += " Tile X: " + std::to_string(tilePos.get_tile_x()) + "\n";
-	//	m_debugText += " Tile Y: " + std::to_string(tilePos.get_tile_y()) + "\n";
-	//	m_debugText += " Move Allowed: " + std::string(tile->m_bIsMoveAllowed ? "Yes" : "No") + "\n";
-	//	m_debugText += " Is Teleport: " + std::string(tile->m_bIsTeleport ? "Yes" : "No") + "\n";
-	//	m_debugText += "----------------------------\n";
-	//	m_debugText += " MapTileSprite: " + std::to_string(tile->m_sTileSprite) + "\n";
-	//	m_debugText += " MapTileSpriteFrame: " + std::to_string(tile->m_sTileSpriteFrame) + "\n";
-	//	m_debugText += " MapObjectSprite: " + std::to_string(tile->m_sObjectSprite) + "\n";
-	//	m_debugText += " MapObjectSpriteFrame: " + std::to_string(tile->m_sObjectSpriteFrame) + "\n";
-	//	m_debugText += "----------------------------\n";
-	//	printf(m_debugText.c_str());
-	}
 }
 
-void TestScene::OnRender()
+void MainGameScene::OnUpdate()
 {
+	if (!m_mapData)
+		return;
+}
+
+void MainGameScene::OnRender()
+{
+	if(!m_mapData)
+		return;
 	rlPushMatrix();	// Pop upscale matrix
 	BeginMode2D(m_camera);	// Push camera matrix
 	{
@@ -123,8 +49,6 @@ void TestScene::OnRender()
 		//    });
 
 		m_player->RenderDebugMovement();
-		
-		other_player->RenderDebugMovement();
 
 		// Objects
 		DrawObjectsWithShadow();
@@ -133,7 +57,7 @@ void TestScene::OnRender()
 	rlPopMatrix();	// Push upscale matrix
 }
 
-void TestScene::DrawObjectsWithShadow()
+void MainGameScene::DrawObjectsWithShadow()
 {
 	std::vector<DrawEntry> list;
 	list.reserve(512);
@@ -182,7 +106,7 @@ void TestScene::DrawObjectsWithShadow()
 	DrawAll(list);
 }
 
-void TestScene::DrawAll(const std::vector<DrawEntry>& list)
+void MainGameScene::DrawAll(const std::vector<DrawEntry>& list)
 {
 	static float lightTime = 0.5f;
 	//lightTime += GetFrameTime() * 0.5f;

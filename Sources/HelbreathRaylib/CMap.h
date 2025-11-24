@@ -83,6 +83,8 @@ public:
     const std::string& GetMapIdentifier() const { return m_mapIdentifier; }
     const std::string& GetMapName() const { return m_mapName; }
 
+    std::unique_ptr<std::unordered_set<uint64_t>> g_reservedTiles = std::make_unique<std::unordered_set<uint64_t>>();
+
 private:
     int16_t mapSizeX{};
     int16_t mapSizeY{};

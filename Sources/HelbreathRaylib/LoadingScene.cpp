@@ -1,6 +1,5 @@
 #include "Scenes.h"
 #include <algorithm>
-#include "TestScene.h"
 #include "ItemMetadata.h"
 
 void LoadingScene::OnInitialize()
@@ -27,7 +26,7 @@ void LoadingScene::OnUpdate()
 	}
 
 	if (m_loadingStep == 100)
-		m_sceneManager.SetScene<TestScene>();//m_sceneManager.SetScene<MainMenuScene>();
+		m_sceneManager.SetScene<MainGameScene>();
 	else
 		m_loadingStep = (uint8_t)std::min(m_loadingStep + 1, 100);
 }

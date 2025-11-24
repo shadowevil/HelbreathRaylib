@@ -19,7 +19,7 @@ void MainMenuScene::OnUpdate()
 	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 	{
 		if (core::RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::LOGIN])) {
-
+			m_sceneManager.SetScene<MainGameScene>();
 		}
 		else if (core::RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::NEW_ACCOUNT])) {
 

@@ -10,9 +10,10 @@ Entity::Entity()
 	m_application(Helbreath::Instance()),
 	m_game(m_application.GetPrimaryLayer<Game>()),
 	m_modelSprites(m_game.m_modelSprites),
-	m_itemMetadata(m_game.m_itemMetadata)
-{
-}
+	m_itemMetadata(m_game.m_itemMetadata),
+	m_entities(m_game.m_entities),
+	m_activeMap(nullptr)
+{ }
 
 void Entity::Update()
 {
@@ -33,35 +34,143 @@ void Entity::SetActiveMap(CMapData* map) {
 	m_activeMap = map;
 	m_mapWidth = map->Width();
 	m_mapHeight = map->Height();
+	m_reservedTiles = map->g_reservedTiles.get();
 }
 
 void Entity::MoveTo(const GamePosition& target, bool run)
 {
 	if (position == target)
 		return;
-
-	m_finalTarget = target;
-	m_isRunning = run;
-
-	// If currently moving and can't cancel, queue the path
-	if (m_isMoving && !m_canCancelMovement)
-	{
-		BuildPath(m_nextMovementPath, position, target);
+	if (m_finalTarget == target && m_isMoving)
 		return;
-	}
 
-	// If we can cancel or not moving, start new path immediately
-	BuildPath(m_movementPath, position, target);
+	// Validate and adjust target if necessary
+	GamePosition validTarget = FindValidTarget(target);
 
-	if (!m_movementPath.empty())
+	m_finalTarget = validTarget;
+	m_isRunning = run;
+	m_stopRequested = false;
+
+	GamePosition pathStart = m_isMoving ? m_currentStepTarget : position;
+	BuildPath(m_nextMovementPath, pathStart, validTarget);
+
+	if (!m_isMoving && !m_nextMovementPath.empty())
 	{
+		m_movementPath = std::move(m_nextMovementPath);
+		m_nextMovementPath.clear();
 		m_isMoving = true;
 		m_currentPathIndex = 0;
-		m_nextMovementPath.clear();
 		StartNextStep();
 		if (current_animation_type == STAND)
-			SetAnimation(m_isRunning ? RUN : WALK, WeaponUsed::HAND);
+		{
+			if(current_animation_type != RUN && m_isRunning) {
+				SetAnimation(RUN, WeaponUsed::HAND);
+			} else if(current_animation_type != WALK) {
+				SetAnimation(WALK, WeaponUsed::HAND);
+			}
+		}
 	}
+}
+
+GamePosition Entity::FindValidTarget(const GamePosition& target)
+{
+	int tx = target.get_tile_x();
+	int ty = target.get_tile_y();
+
+	// Clamp to map bounds
+	if (m_mapWidth > 0 && m_mapHeight > 0)
+	{
+		tx = std::max(0, std::min(tx, (int)m_mapWidth - 1));
+		ty = std::max(0, std::min(ty, (int)m_mapHeight - 1));
+	}
+
+	// Check if target tile is valid
+	if (m_activeMap->GetTile(tx, ty)->m_bIsMoveAllowed && !IsTileOccupied(tx, ty))
+	{
+		return GamePosition(tx, ty);
+	}
+
+	// Target invalid - find closest valid tile
+	int offsets[8][2] = {
+		{0, -1}, {1, 0}, {0, 1}, {-1, 0},
+		{1, -1}, {1, 1}, {-1, 1}, {-1, -1}
+	};
+
+	// Spiral search outward
+	for (int radius = 1; radius < 20; ++radius)
+	{
+		for (int dx = -radius; dx <= radius; ++dx)
+		{
+			for (int dy = -radius; dy <= radius; ++dy)
+			{
+				if (abs(dx) != radius && abs(dy) != radius)
+					continue;
+
+				int checkX = tx + dx;
+				int checkY = ty + dy;
+
+				if (m_mapWidth > 0 && m_mapHeight > 0)
+				{
+					if (checkX < 0 || checkX >= (int)m_mapWidth ||
+						checkY < 0 || checkY >= (int)m_mapHeight)
+						continue;
+				}
+
+				if (!m_activeMap->GetTile(checkX, checkY)->m_bIsMoveAllowed)
+					continue;
+
+				if (IsTileOccupied(checkX, checkY))
+					continue;
+
+				// Check if this tile has at least one walkable neighbor
+				bool hasWalkableNeighbor = false;
+				for (int i = 0; i < 8; ++i)
+				{
+					int neighborX = checkX + offsets[i][0];
+					int neighborY = checkY + offsets[i][1];
+
+					if (m_mapWidth > 0 && m_mapHeight > 0)
+					{
+						if (neighborX < 0 || neighborX >= (int)m_mapWidth ||
+							neighborY < 0 || neighborY >= (int)m_mapHeight)
+							continue;
+					}
+
+					if (m_activeMap->GetTile(neighborX, neighborY)->m_bIsMoveAllowed)
+					{
+						hasWalkableNeighbor = true;
+						break;
+					}
+				}
+
+				if (hasWalkableNeighbor)
+				{
+					return GamePosition(checkX, checkY);
+				}
+			}
+		}
+	}
+
+	// Fallback to current position if no valid tile found
+	return position;
+}
+
+bool Entity::IsTileOccupied(int tile_x, int tile_y) const
+{
+	uint64_t key = MakeTileKey(tile_x, tile_y);
+
+	if (m_reservedTiles && m_reservedTiles->count(key) > 0)
+		return true;
+
+	for (const auto& entity : m_entities)
+	{
+		if (entity.get() == this) continue;
+
+		const auto& entity_pos = entity->GetPosition();
+		if (entity_pos.get_tile_x() == tile_x && entity_pos.get_tile_y() == tile_y)
+			return true;
+	}
+	return false;
 }
 
 void Entity::BuildPath(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end)
@@ -73,14 +182,12 @@ void Entity::BuildPath(std::vector<GamePosition>& path, const GamePosition& star
 	int endX = end.get_tile_x();
 	int endY = end.get_tile_y();
 
-	// Clamp target to map bounds
 	if (m_mapWidth > 0 && m_mapHeight > 0)
 	{
 		endX = std::max(0, std::min(endX, (int)m_mapWidth - 1));
 		endY = std::max(0, std::min(endY, (int)m_mapHeight - 1));
 	}
 
-	// Try direct path first
 	std::vector<GamePosition> directPath;
 	bool directSuccess = BuildPathDirect(directPath, start, GamePosition(endX, endY));
 
@@ -90,7 +197,6 @@ void Entity::BuildPath(std::vector<GamePosition>& path, const GamePosition& star
 		return;
 	}
 
-	// If direct path failed and we got nothing, try routing around via neighbors
 	if (directPath.empty())
 	{
 		int offsets[8][2] = {
@@ -100,7 +206,6 @@ void Entity::BuildPath(std::vector<GamePosition>& path, const GamePosition& star
 
 		std::vector<GamePosition> bestPath;
 
-		// Try pathfinding from each walkable neighbor
 		for (int i = 0; i < 8; ++i)
 		{
 			int neighborX = startX + offsets[i][0];
@@ -114,6 +219,9 @@ void Entity::BuildPath(std::vector<GamePosition>& path, const GamePosition& star
 			}
 
 			if (!m_activeMap->GetTile(neighborX, neighborY)->m_bIsMoveAllowed)
+				continue;
+
+			if (IsTileOccupied(neighborX, neighborY))
 				continue;
 
 			std::vector<GamePosition> attemptPath;
@@ -138,7 +246,6 @@ void Entity::BuildPath(std::vector<GamePosition>& path, const GamePosition& star
 		return;
 	}
 
-	// We got a partial direct path, try alternate end targets
 	int offsets[8][2] = {
 		{0, -1}, {1, 0}, {0, 1}, {-1, 0},
 		{1, -1}, {1, 1}, {-1, 1}, {-1, -1}
@@ -159,6 +266,9 @@ void Entity::BuildPath(std::vector<GamePosition>& path, const GamePosition& star
 		}
 
 		if (!m_activeMap->GetTile(targetX, targetY)->m_bIsMoveAllowed)
+			continue;
+
+		if (IsTileOccupied(targetX, targetY))
 			continue;
 
 		std::vector<GamePosition> attemptPath;
@@ -214,7 +324,8 @@ bool Entity::BuildPathDirect(std::vector<GamePosition>& path, const GamePosition
 				error += absX;
 			}
 
-			if (!m_activeMap->GetTile(currentX, currentY)->m_bIsMoveAllowed)
+			if (!m_activeMap->GetTile(currentX, currentY)->m_bIsMoveAllowed ||
+				IsTileOccupied(currentX, currentY))
 			{
 				break;
 			}
@@ -245,7 +356,8 @@ bool Entity::BuildPathDirect(std::vector<GamePosition>& path, const GamePosition
 				error += absY;
 			}
 
-			if (!m_activeMap->GetTile(currentX, currentY)->m_bIsMoveAllowed)
+			if (!m_activeMap->GetTile(currentX, currentY)->m_bIsMoveAllowed ||
+				IsTileOccupied(currentX, currentY))
 			{
 				break;
 			}
@@ -271,13 +383,28 @@ void Entity::StartNextStep()
 		SetAnimation(STAND, WeaponUsed::HAND);
 		return;
 	}
+
 	m_currentStepTarget = m_movementPath[m_currentPathIndex];
+
+	uint64_t key = MakeTileKey(m_currentStepTarget.get_tile_x(), m_currentStepTarget.get_tile_y());
+
+	if (IsTileOccupied(m_currentStepTarget.get_tile_x(), m_currentStepTarget.get_tile_y()))
+	{
+		StopMovement();
+		return;
+	}
+
+	if (m_reservedTiles)
+	{
+		m_reservedTiles->insert(key);
+		m_reservedTileKey = key;
+	}
+
 	m_moveStartPixelX = position.get_pixel_x();
 	m_moveStartPixelY = position.get_pixel_y();
 	m_moveProgress = 0.0f;
 	current_direction = GetDirectionToPoint(position, m_currentStepTarget);
 
-	// Use pixel distance instead of tile distance
 	int dx = m_currentStepTarget.get_pixel_x() - position.get_pixel_x();
 	int dy = m_currentStepTarget.get_pixel_y() - position.get_pixel_y();
 	m_currentStepDistance = sqrtf((float)(dx * dx + dy * dy));
@@ -293,17 +420,63 @@ void Entity::UpdateMovement()
 
 	if (m_moveProgress >= 1.0f)
 	{
-		m_canCancelMovement = true;
 		m_moveProgress = 0.0f;
 		position = m_currentStepTarget;
+
+		if (m_reservedTiles && m_reservedTileKey != 0)
+		{
+			m_reservedTiles->erase(m_reservedTileKey);
+			m_reservedTileKey = 0;
+		}
+
 		m_currentPathIndex++;
 
-		if (m_currentPathIndex >= m_movementPath.size())
+		// Check for stop request first
+		if (m_stopRequested)
 		{
-			m_isMoving = false;
 			m_movementPath.clear();
 			m_nextMovementPath.clear();
+			m_isMoving = false;
+			m_stopRequested = false;
 			SetAnimation(STAND, WeaponUsed::HAND);
+			return;
+		}
+
+		// Check for queued path
+		if (!m_nextMovementPath.empty())
+		{
+			m_movementPath = std::move(m_nextMovementPath);
+			m_nextMovementPath.clear();
+			m_currentPathIndex = 0;
+			m_isMoving = true;
+			StartNextStep();
+			return;
+		}
+
+		// No queued path - continue current path or recalculate to final target
+		if (m_currentPathIndex >= m_movementPath.size())
+		{
+			if (position != m_finalTarget)
+			{
+				BuildPath(m_movementPath, position, m_finalTarget);
+				m_currentPathIndex = 0;
+
+				if (!m_movementPath.empty())
+				{
+					StartNextStep();
+				}
+				else
+				{
+					m_isMoving = false;
+					SetAnimation(STAND, WeaponUsed::HAND);
+				}
+			}
+			else
+			{
+				m_isMoving = false;
+				m_movementPath.clear();
+				SetAnimation(STAND, WeaponUsed::HAND);
+			}
 		}
 		else
 		{
@@ -312,7 +485,6 @@ void Entity::UpdateMovement()
 	}
 	else
 	{
-		m_canCancelMovement = false;
 		int32_t newPixelX = int32_t(m_moveStartPixelX + (((int32_t)m_currentStepTarget.get_pixel_x()) - m_moveStartPixelX) * m_moveProgress);
 		int32_t newPixelY = int32_t(m_moveStartPixelY + (((int32_t)m_currentStepTarget.get_pixel_y()) - m_moveStartPixelY) * m_moveProgress);
 
@@ -320,15 +492,23 @@ void Entity::UpdateMovement()
 	}
 }
 
-// Add this method to Entity class
+void Entity::RequestStopMovement()
+{
+	m_stopRequested = true;
+}
+
 void Entity::StopMovement()
 {
-	if (!m_canCancelMovement)
-		return;
+	if (m_reservedTiles && m_reservedTileKey != 0)
+	{
+		m_reservedTiles->erase(m_reservedTileKey);
+		m_reservedTileKey = 0;
+	}
 
 	m_movementPath.clear();
 	m_nextMovementPath.clear();
 	m_isMoving = false;
+	m_stopRequested = false;
 	SetAnimation(STAND, WeaponUsed::HAND);
 }
 

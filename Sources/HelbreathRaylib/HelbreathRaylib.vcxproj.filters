@@ -55,6 +55,9 @@
     <ClCompile Include="CMap.cpp">
       <Filter>game</Filter>
     </ClCompile>
+    <ClCompile Include="MainGameScene.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -131,6 +134,9 @@
     </ClInclude>
     <ClInclude Include="extension_methods.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGameScene.h">
+      <Filter>scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

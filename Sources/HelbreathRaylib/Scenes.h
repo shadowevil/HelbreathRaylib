@@ -3,6 +3,7 @@
 #include "LoadingScene.h"
 #include "MainMenuScene.h"
 #include "ExitGameScene.h"
+#include "MainGameScene.h"
 
 // Other necessary includes
 #include "PAK.h"
@@ -11,16 +12,3 @@
 #include "FontManager.h"
 #include "Application.h"
 #include "IDs.h"
-
-// Helper functions
-
-namespace core {
-	template<typename T>
-	inline bool RectangleContainsMouse(const rlx::Rectangle<T>& rect) {
-		return rlx::RectangleContainsScaledMouse(rect, constant::BASE_WIDTH, constant::BASE_HEIGHT);
-	}
-
-	inline Vector2 GetMousePosition() {
-		return rlx::GetScaledMousePosition(constant::BASE_WIDTH, constant::BASE_HEIGHT);
-	}
-}
