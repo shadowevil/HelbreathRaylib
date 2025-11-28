@@ -94,16 +94,16 @@ void Player::OnRender() const
 {
     // Model rendering
     m_modelSprites[GetPlayerAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender)]
-        ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), appearance.skin_color);
+        ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), SkinColorFromIndex(appearance.skin_color_index));
 
     // Hair rendering
 	if (appearance.hair_style != HAIR_STYLE_0)
         m_modelSprites[GetPlayerHairAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender, appearance.hair_style)]
-            ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), appearance.hair_color);
+            ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), HairColorFromIndex(appearance.hair_color_index));
 
     // Underwear rendering
     m_modelSprites[GetPlayerUnderwearAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender)]
-        ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), appearance.underwear_color);
+        ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), UnderwearColorFromIndex(appearance.underwear_color_index));
 
     appearance.equipment.foreach([&](auto& slot, int idx) {
         DrawModelItem(slot.Id(), WHITE);

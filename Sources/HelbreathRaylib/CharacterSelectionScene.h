@@ -1,9 +1,8 @@
 #pragma once
-#include <vector>
-
 #include "Scene.h"
+#include "player.h"
 
-class MainMenuScene : public Scene {
+class CharacterSelectionScene : public Scene {
 public:
 	using Scene::Scene;
 	void OnInitialize() override;
@@ -12,11 +11,5 @@ public:
 	void OnRender() override;
 
 private:
-	enum MainMenuButton {
-		LOGIN,
-		NEW_ACCOUNT,
-		EXIT,
-		COUNT
-	};
-	std::vector<rlx::Rectangle<int16_t>> m_mainMenuButtonRects{};
+	std::vector<Player> m_characterList{};
 };

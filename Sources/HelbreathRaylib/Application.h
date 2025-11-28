@@ -1,232 +1,163 @@
 #pragma once
 #include "raylib_include.h"
 #include "Window.h"
-#include "Layer.h"
+#include "ApplicationLayer.h"
 #include "SceneManager.h"
 #include <vector>
 #include <memory>
 #include <stdexcept>
 
-namespace core {
-    struct FramesPerSecond {
-    public:
-        static void Update() {
-            auto& inst = Instance();
-            inst.frame_time += GetFrameTime();
-            inst.frame_count++;
-            if (inst.frame_time >= 1.0f) {
-                inst.fps = inst.frame_count;
-                inst.frame_count = 0;
-                inst.frame_time -= 1.0f;
-            }
-		}
+class Application
+{
+public:
+    // Delete copy/move
+    Application(const Application&) = delete;
+    Application& operator=(const Application&) = delete;
+    Application(Application&&) = delete;
+    Application& operator=(Application&&) = delete;
 
-        static uint32_t GetFPS() {
-            return Instance().fps;
+    // Application lifecycle (static interface)
+    static int Run();
+    static void Exit(int exitCode = 0);
+
+    // Window management (static interface)
+    static bool CreateAppWindow(const WindowSpec& spec);
+    static void DestroyAppWindow();
+    static void RestartAppWindow();
+    static Window* GetWindow();
+    static bool HasWindow();
+
+    // Layer management (static template interface)
+    // Usage: Application::PushLayer<MyLayer>(constructor_args...);
+    template<typename T, typename... Args>
+    static T* PushLayer(Args&&... args)
+    {
+        static_assert(std::is_base_of<ApplicationLayer, T>::value,
+            "T must derive from ApplicationLayer");
+
+        Application& instance = Get();
+        auto layer = std::make_unique<T>(std::forward<Args>(args)...);
+        T* layerPtr = layer.get();
+
+        layer->OnAttach();
+        printf("Layer attached: %s\n", layer->GetName());
+        instance.m_Layers.push_back(std::move(layer));
+
+        return layerPtr;
+    }
+
+    // Remove layer by type
+    template<typename T>
+    static void RemoveLayer()
+    {
+        static_assert(std::is_base_of<ApplicationLayer, T>::value,
+            "T must derive from ApplicationLayer");
+
+        Application& instance = Get();
+        auto it = std::find_if(instance.m_Layers.begin(), instance.m_Layers.end(),
+            [](const std::unique_ptr<ApplicationLayer>& ptr) {
+                return dynamic_cast<T*>(ptr.get()) != nullptr;
+            });
+
+        if (it != instance.m_Layers.end())
+        {
+            (*it)->OnDetach();
+            printf("Layer removed: %s\n", (*it)->GetName());
+            instance.m_Layers.erase(it);
         }
+    }
 
-    private:
-        static FramesPerSecond& Instance() {
-            static FramesPerSecond fpsObj;
-            return fpsObj;
-		}
+    // Remove layer by pointer
+    static void RemoveLayer(ApplicationLayer* layer);
 
-        FramesPerSecond() = default;
-		~FramesPerSecond() = default;
-        FramesPerSecond(const FramesPerSecond&) = delete;
-        FramesPerSecond& operator=(const FramesPerSecond&) = delete;
-        FramesPerSecond(FramesPerSecond&&) = delete;
-		FramesPerSecond& operator=(FramesPerSecond&&) = delete;
+    // Remove top layer
+    static void PopLayer();
 
-        double frame_time = 0.0f;
-        uint32_t fps = 0;
-        uint32_t frame_count = 0;
-    };
+    // Get layer by type
+    template<typename T>
+    static T* GetLayerPtr()
+    {
+        static_assert(std::is_base_of<ApplicationLayer, T>::value,
+            "T must derive from ApplicationLayer");
 
-    class Application {
-    public:
-        Application(const Window::Config& config) : m_config(config) {}
-        virtual ~Application() = default;
-
-        Application(const Application&) = delete;
-        Application& operator=(const Application&) = delete;
-        Application(Application&&) = delete;
-        Application& operator=(Application&&) = delete;
-
-        void Run() {
-            m_window.Create(m_config);
-            InitializeComponents();
-
-            for (auto& layer : m_layers) {
-                layer->OnInitialize();
-            }
-
-            while (m_window.IsOpen() && !WindowShouldClose()) {
-                if (IsWindowFocused()) {
-                    FocusGained();
-                }
-                else {
-                    FocusLost();
-                }
-
-                for (auto& layer : m_layers) {
-                    layer->OnUpdate();
-                }
-
-                BeginDrawing();
-                ClearBackground(BLACK);
-
-                for (auto& layer : m_layers) {
-                    layer->OnRender();
-                }
-
-                EndDrawing();
-
-                FramesPerSecond::Update();
-            }
-
-            for (auto& layer : m_layers) {
-                layer->OnUninitialize();
-            }
-
-            m_window.Destroy();
-        }
-
-        void RunUpscaled(int base_width, int base_height, int upscale_multi) {
-            m_window.Create(m_config);
-            InitializeComponents();
-
-            RenderTexture2D target = LoadRenderTexture(base_width * upscale_multi, base_height * upscale_multi);
-			SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
-			m_isUpscaled = true;
-            for (auto& layer : m_layers) {
-                layer->OnInitialize();
-            }
-
-            while (m_window.IsOpen() && !m_exitRequested) {
-                if(IsWindowFocused()) {
-                    FocusGained();
-                } else {
-                    FocusLost();
-				}
-
-                for (auto& layer : m_layers) {
-                    layer->OnUpdate();
-                }
-
-                rlx::BeginUpscaleRender(target, static_cast<float>(upscale_multi));
-                ClearBackground(BLACK);
-
-                for (auto& layer : m_layers) {
-                    layer->OnRender();
-                }
-
-				rlx::EndUpscaleRender(target, BLACK,
-                    [this]() { m_primaryLayer->OnRender_BeforeUpscale(); },
-                    [this]() { m_primaryLayer->OnRender_AfterUpscale(); });
-
-                FramesPerSecond::Update();
-            }
-
-            for (auto& layer : m_layers) {
-                layer->OnUninitialize();
-            }
-
-			UnloadRenderTexture(target);
-
-            m_window.Destroy();
-        }
-
-        void Close() {
-            if (m_window.IsOpen()) {
-                m_window.Destroy();
-            }
-        }
-
-        template<typename T, typename... Args>
-        T* PushLayer(Args&&... args) {
-            static_assert(std::is_base_of_v<Layer, T>, "T must derive from Layer");
-
-            if (m_layers.empty()) {
-                auto layer = std::make_unique<T>(*this, std::forward<Args>(args)...);
-                T* ptr = layer.get();
-                m_layers.push_back(std::move(layer));
-                m_primaryLayer = ptr;
-                m_primaryLayer->OnInitialize();
-                return ptr;
-            }
-
-            return nullptr;
-        }
-
-        template<typename T, typename... Args>
-        T* PushOverlay(Args&&... args) {
-            static_assert(std::is_base_of_v<Layer, T>, "T must derive from Layer");
-
-            if (m_layers.empty()) {
-                return nullptr;
-            }
-
-            auto layer = std::make_unique<T>(*this, std::forward<Args>(args)...);
-            T* ptr = layer.get();
-            m_layers.push_back(std::move(layer));
-            ptr->OnInitialize();
-            return ptr;
-        }
-
-        void PopOverlay() {
-            if (m_layers.size() > 1) {
-                m_layers.back()->OnUninitialize();
-                m_layers.pop_back();
-            }
-        }
-
-        template<typename T>
-        T& GetOverlay() {
-            static_assert(std::is_base_of_v<Layer, T>, "T must derive from layer");
-
-            for (auto& l : m_layers)
+        Application& instance = Get();
+        for (auto& layer : instance.m_Layers)
+        {
+            if (T* casted = dynamic_cast<T*>(layer.get()))
             {
-                if (auto ptr = dynamic_cast<T*>(l.get()))
-                    return *ptr;
+                return casted;
             }
-            throw std::runtime_error("Layer does not exist!");
         }
+        return nullptr;
+    }
 
-        template<typename T>
-        T& GetPrimaryLayer() {
-            static_assert(std::is_base_of_v<Layer, T>, "T must derive from layer");
-            if (!m_primaryLayer)
-                throw std::runtime_error("No primary layer set!");
-            auto ptr = dynamic_cast<T*>(m_primaryLayer);
-            if (!ptr)
-                throw std::runtime_error("Primary layer is not of the requested type!");
-            return *ptr;
-		}
+    template<typename T>
+    static T& GetLayer()
+    {
+        static_assert(std::is_base_of<ApplicationLayer, T>::value,
+            "T must derive from ApplicationLayer");
 
-        bool IsUpscaled() const {
-            return m_isUpscaled;
-		}
-
-        void Exit() {
-			m_exitRequested = true;
+        T* layer = GetLayerPtr<T>();
+        if (!layer)
+        {
+            throw std::runtime_error("Layer of specified type not found");
         }
+        return *layer;
+	}
 
-    protected:
-        virtual void InitializeComponents() = 0;
-        virtual void FocusLost() {}
-        virtual void FocusGained() {}
+    // Event handling
+    static void OnEvent(Event& event);
 
-        Window m_window;
-        Window::Config m_config;
-        std::vector<std::unique_ptr<Layer>> m_layers;
-        Layer* m_primaryLayer = nullptr;
-        bool m_isUpscaled = false;
-		bool m_exitRequested = false;
-    };
-}
+    // Application state
+    static bool IsRunning();
+    static int GetExitCode();
+    static float GetDeltaTime();
+    static float GetFPS();
+    static float GetAvgFPS();
+    static float FramesPerSecond();
 
-namespace core {
+private:
+    Application();
+    ~Application();
+
+    // Singleton access (private)
+    static Application& Get();
+
+    // Internal implementation methods
+    int Run_Internal();
+    void Exit_Internal(int exitCode);
+    bool CreateAppWindow_Internal(const WindowSpec& spec);
+    void DestroyAppWindow_Internal();
+    void RestartAppWindow_Internal();
+    void PopLayer_Internal();
+    void RemoveLayer_Internal(ApplicationLayer* layer);
+    void OnEvent_Internal(Event& event);
+    float GetFPS_Internal() const;
+    float GetAvgFPS_Internal() const;
+    float FramesPerSecond_Internal() const;
+
+    void MainLoop();
+    void UpdateLayers();
+    void RenderLayers();
+
+private:
+    std::unique_ptr<Window> m_Window;
+    std::vector<std::unique_ptr<ApplicationLayer>> m_Layers;
+
+    bool m_Running;
+    bool m_WindowRestartRequested;
+    int m_ExitCode;
+    float m_DeltaTime;
+
+    // Average FPS calculation
+    float m_AverageFPS;
+    float m_AvgFPSTimeAccumulator;
+    int m_AvgFPSFrameCount;
+
+    WindowSpec m_PendingWindowSpec;
+};
+
+namespace rlx {
     template<typename T>
     inline bool RectangleContainsMouse(const rlx::Rectangle<T>& rect) {
         return rlx::RectangleContainsScaledMouse(rect, constant::BASE_WIDTH, constant::BASE_HEIGHT);

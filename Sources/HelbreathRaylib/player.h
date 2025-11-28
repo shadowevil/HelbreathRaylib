@@ -93,10 +93,10 @@ struct Equipment {
 
 struct PlayerAppearance {
     Gender gender = GENDER_MALE;
-	Color skin_color = SkinColor::YellowTone1;
+	SkinColorIndex skin_color_index = 0;
 	HairStyle hair_style = HAIR_STYLE_1;
-	Color hair_color = HairColor::Brown;
-	Color underwear_color = UnderwearColor::White;
+	HairColorIndex hair_color_index = 0;
+	UnderwearColorIndex underwear_color_index = 0;
 
 	Equipment equipment{};
 };
@@ -109,12 +109,18 @@ public:
 	void OnRenderShadow() const override;
 	PAKLib::sprite_rect GetEntityBounds() const override;
 
+    PlayerAppearance& GetAppearance() {
+        return appearance;
+    }
     void UpdateAppearance(const PlayerAppearance& appear) {
         appearance = appear;
 	}
+    AnimationType GetCurrentAnimationType() const {
+        return current_animation_type;
+	}
+	void SetAnimation(AnimationType newType, WeaponUsed newWeapon) override;
 
 protected:
-	void SetAnimation(AnimationType newType, WeaponUsed newWeapon) override;
 	void DrawModelItem(int16_t item_id, Color item_color, bool is_shadow = false) const;
 
 	PlayerAppearance appearance{};

@@ -1,117 +1,134 @@
 #pragma once
 #include "raylib_include.h"
 #include <string>
+#include <cstdint>
+#include <functional>
 
-namespace core {
-    class Window {
-    public:
-        struct Config {
-            std::string title = "raylib";
-            int width = 800;
-            int height = 600;
-            unsigned int flags = 0;
-            int targetFPS = 60;
-        };
+// Window creation flags
+enum class WindowFlags : uint32_t
+{
+    None = 0,
+    Fullscreen = 1 << 0,
+    Resizable = 1 << 1,
+    VSync = 1 << 2,
+    MSAA_4X = 1 << 3,
+    Borderless = 1 << 4,
+    AlwaysOnTop = 1 << 5,
+    Transparent = 1 << 6,
+    HighDPI = 1 << 7,
+    Upscaled = 1 << 8,
+};
 
-        Window() = default;
-        explicit Window(const Config& config) { Create(config); }
-        ~Window() { Destroy(); }
-
-        Window(const Window&) = delete;
-        Window& operator=(const Window&) = delete;
-        Window(Window&&) = delete;
-        Window& operator=(Window&&) = delete;
-
-        void Create(const Config& config) {
-            if (m_isOpen) return;
-
-            m_config = config;
-
-            if (m_config.flags != 0)
-                SetConfigFlags(m_config.flags);
-
-            InitWindow(m_config.width, m_config.height, m_config.title.c_str());
-			if (m_config.targetFPS > 0)
-                SetTargetFPS(m_config.targetFPS);
-
-            m_isOpen = true;
-        }
-
-        void Destroy() {
-            if (!m_isOpen) return;
-            CloseWindow();
-            m_isOpen = false;
-        }
-
-        void UpdateFlags(unsigned int newFlags) {
-            if (newFlags == m_config.flags) return;
-
-            if (RequiresRestart(m_config.flags, newFlags)) {
-                Config temp = m_config;
-                temp.flags = newFlags;
-                Destroy();
-                Create(temp);
-            }
-            else {
-                m_config.flags = newFlags;
-                ApplyRuntimeFlags(newFlags);
-            }
-        }
-
-        void UpdateTitle(const std::string& title) {
-            if (!m_isOpen) return;
-            m_config.title = title;
-            SetWindowTitle(title.c_str());
-        }
-
-        void UpdateSize(int width, int height) {
-            if (!m_isOpen) return;
-            m_config.width = width;
-            m_config.height = height;
-            SetWindowSize(width, height);
-        }
-
-        void UpdateTargetFPS(int fps) {
-            if (!m_isOpen) return;
-            m_config.targetFPS = fps;
-            SetTargetFPS(fps);
-        }
-
-        bool IsOpen() const { return m_isOpen; }
-        const Config& GetConfig() const { return m_config; }
-
-    private:
-        bool RequiresRestart(unsigned int oldFlags, unsigned int newFlags) const {
-            constexpr unsigned int restartRequired =
-                FLAG_VSYNC_HINT |
-                FLAG_FULLSCREEN_MODE |
-                FLAG_WINDOW_HIGHDPI |
-                FLAG_WINDOW_TRANSPARENT |
-                FLAG_MSAA_4X_HINT;
-
-            unsigned int changed = oldFlags ^ newFlags;
-            return (changed & restartRequired) != 0;
-        }
-
-        void ApplyRuntimeFlags(unsigned int flags) {
-            if (flags & FLAG_WINDOW_RESIZABLE) SetWindowState(FLAG_WINDOW_RESIZABLE);
-            else ClearWindowState(FLAG_WINDOW_RESIZABLE);
-
-            if (flags & FLAG_WINDOW_UNDECORATED) SetWindowState(FLAG_WINDOW_UNDECORATED);
-            else ClearWindowState(FLAG_WINDOW_UNDECORATED);
-
-            if (flags & FLAG_WINDOW_TOPMOST) SetWindowState(FLAG_WINDOW_TOPMOST);
-            else ClearWindowState(FLAG_WINDOW_TOPMOST);
-
-            if (flags & FLAG_WINDOW_ALWAYS_RUN) SetWindowState(FLAG_WINDOW_ALWAYS_RUN);
-            else ClearWindowState(FLAG_WINDOW_ALWAYS_RUN);
-
-            if (flags & FLAG_WINDOW_MINIMIZED) MinimizeWindow();
-            if (flags & FLAG_WINDOW_MAXIMIZED) MaximizeWindow();
-            else RestoreWindow();
-        }
-
-        Config m_config;
-        bool m_isOpen = false;
-    };
+// Bitwise operators for flags
+inline WindowFlags operator|(WindowFlags a, WindowFlags b)
+{
+    return static_cast<WindowFlags>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
 }
+
+inline WindowFlags operator&(WindowFlags a, WindowFlags b)
+{
+    return static_cast<WindowFlags>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
+}
+
+inline bool HasFlag(WindowFlags flags, WindowFlags flag)
+{
+    return (static_cast<uint32_t>(flags) & static_cast<uint32_t>(flag)) != 0;
+}
+
+// Window specification
+struct WindowSpec
+{
+    std::string Title = "Helbreath";
+    int Width = 800;
+    int Height = 600;
+    int TargetFPS = 60;
+    WindowFlags Flags = WindowFlags::VSync | WindowFlags::MSAA_4X;
+};
+
+// Forward declaration
+class Event;
+
+// Event callback function type
+using EventCallbackFn = std::function<void(Event&)>;
+
+// Window class - manages raylib window lifecycle
+// NOTE: Only Application class should create/destroy Windows
+class Window
+{
+public:
+    Window(const WindowSpec& spec);
+    ~Window();
+
+    // Delete copy constructor/assignment
+    Window(const Window&) = delete;
+    Window& operator=(const Window&) = delete;
+
+    // Window state
+    bool IsOpen() const;
+    bool ShouldClose() const;
+
+    // Window properties
+    int GetWidth() const { return m_Width; }
+    int GetHeight() const { return m_Height; }
+    const std::string& GetTitle() const { return m_Title; }
+    WindowFlags GetFlags() const { return m_Flags; }
+
+    // Frame timing
+    float GetDeltaTime() const;
+    float GetFPS() const;
+    float FramesPerSecond() const { return m_FramesPerSecond; }
+    int GetFrameCount() const;
+
+    // Window control (called by Application only)
+    void BeginFrame();
+    void EndFrame();
+    void Close();
+
+    // Window modification (triggers recreation)
+    void SetTitle(const std::string& title);
+    void SetSize(int width, int height);
+    void ToggleFullscreen();
+
+    // Event callback
+    void SetEventCallback(const EventCallbackFn& callback) { m_EventCallback = callback; }
+
+    // Upscale event callbacks
+    void SetBeforeUpscaleCallback(const std::function<void()>& callback) { m_BeforeUpscaleCallback = callback; }
+    void SetAfterUpscaleCallback(const std::function<void()>& callback) { m_AfterUpscaleCallback = callback; }
+
+    // Poll and dispatch window events (called by Application)
+    void PollEvents();
+
+private:
+    void ApplyWindowFlags();
+
+private:
+    std::string m_Title;
+    int m_Width;
+    int m_Height;
+    int m_TargetFPS;
+    WindowFlags m_Flags;
+    bool m_IsInitialized;
+
+    // Custom FPS counter (frame accurate)
+    float m_FramesPerSecond;
+    float m_FPSTimeAccumulator;
+    int m_FPSFrameCount;
+
+    // Event callback
+    EventCallbackFn m_EventCallback;
+
+    // State tracking for event generation
+    int m_LastWidth;
+    int m_LastHeight;
+    bool m_LastFocused;
+
+    // Render target for upscaling
+    RenderTexture2D m_RenderTarget;
+    int m_GameWidth;
+    int m_GameHeight;
+
+    // Upscale event callbacks
+    std::function<void()> m_BeforeUpscaleCallback;
+    std::function<void()> m_AfterUpscaleCallback;
+};

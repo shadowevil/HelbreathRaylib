@@ -26,7 +26,7 @@ void LoadingScene::OnUpdate()
 	}
 
 	if (m_loadingStep == 100)
-		m_sceneManager.SetScene<MainGameScene>();
+		m_sceneManager.SetScene<TestScene>();
 	else
 		m_loadingStep = (uint8_t)std::min(m_loadingStep + 1, 100);
 }

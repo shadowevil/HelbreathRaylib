@@ -18,13 +18,13 @@ void ExitGameScene::OnUpdate()
 	// Exit after 10 seconds
 	if(rlx::HasElapsed(exitTimer, 10.0))
 	{
-		m_application.Exit();
+		Application::Exit();
 	}
 
 	// Exit on mouse click or ESC after 3 seconds
 	if (rlx::HasElapsed(exitTimer, 3.0) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_ESCAPE)))
 	{
-		m_application.Exit();
+		Application::Exit();
 	}
 }
 

@@ -37,7 +37,7 @@ struct CTile {
 
 inline std::pair<int, int> GetWorldTileMousePosition(Camera2D camera)
 {
-    Vector2 mposWorld = GetScreenToWorld2D(GetMousePosition(), camera);
+    Vector2 mposWorld = GetScreenToWorld2D(rlx::GetMousePosition(), camera);
     const int tx = (int)floorf((mposWorld.x + constant::TILE_HALF) / constant::TILE_SIZE);
     const int ty = (int)floorf((mposWorld.y + constant::TILE_HALF) / constant::TILE_SIZE);
     return { tx, ty };

@@ -171,12 +171,14 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="CharacterSelectionScene.cpp" />
     <ClCompile Include="CMap.cpp" />
+    <ClCompile Include="CreateCharacterScene.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="ExitGameScene.cpp" />
-    <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="FontSystem.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Helbreath.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGameScene.cpp" />
@@ -186,24 +188,28 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ApplicationEvents.h" />
+    <ClInclude Include="CharacterSelectionScene.h" />
     <ClInclude Include="CMap.h" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="CreateCharacterScene.h" />
     <ClInclude Include="entities.h" />
     <ClInclude Include="entity.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="ExitGameScene.h" />
-    <ClInclude Include="extension_methods.h" />
     <ClInclude Include="FontIDs.h" />
-    <ClInclude Include="FontManager.h" />
+    <ClInclude Include="FontSystem.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameEvents.h" />
     <ClInclude Include="global_constants.h" />
-    <ClInclude Include="Helbreath.h" />
     <ClInclude Include="IDs.h" />
     <ClInclude Include="ItemMetadata.h" />
-    <ClInclude Include="Layer.h" />
+    <ClInclude Include="ApplicationLayer.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MainGameScene.h" />
     <ClInclude Include="MainMenuScene.h" />
@@ -216,6 +222,7 @@
     <ClInclude Include="SpriteIDs.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WindowEvents.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

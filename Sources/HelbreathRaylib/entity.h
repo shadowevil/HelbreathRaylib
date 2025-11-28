@@ -64,7 +64,7 @@ protected:
 
 inline GamePosition GetTileWorldMousePosition(Camera2D camera)
 {
-    Vector2 mposWorld = GetScreenToWorld2D(core::GetMousePosition(), camera);
+    Vector2 mposWorld = GetScreenToWorld2D(rlx::GetMousePosition(), camera);
     int tx = (int)floorf((mposWorld.x + constant::TILE_HALF) / constant::TILE_SIZE);
     int ty = (int)floorf((mposWorld.y + constant::TILE_HALF) / constant::TILE_SIZE);
     tx = std::max(0, tx);
@@ -163,8 +163,10 @@ public:
     void StopMovement();
     void RenderDebugMovement();
 
+    Dir GetCurrentDirection() const { return current_direction; }
+    void SetDirection(Dir direction) { current_direction = direction; }
+
 protected:
-    core::Application& m_application;
     Game& m_game;
     CSpriteCollection& m_modelSprites;
 	std::vector<ItemMetadataEntry>& m_itemMetadata;

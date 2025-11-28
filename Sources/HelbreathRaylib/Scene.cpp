@@ -4,11 +4,8 @@
 #include "Sprite.h"
 #include "SceneManager.h"
 
-using namespace core;
-
-core::Scene::Scene()
-	: m_application(Helbreath::Instance()),
-	m_game(m_application.GetPrimaryLayer<Game>()),
+Scene::Scene()
+	: m_game(Application::GetLayer<Game>()),
 	m_sprites(m_game.m_sprites),
 	m_modelSprites(m_game.m_modelSprites),
 	m_sceneManager(*m_game.m_pSceneManager.get()),

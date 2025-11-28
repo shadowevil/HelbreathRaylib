@@ -1,14 +1,12 @@
 #include "Application.h"
-#include "Helbreath.h"
+#include "Application.h"
 #include "Game.h"
 #include "entity.h"
 #include "CMap.h"
 #include "ItemMetadata.h"
 
 Entity::Entity()
-	:
-	m_application(Helbreath::Instance()),
-	m_game(m_application.GetPrimaryLayer<Game>()),
+	: m_game(Application::GetLayer<Game>()),
 	m_modelSprites(m_game.m_modelSprites),
 	m_itemMetadata(m_game.m_itemMetadata),
 	m_entities(m_game.m_entities),

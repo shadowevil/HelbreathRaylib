@@ -1,4 +1,5 @@
 #pragma once
+#define TEST_SCENE_ENABLED
 #include "Scene.h"
 #include "entities.h"
 #include "CMap.h"
@@ -19,7 +20,7 @@ inline std::unordered_set<uint32_t> ShadowlessObjects = {
 	242, 243, 244
 };
 
-class TestScene : public core::Scene {
+class TestScene : public Scene {
 public:
 	using Scene::Scene;
 	void OnInitialize() override;

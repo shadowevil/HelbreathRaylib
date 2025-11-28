@@ -1,7 +1,11 @@
 #pragma once
 #include "Scene.h"
 
-class ExitGameScene : public Scene {
+class CreateCharacterScene : public Scene {
+public:
+	PlayerAppearance* created_appearance = nullptr;
+	Player created_character{ PlayerAppearance() };
+
 public:
 	using Scene::Scene;
 	void OnInitialize() override;

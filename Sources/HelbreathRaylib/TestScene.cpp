@@ -2,7 +2,7 @@
 #include "PAK.h"
 #include "Sprite.h"
 #include "SceneManager.h"
-#include "FontManager.h"
+#include "FontSystem.h"
 #include "Application.h"
 #include "IDs.h"
 #include "CMap.h"
@@ -16,10 +16,10 @@ void TestScene::OnInitialize()
 	// m_player is the local client player
 	m_player = dynamic_cast<Player*>(m_entities.emplace_back(std::make_unique<Player>(PlayerAppearance{
 		.gender = GENDER_MALE,
-		.skin_color = SkinColor::WhiteTone2,
+		.skin_color_index = 0,
 		.hair_style = HAIR_STYLE_0,
-		.hair_color = HairColor::Black,
-		.underwear_color = UnderwearColor::Black,
+		.hair_color_index = 0,
+		.underwear_color_index = 0,
 		.equipment = [this]() {
 			Equipment eq{};
 			eq.legs.TryEquip(ItemID::SHORTS, m_itemMetadata);
@@ -29,10 +29,10 @@ void TestScene::OnInitialize()
 		})).get());
 	other_player = dynamic_cast<Player*>(m_entities.emplace_back(std::make_unique<Player>(PlayerAppearance{
 		.gender = GENDER_FEMALE,
-		.skin_color = SkinColor::WhiteTone4,
+		.skin_color_index = 1,
 		.hair_style = HAIR_STYLE_6,
-		.hair_color = HairColor::Red,
-		.underwear_color = UnderwearColor::Purple
+		.hair_color_index = 0,
+		.underwear_color_index = 1
 		})).get());
 
 	m_mapData = CMapLoader::LoadByIndex(MapID::gshop_1);

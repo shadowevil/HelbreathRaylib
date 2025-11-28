@@ -36,171 +36,7 @@ extern "C" {
 #include <string>
 #include <utility>
 #include <tuple>
-
-template<typename K, typename V>
-class ordered_map {
-public:
-	using key_type = K;
-	using mapped_type = V;
-	using value_type = std::pair<const K, V>;
-	using size_type = size_t;
-
-	using container_type = std::vector<std::pair<K, V>>;
-	using iterator = typename container_type::iterator;
-	using const_iterator = typename container_type::const_iterator;
-
-	ordered_map() = default;
-	ordered_map(const ordered_map&) = default;
-	ordered_map& operator=(const ordered_map&) = default;
-	ordered_map(ordered_map&&) noexcept = default;
-	ordered_map& operator=(ordered_map&&) noexcept = default;
-
-	// element access
-	V& operator[](const K& key) {
-		auto it = m_index.find(key);
-		if (it == m_index.end()) {
-			return push_back(key, V{})->second;
-		}
-		return m_data[it->second].second;
-	}
-
-	V& operator[](K&& key) {
-		auto it = m_index.find(key);
-		if (it == m_index.end()) {
-			return push_back(std::move(key), V{})->second;
-		}
-		return m_data[it->second].second;
-	}
-
-	V& at(const K& key) { return m_data.at(m_index.at(key)).second; }
-	const V& at(const K& key) const { return m_data.at(m_index.at(key)).second; }
-
-	// modifiers
-	std::pair<iterator, bool> insert(iterator pos, const value_type& value) {
-		auto it = m_index.find(value.first);
-		if (it != m_index.end())
-			return { m_data.begin() + it->second, false };
-
-		auto insertPos = m_data.insert(pos, { value.first, value.second });
-		rebuild_index();
-		return { insertPos, true };
-	}
-
-	std::pair<iterator, bool> insert(iterator pos, value_type&& value) {
-		auto it = m_index.find(value.first);
-		if (it != m_index.end())
-			return { m_data.begin() + it->second, false };
-
-		auto insertPos = m_data.insert(pos, std::move(value));
-		rebuild_index();
-		return { insertPos, true };
-	}
-
-	iterator push_back(const K& key, V&& value) {
-		auto it = m_index.find(key);
-		if (it != m_index.end())
-			return m_data.begin() + it->second;
-
-		m_data.emplace_back(key, std::move(value));
-		m_index[key] = m_data.size() - 1;
-		return std::prev(m_data.end());
-	}
-
-	iterator push_back(K&& key, V&& value) {
-		auto it = m_index.find(key);
-		if (it != m_index.end())
-			return m_data.begin() + it->second;
-
-		m_data.emplace_back(std::move(key), std::move(value));
-		m_index[m_data.back().first] = m_data.size() - 1;
-		return std::prev(m_data.end());
-	}
-
-	template<typename... Args>
-	iterator emplace_back(const K& key, Args&&... args) {
-		auto it = m_index.find(key);
-		if (it != m_index.end())
-			return m_data.begin() + it->second;
-
-		m_data.emplace_back(key, V(std::forward<Args>(args)...));
-		m_index[key] = m_data.size() - 1;
-		return std::prev(m_data.end());
-	}
-
-	template<typename... Args>
-	std::pair<iterator, bool> emplace(const K& key, Args&&... args) {
-		auto it = m_index.find(key);
-		if (it != m_index.end())
-			return { m_data.begin() + it->second, false };
-
-		m_data.emplace_back(key, V(std::forward<Args>(args)...));
-		m_index[key] = m_data.size() - 1;
-		return { std::prev(m_data.end()), true };
-	}
-
-	void erase(const K& key) {
-		auto it = m_index.find(key);
-		if (it == m_index.end()) return;
-
-		size_t idx = it->second;
-		m_data.erase(m_data.begin() + idx);
-		m_index.erase(it);
-		rebuild_index();
-	}
-
-	iterator erase(iterator pos) {
-		if (pos == m_data.end()) return m_data.end();
-
-		const K& key = pos->first;
-		m_index.erase(key);
-		auto next = m_data.erase(pos);
-		rebuild_index();
-		return next;
-	}
-
-	void clear() noexcept {
-		m_data.clear();
-		m_index.clear();
-	}
-
-	// lookup
-	iterator find(const K& key) {
-		auto it = m_index.find(key);
-		if (it == m_index.end()) return m_data.end();
-		return m_data.begin() + it->second;
-	}
-
-	const_iterator find(const K& key) const {
-		auto it = m_index.find(key);
-		if (it == m_index.end()) return m_data.end();
-		return m_data.begin() + it->second;
-	}
-
-	bool contains(const K& key) const noexcept { return m_index.find(key) != m_index.end(); }
-	size_type count(const K& key) const noexcept { return m_index.count(key); }
-
-	// iteration
-	iterator begin() noexcept { return m_data.begin(); }
-	iterator end() noexcept { return m_data.end(); }
-	const_iterator begin() const noexcept { return m_data.begin(); }
-	const_iterator end() const noexcept { return m_data.end(); }
-	const_iterator cbegin() const noexcept { return m_data.cbegin(); }
-	const_iterator cend() const noexcept { return m_data.cend(); }
-
-	// capacity
-	bool empty() const noexcept { return m_data.empty(); }
-	size_type size() const noexcept { return m_data.size(); }
-
-private:
-	void rebuild_index() {
-		m_index.clear();
-		for (size_t i = 0; i < m_data.size(); ++i)
-			m_index[m_data[i].first] = i;
-	}
-
-	container_type m_data;
-	std::unordered_map<K, size_t> m_index;
-};
+#include <fstream>
 
 inline std::string get_executable_path() {
 #if defined(_WIN32)
@@ -642,6 +478,16 @@ namespace rlx {
 
 			std::filesystem::rename(sourcePath, destPath);
 		}
+
+		inline std::string ReadAllText(const std::filesystem::path& filePath) {
+			std::ifstream file(filePath, std::ios::in | std::ios::binary);
+			if (!file) {
+				throw std::runtime_error("Failed to open file for reading: " + filePath.string());
+			}
+			std::ostringstream contents;
+			contents << file.rdbuf();
+			return contents.str();
+		}
 	}
 
 	namespace Directory
@@ -688,129 +534,6 @@ namespace rlx {
 			return files;
 		}
 	}
-
-	template<typename T>
-		requires std::same_as<T, Image> || std::same_as<T, Texture2D> || std::same_as<T, RenderTexture2D> ||
-			std::same_as<T, Font> || std::same_as<T, Mesh> || std::same_as<T, Model> ||
-			std::same_as<T, Shader> || std::same_as<T, Wave> || std::same_as<T, Sound> ||
-			std::same_as<T, Music> || std::same_as<T, AudioStream>
-	struct Managed {
-		// --- Constructors ---
-		Managed() : value({}), loaded(false) {}
-
-		// Construct directly from an existing Raylib object (e.g., LoadRenderTexture())
-		Managed(const T& v) noexcept { value = v; loaded = true; }
-		Managed(T&& v) noexcept { value = std::move(v); loaded = true; }
-
-		// Disable copying (Raylib handles are unique)
-		Managed(const Managed&) = delete;
-		Managed& operator=(const Managed&) = delete;
-
-		// Move support
-		Managed(Managed&& other) noexcept {
-			value = other.value;
-			loaded = other.loaded;
-			other.loaded = false;
-			other.value = {};
-		}
-
-		Managed& operator=(Managed&& other) noexcept {
-			if (this != &other) {
-				if (loaded)
-					Unload();
-				value = other.value;
-				loaded = other.loaded;
-				other.loaded = false;
-				other.value = {};
-			}
-			return *this;
-		}
-
-		// --- Load constructors ---
-		Managed(const char* fileName) requires std::same_as<T, Image> { value = LoadImage(fileName); loaded = true; }
-
-		Managed(const char* fileName) requires std::same_as<T, Texture2D> { value = LoadTexture(fileName); loaded = true; }
-		Managed(const Image& img)     requires std::same_as<T, Texture2D> { value = LoadTextureFromImage(img); loaded = true; }
-
-		Managed(int w, int h)         requires std::same_as<T, RenderTexture2D> { value = LoadRenderTexture(w, h); loaded = true; }
-
-		Managed(const char* fileName) requires std::same_as<T, Font> { value = LoadFont(fileName); loaded = true; }
-		Managed(const char* fileName, int size, int* cps, int count) requires std::same_as<T, Font> {
-			value = LoadFontEx(fileName, size, cps, count); loaded = true;
-		}
-
-		Managed() requires std::same_as<T, Mesh> { value = GenMeshCube(1.0f, 1.0f, 1.0f); loaded = true; }
-		Managed(float radius, int rings, int slices) requires std::same_as<T, Mesh> {
-			value = GenMeshSphere(radius, rings, slices); loaded = true;
-		}
-		Managed(float width, float length, int resX, int resZ) requires std::same_as<T, Mesh> {
-			value = GenMeshPlane(width, length, resX, resZ); loaded = true;
-		}
-		Managed(float base, float height, int slices, bool cone = false) requires std::same_as<T, Mesh> {
-			value = cone ? GenMeshCone(base, height, slices) : GenMeshCylinder(base, height, slices);
-			loaded = true;
-		}
-		Managed(int sides, float radius) requires std::same_as<T, Mesh> { value = GenMeshPoly(sides, radius); loaded = true; }
-
-		Managed(const char* fileName) requires std::same_as<T, Model> { value = LoadModel(fileName); loaded = true; }
-		Managed(const Mesh& mesh)     requires std::same_as<T, Model> { value = LoadModelFromMesh(mesh); loaded = true; }
-
-		Managed(const char* vs, const char* fs) requires std::same_as<T, Shader> { value = LoadShader(vs, fs); loaded = true; }
-
-		Managed(const char* fileName) requires std::same_as<T, Wave> { value = LoadWave(fileName); loaded = true; }
-		Managed(const char* fileType, const unsigned char* data, int size) requires std::same_as<T, Wave> {
-			value = LoadWaveFromMemory(fileType, data, size); loaded = true;
-		}
-
-		Managed(const char* fileName) requires std::same_as<T, Sound> { value = LoadSound(fileName); loaded = true; }
-		Managed(const Wave& wave)     requires std::same_as<T, Sound> { value = LoadSoundFromWave(wave); loaded = true; }
-
-		Managed(const char* fileName) requires std::same_as<T, Music> { value = LoadMusicStream(fileName); loaded = true; }
-		Managed(const char* type, const unsigned char* data, int size) requires std::same_as<T, Music> {
-			value = LoadMusicStreamFromMemory(type, data, size); loaded = true;
-		}
-
-		Managed(unsigned int sr, unsigned int ss, unsigned int ch) requires std::same_as<T, AudioStream> {
-			value = LoadAudioStream(sr, ss, ch); loaded = true;
-		}
-
-		// --- Unload handling ---
-		void Unload() {
-			if (!loaded) return;
-			if constexpr (std::same_as<T, Image>) UnloadImage(value);
-			else if constexpr (std::same_as<T, Texture2D>) UnloadTexture(value);
-			else if constexpr (std::same_as<T, RenderTexture2D>) UnloadRenderTexture(value);
-			else if constexpr (std::same_as<T, Font>) UnloadFont(value);
-			else if constexpr (std::same_as<T, Mesh>) UnloadMesh(value);
-			else if constexpr (std::same_as<T, Model>) UnloadModel(value);
-			else if constexpr (std::same_as<T, Shader>) UnloadShader(value);
-			else if constexpr (std::same_as<T, Wave>) UnloadWave(value);
-			else if constexpr (std::same_as<T, Sound>) UnloadSound(value);
-			else if constexpr (std::same_as<T, Music>) UnloadMusicStream(value);
-			else if constexpr (std::same_as<T, AudioStream>) UnloadAudioStream(value);
-			loaded = false;
-		}
-
-		// --- Access operators ---
-		T* operator->() { return &value; }
-		const T* operator->() const { return &value; }
-
-		T& operator*() { return value; }
-		const T& operator*() const { return value; }
-
-		// --- Implicit conversions ---
-		operator T& () { return value; }
-		operator const T& () const { return value; }
-
-		// --- Status ---
-		bool IsLoaded() const { return loaded; }
-
-		~Managed() { Unload(); }
-
-	protected:
-		T value{};
-		bool loaded = false;
-	};
 
 	inline void BeginUpscaleRender(RenderTexture2D target, float scale = 1.0f)
 	{
@@ -919,5 +642,14 @@ namespace rlx {
 	inline bool HasElapsed(double timer, double interval)
 	{
 		return GetTime() - timer >= interval;
+	}
+}
+
+namespace stdx {
+	inline std::string to_lower(const std::string& str) {
+		std::string result = str;
+		std::transform(result.begin(), result.end(), result.begin(),
+			[](unsigned char c) { return std::tolower(c); });
+		return result;
 	}
 }

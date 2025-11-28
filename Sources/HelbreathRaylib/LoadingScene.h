@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 
-class LoadingScene : public core::Scene {
+class LoadingScene : public Scene {
 public:
 	using Scene::Scene;
 	void OnInitialize() override;

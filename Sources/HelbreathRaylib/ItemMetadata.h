@@ -1,4 +1,5 @@
 #pragma once
+#include "raylib_include.h"
 #include <string>
 #include <cstdint>
 #include <stdexcept>
@@ -6,7 +7,6 @@
 #include <filesystem>
 #include <fstream>
 #include "json.hpp"
-#include "extension_methods.h"
 
 enum class EquipType : uint8_t
 {
@@ -57,7 +57,7 @@ inline void from_json(const nlohmann::json& j, SpriteItemIndices& s)
 // ------------------------------
 inline void from_json(const nlohmann::json& j, EquipType& e)
 {
-    const std::string s = ext::to_lower(j.get<std::string>());
+    const std::string s = stdx::to_lower(j.get<std::string>());
 
     if (s == "head")       e = EquipType::Head;
     else if (s == "back")       e = EquipType::Back;

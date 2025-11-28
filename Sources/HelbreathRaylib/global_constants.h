@@ -18,6 +18,7 @@ namespace constant {
 	inline const std::filesystem::path MUSIC_PATH					= "MUSIC";
 	inline const std::filesystem::path SOUND_PATH					= "SOUNDS";
 	inline const std::filesystem::path DATA_PATH					= "DATA";
+	inline const std::filesystem::path SAVE_GAME_PATH				= "SAVEDGAMES";
 
 	inline const std::string SPRITE_IMAGE_TYPE				= ".png";
 	inline constexpr double SPRITE_UNLOAD_TIMEOUT_SECONDS	= 60.0;

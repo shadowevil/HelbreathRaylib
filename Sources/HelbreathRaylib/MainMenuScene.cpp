@@ -18,13 +18,13 @@ void MainMenuScene::OnUpdate()
 {
 	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 	{
-		if (core::RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::LOGIN])) {
-			m_sceneManager.SetScene<MainGameScene>();
+		if (RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::LOGIN])) {
+			m_sceneManager.SetScene<CharacterSelectionScene>();
 		}
-		else if (core::RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::NEW_ACCOUNT])) {
+		else if (RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::NEW_ACCOUNT])) {
 
 		}
-		else if (core::RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::EXIT])) {
+		else if (RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::EXIT])) {
 			m_sceneManager.SetScene<ExitGameScene>();
 		}
 	}
@@ -34,13 +34,13 @@ void MainMenuScene::OnRender()
 {
 	m_sprites[SPRID_MAINMENUSCREEN]->Draw(0, 0, SPR_MAINMENUSCREEN::BACKGROUND);
 
-	if (core::RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::LOGIN])) {
+	if (RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::LOGIN])) {
 		m_sprites[SPRID_MAINMENUSCREEN]->Draw(m_mainMenuButtonRects[MainMenuButton::LOGIN].x, m_mainMenuButtonRects[MainMenuButton::LOGIN].y, SPR_MAINMENUSCREEN::BUTTON_1);
 	}
-	else if (core::RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::NEW_ACCOUNT])) {
+	else if (RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::NEW_ACCOUNT])) {
 		m_sprites[SPRID_MAINMENUSCREEN]->Draw(m_mainMenuButtonRects[MainMenuButton::NEW_ACCOUNT].x, m_mainMenuButtonRects[MainMenuButton::NEW_ACCOUNT].y, SPR_MAINMENUSCREEN::BUTTON_2);
 	}
-	else if (core::RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::EXIT])) {
+	else if (RectangleContainsMouse(m_mainMenuButtonRects[MainMenuButton::EXIT])) {
 		m_sprites[SPRID_MAINMENUSCREEN]->Draw(m_mainMenuButtonRects[MainMenuButton::EXIT].x, m_mainMenuButtonRects[MainMenuButton::EXIT].y, SPR_MAINMENUSCREEN::BUTTON_3);
 	}
 }

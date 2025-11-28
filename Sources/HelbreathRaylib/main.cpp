@@ -1,9 +1,20 @@
 #include <memory>
-#include "Helbreath.h"
+#include "Application.h"
 #include "global_constants.h"
+#include "Game.h"
 
 int main() {
 	SetTraceLogLevel(LOG_ERROR);
-	auto app = std::make_unique<Helbreath>();
-	app->RunUpscaled(constant::BASE_WIDTH, constant::BASE_HEIGHT, constant::UPSCALE_FACTOR);
+	WindowSpec spec;
+	spec.Title = "Helbreath Raylib";
+	spec.Width = constant::BASE_WIDTH;
+	spec.Height = constant::BASE_HEIGHT;
+	spec.Flags = WindowFlags::Resizable | WindowFlags::VSync | WindowFlags::MSAA_4X | WindowFlags::Upscaled;
+	spec.TargetFPS = 60;
+	if (!Application::CreateAppWindow(spec))
+		return -1;
+
+	Application::PushLayer<Game>();
+
+	Application::Run();
 }

@@ -1,53 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="core">
+    <Filter Include="game">
+      <UniqueIdentifier>{a1bc6bd9-3737-4b40-97ac-b7e174066de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scenes">
+    <Filter Include="Core\Application">
+      <UniqueIdentifier>{717a63f7-c8dd-43bd-9c63-dc742a99c2f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Events">
+      <UniqueIdentifier>{03afe76d-41f1-463f-9ee1-af635178bd37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Font">
+      <UniqueIdentifier>{f2ce259f-6fc8-417f-ac2b-8139ea41eeb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Scene">
+      <UniqueIdentifier>{ce1fda76-6c9a-4aeb-83f0-c39d580161bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Sound">
+      <UniqueIdentifier>{d67195a2-e9cb-4c2a-8f10-ea57c9d4268e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Animation">
+      <UniqueIdentifier>{ad415c5c-f485-41e6-9684-63c48cc27eaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\items">
+      <UniqueIdentifier>{d7e9c625-52e1-4d75-ae36-0fb1aa597991}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\scenes">
       <UniqueIdentifier>{7BA4E9C2-8D6F-4E1A-9F3B-1C5A7D8E4F9A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\entities">
+      <UniqueIdentifier>{516089e0-2fb4-44f3-82ea-205d8a8f2494}</UniqueIdentifier>
     </Filter>
     <Filter Include="constants">
       <UniqueIdentifier>{bc7e80b7-cd5e-4a76-8d8e-7bcc09f92f10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="entities">
-      <UniqueIdentifier>{516089e0-2fb4-44f3-82ea-205d8a8f2494}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game">
-      <UniqueIdentifier>{a1bc6bd9-3737-4b40-97ac-b7e174066de5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="items">
-      <UniqueIdentifier>{d7e9c625-52e1-4d75-ae36-0fb1aa597991}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Helbreath.cpp" />
     <ClCompile Include="LoadingScene.cpp">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="Scene.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="FontManager.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="MainMenuScene.cpp">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
     </ClCompile>
     <ClCompile Include="ExitGameScene.cpp">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
     </ClCompile>
     <ClCompile Include="TestScene.cpp">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
-      <Filter>entities</Filter>
+      <Filter>game\entities</Filter>
     </ClCompile>
     <ClCompile Include="entity.cpp">
-      <Filter>entities</Filter>
+      <Filter>game\entities</Filter>
     </ClCompile>
     <ClCompile Include="MapIDs.h">
       <Filter>constants</Filter>
@@ -56,32 +66,33 @@
       <Filter>game</Filter>
     </ClCompile>
     <ClCompile Include="MainGameScene.cpp">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterSelectionScene.cpp">
+      <Filter>game\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateCharacterScene.cpp">
+      <Filter>game\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Core\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Core\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="FontSystem.cpp">
+      <Filter>Core\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Core\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Helbreath.h" />
-    <ClInclude Include="Layer.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="LoadingScene.h">
-      <Filter>scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="FontManager.h">
-      <Filter>core</Filter>
+      <Filter>game\scenes</Filter>
     </ClInclude>
     <ClInclude Include="global_constants.h">
       <Filter>constants</Filter>
@@ -91,37 +102,31 @@
       <Filter>constants</Filter>
     </ClInclude>
     <ClInclude Include="MainMenuScene.h">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
     </ClInclude>
     <ClInclude Include="Scenes.h">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
     </ClInclude>
     <ClInclude Include="FontIDs.h">
       <Filter>constants</Filter>
     </ClInclude>
     <ClInclude Include="ExitGameScene.h">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
     </ClInclude>
     <ClInclude Include="Colors.h">
       <Filter>constants</Filter>
     </ClInclude>
     <ClInclude Include="TestScene.h">
-      <Filter>scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>core</Filter>
+      <Filter>game\scenes</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
-      <Filter>entities</Filter>
+      <Filter>game\entities</Filter>
     </ClInclude>
     <ClInclude Include="entity.h">
-      <Filter>entities</Filter>
+      <Filter>game\entities</Filter>
     </ClInclude>
     <ClInclude Include="entities.h">
-      <Filter>entities</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundPlayer.h">
-      <Filter>core</Filter>
+      <Filter>game\entities</Filter>
     </ClInclude>
     <ClInclude Include="CMap.h">
       <Filter>game</Filter>
@@ -130,13 +135,55 @@
       <Filter>constants</Filter>
     </ClInclude>
     <ClInclude Include="ItemMetadata.h">
-      <Filter>items</Filter>
-    </ClInclude>
-    <ClInclude Include="extension_methods.h">
-      <Filter>core</Filter>
+      <Filter>game\items</Filter>
     </ClInclude>
     <ClInclude Include="MainGameScene.h">
-      <Filter>scenes</Filter>
+      <Filter>game\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterSelectionScene.h">
+      <Filter>game\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateCharacterScene.h">
+      <Filter>game\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Core\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationLayer.h">
+      <Filter>Core\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Core\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="FontSystem.h">
+      <Filter>Core\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundPlayer.h">
+      <Filter>Core\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Core\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationEvents.h">
+      <Filter>Core\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowEvents.h">
+      <Filter>Core\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEvents.h">
+      <Filter>game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

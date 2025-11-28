@@ -2,7 +2,7 @@
 #include "PAK.h"
 #include "Sprite.h"
 #include "SceneManager.h"
-#include "FontManager.h"
+#include "FontSystem.h"
 #include "Application.h"
 #include "IDs.h"
 #include "CMap.h"
@@ -11,6 +11,12 @@
 
 void MainGameScene::OnInitialize()
 {
+	m_mapData = CMapLoader::LoadByIndex(MapID::Default);
+
+	m_camera.target = { (float)(m_player->GetPosition().get_pixel_x()), (float)(m_player->GetPosition().get_pixel_y()) };
+	m_camera.offset = { constant::BASE_WIDTH * 0.5f, constant::BASE_HEIGHT * 0.5f };
+	m_camera.zoom = 1.0f;
+	m_camera.rotation = 0.0f;
 
 }
 
