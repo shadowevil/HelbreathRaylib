@@ -10,25 +10,25 @@ class ApplicationLayer
 {
 public:
     ApplicationLayer(const char* name = "Layer")
-        : m_Name(name), m_Enabled(true)
+        : _name(name), _enabled(true)
     {
     }
 
     virtual ~ApplicationLayer() = default;
 
     // Lifecycle hooks - override in derived classes
-    virtual void OnAttach() {}          // Called when layer is added to Application
-    virtual void OnDetach() {}          // Called when layer is removed
-    virtual void OnUpdate() {}          // Called every frame with delta time
-    virtual void OnRender() {}          // Called every frame for rendering
-    virtual void OnEvent(Event& event) {}  // Called when an event occurs
+    virtual void on_attach() {}          // Called when layer is added to Application
+    virtual void on_detach() {}          // Called when layer is removed
+    virtual void on_update() {}          // Called every frame with delta time
+    virtual void on_render() {}          // Called every frame for rendering
+    virtual void on_event(Event& event) {}  // Called when an event occurs
 
     // Layer properties
-    const char* GetName() const { return m_Name; }
-    bool IsEnabled() const { return m_Enabled; }
-    void SetEnabled(bool enabled) { m_Enabled = enabled; }
+    const char* get_name() const { return _name; }
+    bool is_enabled() const { return _enabled; }
+    void set_enabled(bool enabled) { _enabled = enabled; }
 
 protected:
-    const char* m_Name;
-    bool m_Enabled;
+    const char* _name;
+    bool _enabled;
 };

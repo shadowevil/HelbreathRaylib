@@ -1,33 +1,33 @@
 #include "Sprite.h"
 
-void CSprite::Draw(int x, int y, size_t frame)
+void CSprite::draw(int x, int y, size_t frame)
 {
 	//if (!this)  // or a dedicated 'is valid' flag
 	//	return;
-	Preload();
+	preload();
 
-	size_t frame_count = m_sprite_rectangles.size();
-	if (frame_count == 0)
+	size_t FrameCount = _sprite_rectangles.size();
+	if (FrameCount == 0)
 		return;
 
-	if (frame >= frame_count)
+	if (frame >= FrameCount)
 		return;
 
-	auto& rect = m_sprite_rectangles[frame];
+	auto& Rect = _sprite_rectangles[frame];
 
 	DrawTexturePro(
-		m_texture,
+		_texture,
 		rlRectangle{
-			static_cast<float>(rect.x),
-			static_cast<float>(rect.y),
-			static_cast<float>(rect.width),
-			static_cast<float>(rect.height)
+			static_cast<float>(Rect.x),
+			static_cast<float>(Rect.y),
+			static_cast<float>(Rect.width),
+			static_cast<float>(Rect.height)
 		},
 		rlRectangle{
-			static_cast<float>(x + rect.pivotX),
-			static_cast<float>(y + rect.pivotY),
-			static_cast<float>(rect.width),
-			static_cast<float>(rect.height)
+			static_cast<float>(x + Rect.pivotX),
+			static_cast<float>(y + Rect.pivotY),
+			static_cast<float>(Rect.width),
+			static_cast<float>(Rect.height)
 		},
 		Vector2{ 0.0f, 0.0f },
 		0.0f,
@@ -35,34 +35,34 @@ void CSprite::Draw(int x, int y, size_t frame)
 	);
 }
 
-void CSprite::Draw(int x, int y, size_t frame, Color tint)
+void CSprite::draw(int x, int y, size_t frame, Color tint)
 {
 	//if (!this)  // or a dedicated 'is valid' flag
 	//	return;
-	Preload();
+	preload();
 
-	size_t frame_count = m_sprite_rectangles.size();
-	if (frame_count == 0)
+	size_t FrameCount = _sprite_rectangles.size();
+	if (FrameCount == 0)
 		return;
 
-	if (frame >= frame_count)
+	if (frame >= FrameCount)
 		return;
 
-	auto& rect = m_sprite_rectangles[frame];
+	auto& Rect = _sprite_rectangles[frame];
 
 	DrawTexturePro(
-		m_texture,
+		_texture,
 		rlRectangle{
-			static_cast<float>(rect.x),
-			static_cast<float>(rect.y),
-			static_cast<float>(rect.width),
-			static_cast<float>(rect.height)
+			static_cast<float>(Rect.x),
+			static_cast<float>(Rect.y),
+			static_cast<float>(Rect.width),
+			static_cast<float>(Rect.height)
 		},
 		rlRectangle{
-			static_cast<float>(x + rect.pivotX),
-			static_cast<float>(y + rect.pivotY),
-			static_cast<float>(rect.width),
-			static_cast<float>(rect.height)
+			static_cast<float>(x + Rect.pivotX),
+			static_cast<float>(y + Rect.pivotY),
+			static_cast<float>(Rect.width),
+			static_cast<float>(Rect.height)
 		},
 		Vector2{ 0.0f, 0.0f },
 		0.0f,

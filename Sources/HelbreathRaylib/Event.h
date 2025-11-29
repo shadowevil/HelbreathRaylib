@@ -6,47 +6,47 @@ class Event
 {
 public:
     virtual ~Event() = default;
-    virtual uint32_t GetEventType() const = 0;
-    virtual uint32_t GetCategoryFlags() const = 0;
-    virtual const char* GetName() const = 0;
-	std::string ToString() const { return GetName(); }
+    virtual uint32_t get_event_type() const = 0;
+    virtual uint32_t get_category_flags() const = 0;
+    virtual const char* get_name() const = 0;
+	std::string to_string() const { return get_name(); }
 
-    bool IsInCategory(uint32_t category) const
+    bool is_in_category(uint32_t category) const
     {
-        return (GetCategoryFlags() & category) != 0;
+        return (get_category_flags() & category) != 0;
     }
 
-    bool IsHandled() const { return m_Handled; }
-    void SetHandled(bool handled = true) { m_Handled = handled; }
+    bool is_handled() const { return _handled; }
+    void set_handled(bool handled = true) { _handled = handled; }
 
 protected:
-    bool m_Handled = false;
+    bool _handled = false;
 };
 
 class EventDispatcher
 {
 public:
-    EventDispatcher(Event& event) : m_Event(event) {}
+    EventDispatcher(Event& event) : _event(event) {}
 
     template<typename T, typename F>
-    bool Dispatch(const F& func)
+    bool dispatch(const F& func)
     {
-        if (m_Event.GetEventType() == T::GetStaticType())
+        if (_event.get_event_type() == T::GET_STATIC_TYPE())
         {
-            m_Event.SetHandled(func(static_cast<T&>(m_Event)));
+            _event.set_handled(func(static_cast<T&>(_event)));
             return true;
         }
         return false;
     }
 
 private:
-    Event& m_Event;
+    Event& _event;
 };
 
 #define EVENT_CLASS_TYPE(type) \
-    static uint32_t GetStaticType() { return EventType::type; } \
-    virtual uint32_t GetEventType() const override { return GetStaticType(); } \
-    virtual const char* GetName() const override { return #type; }
+    static uint32_t GET_STATIC_TYPE() { return EventType::type; } \
+    virtual uint32_t get_event_type() const override { return GET_STATIC_TYPE(); } \
+    virtual const char* get_name() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) \
-    virtual uint32_t GetCategoryFlags() const override { return category; }
+    virtual uint32_t get_category_flags() const override { return category; }

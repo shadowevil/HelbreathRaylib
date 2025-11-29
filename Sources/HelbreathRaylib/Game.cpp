@@ -6,103 +6,104 @@
 #include "WindowEvents.h"
 #include "ApplicationEvents.h"
 #include "GameEvents.h"
+#include "SceneManager.h"
 
-void Game::OnAttach()
+void Game::on_attach()
 {
 	HideCursor();
 	rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
 
-	m_pSceneManager = std::make_unique<SceneManager>();
+	scene_manager = std::make_unique<SceneManager>();
 
-	m_pSceneManager->SetTransitionConfig({
+	scene_manager->set_transition_config({
 		SceneManager::FAST_FADE_DURATION,
 		SceneManager::FAST_FADE_DURATION,
 		BLACK // fadeColor
 		});
 
-	FontSystem::RegisterFont(FontFamily::Default,
+	FontSystem::register_font(FontFamily::Default,
 		(constant::FONT_PATH / "default.ttf").string().c_str(),
-		(constant::FONT_PATH /"default_bold.ttf").string().c_str()
+		(constant::FONT_PATH / "default_bold.ttf").string().c_str()
 	);
 
-	FontSystem::RegisterFont(FontFamily::Fancy,
+	FontSystem::register_font(FontFamily::Fancy,
 		(constant::FONT_PATH / "black_chancery.ttf").string().c_str()
 	);
 
-	FontSystem::RegisterFont(FontFamily::DialogTitle,
+	FontSystem::register_font(FontFamily::DialogTitle,
 		(constant::FONT_PATH / "times_new_roman.ttf").string().c_str(),
 		(constant::FONT_PATH / "times_new_roman_bold.ttf").string().c_str(),
 		(constant::FONT_PATH / "times_new_roman_italic.ttf").string().c_str()
 	);
 
-	m_pSceneManager->SetScene<LoadingScene>();
+	scene_manager->set_scene<LoadingScene>();
 
-	m_perodicTimer = std::thread([this]() {
-		while (m_isRunning.load()) {
+	periodic_timer = std::thread([this]() {
+		while (is_running.load()) {
 			PeriodicTimerEvent ev{};
-			Application::OnEvent(ev);
+			Application::on_event(ev);
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 		}
 		});
-	m_perodicTimer.detach();
+	periodic_timer.detach();
 }
 
-void Game::OnDetach()
+void Game::on_detach()
 {
-	m_isRunning.store(false);
-	if(m_perodicTimer.joinable()) {
-		m_perodicTimer.join();
+	is_running.store(false);
+	if(periodic_timer.joinable()) {
+		periodic_timer.join();
 	}
-	m_pSceneManager.reset();
+	scene_manager.reset();
 }
 
-void Game::OnUpdate()
+void Game::on_update()
 {
-	m_pSceneManager->Update();
+	scene_manager->update();
 }
 
-void Game::OnRender()
+void Game::on_render()
 {
-	m_pSceneManager->Render();
+	scene_manager->render();
 	// Draw mouse cursor
-	if (!HardwareCursor) {
-		auto [mouseX, mouseY] = rlx::GetMousePosition();
+	if (!hardware_cursor) {
+		auto [MouseX, MouseY] = rlx::get_mouse_position();
 
-		if (m_sprites.Contains(SPRID_MOUSECURSOR)) {
-			m_sprites[SPRID_MOUSECURSOR]->Draw(
-				(int)mouseX,
-				(int)mouseY,
+		if (sprites.contains(SPRID_MOUSECURSOR)) {
+			sprites[SPRID_MOUSECURSOR]->draw(
+				(int)MouseX,
+				(int)MouseY,
 				SPR_MOUSECURSOR::DEFAULT
 			);
 		}
 	}
-	DrawText(FontFamily::Default, 15, std::to_string(Application::GetFPS()).c_str(), 0, 0, WHITE, FontStyle::Regular);
+	FontSystem::draw_text(FontFamily::Default, 15, std::to_string(Application::get_fps()).c_str(), 0, 0, WHITE, FontStyle::Regular);
 }
 
-void Game::OnEvent(Event& event)
+void Game::on_event(Event& event)
 {
-	EventDispatcher dispatcher(event);
+	EventDispatcher Dispatcher(event);
 
-	dispatcher.Dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {
+	Dispatcher.dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {
 		HideCursor();
 		rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
 		return false;
 		});
 
-	dispatcher.Dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {
+	Dispatcher.dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {
 		ShowCursor();
 		rlx::UnlockCursor();
 		return false;
 		});
 
-	dispatcher.Dispatch<AfterUpscaleEvent>([this](AfterUpscaleEvent& e) {
-		if (HardwareCursor) {
+	Dispatcher.dispatch<AfterUpscaleEvent>([this](AfterUpscaleEvent& e) {
+		if (hardware_cursor) {
 			// Draw mouse cursor
-			auto [mouseX, mouseY] = GetMousePosition();
-			if (m_sprites.Contains(SPRID_MOUSECURSOR)) {
-				m_sprites[SPRID_MOUSECURSOR]->Draw(
-					(int)mouseX,
-					(int)mouseY,
+			auto [MouseX, MouseY] = GetMousePosition();
+			if (sprites.contains(SPRID_MOUSECURSOR)) {
+				sprites[SPRID_MOUSECURSOR]->draw(
+					(int)MouseX,
+					(int)MouseY,
 					SPR_MOUSECURSOR::DEFAULT
 				);
 			}
@@ -110,9 +111,9 @@ void Game::OnEvent(Event& event)
 		return false;
 		});
 
-	dispatcher.Dispatch<PeriodicTimerEvent>([this](PeriodicTimerEvent& e) {
-		for (auto& sprite : m_sprites) {
-			sprite.second->UnloadIfUnused(GetTime(), 60.0f); // Unload sprites unused for 60 seconds
+	Dispatcher.dispatch<PeriodicTimerEvent>([this](PeriodicTimerEvent& e) {
+		for (auto& Sprite : sprites) {
+			Sprite.second->unload_if_unused(GetTime(), 60.0f); // Unload sprites unused for 60 seconds
 		}
 		return false;
 		});

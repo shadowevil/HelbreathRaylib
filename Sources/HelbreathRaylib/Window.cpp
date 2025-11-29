@@ -4,26 +4,26 @@
 #include "global_constants.h"
 
 Window::Window(const WindowSpec& spec)
-    : m_Title(spec.Title)
-    , m_Width(spec.Width)
-    , m_Height(spec.Height)
-    , m_TargetFPS(spec.TargetFPS)
-    , m_Flags(spec.Flags)
-    , m_IsInitialized(false)
-    , m_FramesPerSecond(0.0f)
-    , m_FPSTimeAccumulator(0.0f)
-    , m_FPSFrameCount(0)
-    , m_LastWidth(spec.Width)
-    , m_LastHeight(spec.Height)
-    , m_LastFocused(true)
-    , m_GameWidth(constant::BASE_WIDTH * constant::UPSCALE_FACTOR)
-    , m_GameHeight(constant::BASE_HEIGHT * constant::UPSCALE_FACTOR)
+    : _title(spec.Title)
+    , _width(spec.Width)
+    , _height(spec.Height)
+    , _target_fps(spec.TargetFPS)
+    , _flags(spec.Flags)
+    , _is_initialized(false)
+    , _frames_per_second(0.0f)
+    , _fps_time_accumulator(0.0f)
+    , _fps_frame_count(0)
+    , _last_width(spec.Width)
+    , _last_height(spec.Height)
+    , _last_focused(true)
+    , _game_width(constant::BASE_WIDTH * constant::UPSCALE_FACTOR)
+    , _game_height(constant::BASE_HEIGHT * constant::UPSCALE_FACTOR)
 {
     // Apply configuration flags before window creation
-    ApplyWindowFlags();
+    _apply_window_flags();
 
     // Create the window
-    InitWindow(m_Width, m_Height, m_Title.c_str());
+    InitWindow(_width, _height, _title.c_str());
 
     if (!IsWindowReady())
     {
@@ -31,110 +31,110 @@ Window::Window(const WindowSpec& spec)
         return;
     }
 
-    SetTargetFPS(m_TargetFPS);
+    SetTargetFPS(_target_fps);
 
     // Initialize render target for upscaling if enabled
-    if (HasFlag(m_Flags, WindowFlags::Upscaled))
+    if (HasFlag(_flags, WindowFlags::Upscaled))
     {
-        m_RenderTarget = LoadRenderTexture(m_GameWidth, m_GameHeight);
+        _render_target = LoadRenderTexture(_game_width, _game_height);
         // Use bilinear filtering for smooth downscaling from high-res render target
-        SetTextureFilter(m_RenderTarget.texture, TEXTURE_FILTER_BILINEAR);
+        SetTextureFilter(_render_target.texture, TEXTURE_FILTER_BILINEAR);
     }
 
-    m_IsInitialized = true;
+    _is_initialized = true;
 }
 
 Window::~Window()
 {
-    if (m_IsInitialized)
+    if (_is_initialized)
     {
         // Unload render target if it was created
-        if (HasFlag(m_Flags, WindowFlags::Upscaled))
+        if (HasFlag(_flags, WindowFlags::Upscaled))
         {
-            UnloadRenderTexture(m_RenderTarget);
+            UnloadRenderTexture(_render_target);
         }
 
         CloseWindow();
-        m_IsInitialized = false;
+        _is_initialized = false;
     }
 }
 
-void Window::ApplyWindowFlags()
+void Window::_apply_window_flags()
 {
     // Apply flags that need to be set BEFORE InitWindow
-    if (HasFlag(m_Flags, WindowFlags::VSync))
+    if (HasFlag(_flags, WindowFlags::VSync))
     {
         SetConfigFlags(FLAG_VSYNC_HINT);
     }
 
-    if (HasFlag(m_Flags, WindowFlags::MSAA_4X))
+    if (HasFlag(_flags, WindowFlags::MSAA_4X))
     {
         SetConfigFlags(FLAG_MSAA_4X_HINT);
     }
 
-    if (HasFlag(m_Flags, WindowFlags::Fullscreen))
+    if (HasFlag(_flags, WindowFlags::Fullscreen))
     {
         SetConfigFlags(FLAG_FULLSCREEN_MODE);
     }
 
-    if (HasFlag(m_Flags, WindowFlags::Resizable))
+    if (HasFlag(_flags, WindowFlags::Resizable))
     {
         SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     }
 
-    if (HasFlag(m_Flags, WindowFlags::Borderless))
+    if (HasFlag(_flags, WindowFlags::Borderless))
     {
         SetConfigFlags(FLAG_WINDOW_UNDECORATED);
     }
 
-    if (HasFlag(m_Flags, WindowFlags::AlwaysOnTop))
+    if (HasFlag(_flags, WindowFlags::AlwaysOnTop))
     {
         SetConfigFlags(FLAG_WINDOW_TOPMOST);
     }
 
-    if (HasFlag(m_Flags, WindowFlags::Transparent))
+    if (HasFlag(_flags, WindowFlags::Transparent))
     {
         SetConfigFlags(FLAG_WINDOW_TRANSPARENT);
     }
 
-    if (HasFlag(m_Flags, WindowFlags::HighDPI))
+    if (HasFlag(_flags, WindowFlags::HighDPI))
     {
         SetConfigFlags(FLAG_WINDOW_HIGHDPI);
     }
 }
 
-bool Window::IsOpen() const
+bool Window::is_open() const
 {
-    return m_IsInitialized && IsWindowReady();
+    return _is_initialized && IsWindowReady();
 }
 
-bool Window::ShouldClose() const
+bool Window::should_close() const
 {
     return WindowShouldClose();
 }
 
-float Window::GetDeltaTime() const
+float Window::get_delta_time() const
 {
     return GetFrameTime();
 }
 
-float Window::GetFPS() const
+float Window::get_fps() const
 {
     return (float)::GetFPS();
 }
 
-int Window::GetFrameCount() const
+int Window::get_frame_count() const
 {
     // Raylib's GetFrameCount is a function, not a macro
     return GetFrameTime() > 0 ? static_cast<int>(1.0f / GetFrameTime()) : 0;
 }
 
-void Window::BeginFrame()
+void Window::begin_frame()
 {
-    if (HasFlag(m_Flags, WindowFlags::Upscaled))
+    if (HasFlag(_flags, WindowFlags::Upscaled))
     {
         // Use existing upscale rendering system from raylib_include.h
-        rlx::BeginUpscaleRender(m_RenderTarget, static_cast<float>(constant::UPSCALE_FACTOR));
+        rlx::BeginUpscaleRender(_render_target, static_cast<float>(constant::UPSCALE_FACTOR));
         ClearBackground(BLACK);
     }
     else
@@ -145,33 +145,33 @@ void Window::BeginFrame()
     }
 }
 
-void Window::EndFrame()
+void Window::end_frame()
 {
-    if (HasFlag(m_Flags, WindowFlags::Upscaled))
+    if (HasFlag(_flags, WindowFlags::Upscaled))
     {
         // Create lambda wrappers for event callbacks
-        auto beforeCallback = [this]() {
-            if (m_EventCallback)
+        auto BeforeCallback = [this]() {
+            if (_event_callback)
             {
-                BeforeUpscaleEvent event;
-                m_EventCallback(event);
+                BeforeUpscaleEvent Event;
+                _event_callback(Event);
             }
-            if (m_BeforeUpscaleCallback)
-                m_BeforeUpscaleCallback();
+            if (_before_upscale_callback)
+                _before_upscale_callback();
         };
 
-        auto afterCallback = [this]() {
-            if (m_EventCallback)
+        auto AfterCallback = [this]() {
+            if (_event_callback)
             {
-                AfterUpscaleEvent event;
-                m_EventCallback(event);
+                AfterUpscaleEvent Event;
+                _event_callback(Event);
             }
-            if (m_AfterUpscaleCallback)
-                m_AfterUpscaleCallback();
+            if (_after_upscale_callback)
+                _after_upscale_callback();
         };
 
         // Use existing upscale rendering system from raylib_include.h with event callbacks
-        rlx::EndUpscaleRender(m_RenderTarget, BLACK, beforeCallback, afterCallback);
+        rlx::EndUpscaleRender(_render_target, BLACK, BeforeCallback, AfterCallback);
     }
     else
     {
@@ -179,103 +179,103 @@ void Window::EndFrame()
     }
 
     // Update custom FPS counter (frame accurate)
-    float deltaTime = GetDeltaTime();
-    m_FPSTimeAccumulator += deltaTime;
-    m_FPSFrameCount++;
+    float DeltaTime = get_delta_time();
+    _fps_time_accumulator += DeltaTime;
+    _fps_frame_count++;
 
     // Calculate FPS every second
-    if (m_FPSTimeAccumulator >= 1.0f)
+    if (_fps_time_accumulator >= 1.0f)
     {
-        m_FramesPerSecond = static_cast<float>(m_FPSFrameCount) / m_FPSTimeAccumulator;
-        m_FPSTimeAccumulator = 0.0f;
-        m_FPSFrameCount = 0;
+        _frames_per_second = static_cast<float>(_fps_frame_count) / _fps_time_accumulator;
+        _fps_time_accumulator = 0.0f;
+        _fps_frame_count = 0;
     }
 }
 
-void Window::Close()
+void Window::close()
 {
-    if (m_IsInitialized)
+    if (_is_initialized)
     {
         CloseWindow();
-        m_IsInitialized = false;
+        _is_initialized = false;
     }
 }
 
-void Window::SetTitle(const std::string& title)
+void Window::set_title(const std::string& title)
 {
-    m_Title = title;
-    if (m_IsInitialized)
+    _title = title;
+    if (_is_initialized)
     {
-        SetWindowTitle(m_Title.c_str());
+        SetWindowTitle(_title.c_str());
     }
 }
 
-void Window::SetSize(int width, int height)
+void Window::set_size(int width, int height)
 {
-    m_Width = width;
-    m_Height = height;
-    if (m_IsInitialized)
+    _width = width;
+    _height = height;
+    if (_is_initialized)
     {
-        SetWindowSize(m_Width, m_Height);
+        SetWindowSize(_width, _height);
     }
 }
 
-void Window::ToggleFullscreen()
+void Window::toggle_fullscreen()
 {
-    if (m_IsInitialized)
+    if (_is_initialized)
     {
         ::ToggleFullscreen();
 
         // Update flag state
         if (IsWindowFullscreen())
         {
-            m_Flags = m_Flags | WindowFlags::Fullscreen;
+            _flags = _flags | WindowFlags::Fullscreen;
         }
         else
         {
-            m_Flags = static_cast<WindowFlags>(
-                static_cast<uint32_t>(m_Flags) & ~static_cast<uint32_t>(WindowFlags::Fullscreen)
+            _flags = static_cast<WindowFlags>(
+                static_cast<uint32_t>(_flags) & ~static_cast<uint32_t>(WindowFlags::Fullscreen)
                 );
         }
     }
 }
 
-void Window::PollEvents()
+void Window::poll_events()
 {
-    if (!m_IsInitialized || !m_EventCallback)
+    if (!_is_initialized || !_event_callback)
         return;
 
     // Check for window resize
-    int currentWidth = GetScreenWidth();
-    int currentHeight = GetScreenHeight();
-    if (currentWidth != m_LastWidth || currentHeight != m_LastHeight)
+    int CurrentWidth = GetScreenWidth();
+    int CurrentHeight = GetScreenHeight();
+    if (CurrentWidth != _last_width || CurrentHeight != _last_height)
     {
-        m_LastWidth = currentWidth;
-        m_LastHeight = currentHeight;
-        m_Width = currentWidth;
-        m_Height = currentHeight;
+        _last_width = CurrentWidth;
+        _last_height = CurrentHeight;
+        _width = CurrentWidth;
+        _height = CurrentHeight;
 
-        WindowResizeEvent event(currentWidth, currentHeight);
-        m_EventCallback(event);
+        WindowResizeEvent Event(CurrentWidth, CurrentHeight);
+        _event_callback(Event);
     }
 
     // Check for window focus changes
-    bool currentlyFocused = IsWindowFocused();
-    if (currentlyFocused != m_LastFocused)
+    bool CurrentlyFocused = IsWindowFocused();
+    if (CurrentlyFocused != _last_focused)
     {
-        m_LastFocused = currentlyFocused;
+        _last_focused = CurrentlyFocused;
 
-        if (currentlyFocused)
+        if (CurrentlyFocused)
         {
-            WindowFocusEvent event;
-            m_EventCallback(event);
+            WindowFocusEvent Event;
+            _event_callback(Event);
         }
         else
         {
-            WindowLostFocusEvent event;
-            m_EventCallback(event);
+            WindowLostFocusEvent Event;
+            _event_callback(Event);
         }
     }
 
-    // Note: WindowCloseEvent is checked in Application::MainLoop via ShouldClose()
+    // Note: WindowCloseEvent is checked in Application::MainLoop via should_close()
 }

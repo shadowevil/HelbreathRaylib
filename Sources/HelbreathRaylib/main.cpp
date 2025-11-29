@@ -5,16 +5,16 @@
 
 int main() {
 	SetTraceLogLevel(LOG_ERROR);
-	WindowSpec spec;
-	spec.Title = "Helbreath Raylib";
-	spec.Width = constant::BASE_WIDTH;
-	spec.Height = constant::BASE_HEIGHT;
-	spec.Flags = WindowFlags::Resizable | WindowFlags::VSync | WindowFlags::MSAA_4X | WindowFlags::Upscaled;
-	spec.TargetFPS = 60;
-	if (!Application::CreateAppWindow(spec))
+	WindowSpec Spec;
+	Spec.Title = "Helbreath Raylib";
+	Spec.Width = constant::BASE_WIDTH;
+	Spec.Height = constant::BASE_HEIGHT;
+	Spec.Flags = WindowFlags::Resizable /*| WindowFlags::VSync*/ | WindowFlags::MSAA_4X | WindowFlags::Upscaled;
+	Spec.TargetFPS = 0;
+	if (!Application::create_app_window(Spec))
 		return -1;
 
-	Application::PushLayer<Game>();
+	Application::push_layer<Game>();
 
-	Application::Run();
+	Application::run();
 }

@@ -5,12 +5,12 @@
 #include "SceneManager.h"
 
 Scene::Scene()
-	: m_game(Application::GetLayer<Game>()),
-	m_sprites(m_game.m_sprites),
-	m_modelSprites(m_game.m_modelSprites),
-	m_sceneManager(*m_game.m_pSceneManager.get()),
-	m_mapTiles(m_game.m_mapTiles),
-	m_itemMetadata(m_game.m_itemMetadata),
-	m_entities(m_game.m_entities)
+	: game(Application::get_layer<Game>()),
+	sprites(game.sprites),
+	model_sprites(game.model_sprites),
+	scene_manager(*game.scene_manager.get()),
+	map_tiles(game.map_tiles),
+	item_metadata(game.item_metadata),
+	entities(game.entities)
 {
 }

@@ -1,49 +1,49 @@
 #include "CMap.h"
 #include "entity.h"
 
-void CMapData::ForEachTileRegion(Camera2D camera, int x_range, int y_range, const std::vector<std::unique_ptr<Entity>>& entities,
+void CMapData::for_each_tile_region(Camera2D camera, int x_range, int y_range, const std::vector<std::unique_ptr<Entity>>& entities,
     const std::function<void(int16_t, int16_t, int32_t, int32_t, CTile&, Entity*)>& fn)
 {
-    const int screenTilesX = (int)((constant::BASE_WIDTH * camera.zoom) / constant::TILE_SIZE) + x_range;
-    const int screenTilesY = (int)((constant::BASE_HEIGHT * camera.zoom) / constant::TILE_SIZE) + y_range;
+    const int ScreenTilesX = (int)((constant::BASE_WIDTH * camera.zoom) / constant::TILE_SIZE) + x_range;
+    const int ScreenTilesY = (int)((constant::BASE_HEIGHT * camera.zoom) / constant::TILE_SIZE) + y_range;
 
-    int centerX = (int)(camera.target.x / constant::TILE_SIZE);
-    int centerY = (int)(camera.target.y / constant::TILE_SIZE);
+    int CenterX = (int)(camera.target.x / constant::TILE_SIZE);
+    int CenterY = (int)(camera.target.y / constant::TILE_SIZE);
 
-    int radiusX = screenTilesX / 2;
-    int radiusY = screenTilesY / 2;
-    int radiusSquared = radiusX * radiusX; // Use circular radius
+    int RadiusX = ScreenTilesX / 2;
+    int RadiusY = ScreenTilesY / 2;
+    int RadiusSquared = RadiusX * RadiusX; // Use circular radius
 
-    int startX = std::max(0, centerX - radiusX);
-    int startY = std::max(0, centerY - radiusY);
-    int endX = std::min((int)mapSizeX, centerX + radiusX);
-    int endY = std::min((int)mapSizeY, centerY + radiusY);
+    int StartX = std::max(0, CenterX - RadiusX);
+    int StartY = std::max(0, CenterY - RadiusY);
+    int EndX = std::min((int)_map_size_x, CenterX + RadiusX);
+    int EndY = std::min((int)_map_size_y, CenterY + RadiusY);
 
-    for (int16_t y = startY; y < endY; ++y)
+    for (int16_t y = StartY; y < EndY; ++y)
     {
-        for (int16_t x = startX; x < endX; ++x)
+        for (int16_t x = StartX; x < EndX; ++x)
         {
             // Circle culling
-            int dx = x - centerX;
-            int dy = y - centerY;
-            if (dx * dx + dy * dy > radiusSquared)
+            int Dx = x - CenterX;
+            int Dy = y - CenterY;
+            if (Dx * Dx + Dy * Dy > RadiusSquared)
                 continue;
 
-            int32_t pX = (x * constant::TILE_SIZE) - constant::TILE_HALF;
-            int32_t pY = (y * constant::TILE_SIZE) - constant::TILE_HALF;
+            int32_t PX = (x * constant::TILE_SIZE) - constant::TILE_HALF;
+            int32_t PY = (y * constant::TILE_SIZE) - constant::TILE_HALF;
 
-            if (!InBounds(x, y))
+            if (!in_bounds(x, y))
                 continue;
 
-            auto it = std::find_if(entities.begin(), entities.end(),
+            auto It = std::find_if(entities.begin(), entities.end(),
                 [x, y](const std::unique_ptr<Entity>& e) {
-                    auto pos = e->GetPosition();
-                    return pos.get_tile_x() == x && pos.get_tile_y() == y;
+                    auto Pos = e->get_position();
+                    return Pos.get_tile_x() == x && Pos.get_tile_y() == y;
 				});
 
-			Entity* entityPtr = (it != entities.end()) ? it->get() : nullptr;
+			Entity* EntityPtr = (It != entities.end()) ? It->get() : nullptr;
 
-            fn(x, y, pX, pY, m_tile[x][y], entityPtr);
+            fn(x, y, PX, PY, _tile[x][y], EntityPtr);
         }
     }
 }

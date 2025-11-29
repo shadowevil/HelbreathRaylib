@@ -52,19 +52,19 @@ inline bool HasFlag(TextAlign value, VerticalAlign flag) {
 }
 
 struct FontKey {
-    uint8_t fontIndex;
-    int fontSize;
+    uint8_t font_index;
+    int font_size;
     FontStyle style;
 
     bool operator==(const FontKey& other) const {
-        return fontIndex == other.fontIndex && fontSize == other.fontSize && style == other.style;
+        return font_index == other.font_index && font_size == other.font_size && style == other.style;
     }
 };
 
 struct FontKeyHash {
     size_t operator()(const FontKey& k) const {
-        return (static_cast<size_t>(k.fontIndex) << 40) |
-            (static_cast<size_t>(k.fontSize) << 8) |
+        return (static_cast<size_t>(k.font_index) << 40) |
+            (static_cast<size_t>(k.font_size) << 8) |
             static_cast<size_t>(k.style);
     }
 };
@@ -77,57 +77,57 @@ struct FontPaths {
 
 class FontSystem {
 private:
-    std::unordered_map<FontKey, Font, FontKeyHash> loadedFonts;
-    std::unordered_map<uint8_t, FontPaths> fontPaths;
+    std::unordered_map<FontKey, Font, FontKeyHash> _loaded_fonts;
+    std::unordered_map<uint8_t, FontPaths> _font_paths;
 
-    static FontSystem& Instance() {
-        static FontSystem manager;
-        return manager;
+    static FontSystem& _instance() {
+        static FontSystem Manager;
+        return Manager;
     }
 
-    Font& GetFontInternal(uint8_t index, int fontSize, FontStyle style) {
-        FontKey key = { index, fontSize, style };
+    Font& _get_font_internal(uint8_t index, int font_size, FontStyle style) {
+        FontKey Key = { index, font_size, style };
 
-        auto it = loadedFonts.find(key);
-        if (it != loadedFonts.end()) {
-            return it->second;
+        auto It = _loaded_fonts.find(Key);
+        if (It != _loaded_fonts.end()) {
+            return It->second;
         }
 
-        auto pathIt = fontPaths.find(index);
-        if (pathIt == fontPaths.end()) {
-            static Font defaultFont = GetFontDefault();
-            return defaultFont;
+        auto PathIt = _font_paths.find(index);
+        if (PathIt == _font_paths.end()) {
+            static Font DefaultFont = GetFontDefault();
+            return DefaultFont;
         }
 
-        std::string path;
+        std::string Path;
         switch (style) {
         case FontStyle::Bold:
-            path = !pathIt->second.bold.empty() ? pathIt->second.bold : pathIt->second.regular;
+            Path = !PathIt->second.bold.empty() ? PathIt->second.bold : PathIt->second.regular;
             break;
         case FontStyle::Italic:
-            path = !pathIt->second.italic.empty() ? pathIt->second.italic : pathIt->second.regular;
+            Path = !PathIt->second.italic.empty() ? PathIt->second.italic : PathIt->second.regular;
             break;
         default:
-            path = pathIt->second.regular;
+            Path = PathIt->second.regular;
             break;
         }
 
-        if (path.empty()) {
-            static Font defaultFont = GetFontDefault();
-            return defaultFont;
+        if (Path.empty()) {
+            static Font DefaultFont = GetFontDefault();
+            return DefaultFont;
         }
 
-        Font font = LoadFontEx(path.c_str(), fontSize * 8, nullptr, 0);
-        SetTextureFilter(font.texture, TEXTURE_FILTER_POINT);
-        loadedFonts[key] = font;
+        Font Font_ = LoadFontEx(Path.c_str(), font_size * 8, nullptr, 0);
+        SetTextureFilter(Font_.texture, TEXTURE_FILTER_POINT);
+        _loaded_fonts[Key] = Font_;
 
-        return loadedFonts[key];
+        return _loaded_fonts[Key];
     }
 
     FontSystem() = default;
     ~FontSystem() {
-        for (auto& pair : loadedFonts) {
-            UnloadFont(pair.second);
+        for (auto& Pair : _loaded_fonts) {
+            UnloadFont(Pair.second);
         }
     }
 
@@ -135,43 +135,43 @@ public:
     FontSystem(const FontSystem&) = delete;
     FontSystem& operator=(const FontSystem&) = delete;
 
-    static void RegisterFont(uint8_t index, const char* regularPath, const char* boldPath = nullptr, const char* italicPath = nullptr) {
-        if (!regularPath || !FileExists(regularPath)) {
-            throw std::runtime_error("Regular font path does not exist: " + std::string(regularPath ? regularPath : "null"));
+    static void register_font(uint8_t index, const char* regular_path, const char* bold_path = nullptr, const char* italic_path = nullptr) {
+        if (!regular_path || !FileExists(regular_path)) {
+            throw std::runtime_error("Regular font path does not exist: " + std::string(regular_path ? regular_path : "null"));
         }
 
-        if (boldPath && !FileExists(boldPath)) {
-            throw std::runtime_error("Bold font path does not exist: " + std::string(boldPath));
+        if (bold_path && !FileExists(bold_path)) {
+            throw std::runtime_error("Bold font path does not exist: " + std::string(bold_path));
         }
 
-        if (italicPath && !FileExists(italicPath)) {
-            throw std::runtime_error("Italic font path does not exist: " + std::string(italicPath));
+        if (italic_path && !FileExists(italic_path)) {
+            throw std::runtime_error("Italic font path does not exist: " + std::string(italic_path));
         }
 
-        FontPaths paths;
-        paths.regular = regularPath;
-        paths.bold = boldPath ? boldPath : "";
-        paths.italic = italicPath ? italicPath : "";
-        Instance().fontPaths[index] = paths;
+        FontPaths Paths;
+        Paths.regular = regular_path;
+        Paths.bold = bold_path ? bold_path : "";
+        Paths.italic = italic_path ? italic_path : "";
+        _instance()._font_paths[index] = Paths;
     }
 
-    static Font& GetFont(uint8_t index, int fontSize, FontStyle style = FontStyle::Regular) {
-        return Instance().GetFontInternal(index, fontSize, style);
+    static Font& get_font(uint8_t index, int font_size, FontStyle style = FontStyle::Regular) {
+        return _instance()._get_font_internal(index, font_size, style);
     }
 
-    static void UnloadAll() {
-        auto& inst = Instance();
-        for (auto& pair : inst.loadedFonts) {
-            UnloadFont(pair.second);
+    static void unload_all() {
+        auto& Inst = _instance();
+        for (auto& Pair : Inst._loaded_fonts) {
+            UnloadFont(Pair.second);
         }
-        inst.loadedFonts.clear();
+        Inst._loaded_fonts.clear();
     }
+
+    static Vector2 get_aligned_position(Font& font, const char* text, rlRectangle rec, float font_size, float spacing, TextAlign align);
+    static void draw_text(uint8_t font_index, int font_size, const char* text, float x, float y, Color color, FontStyle style = FontStyle::Regular);
+    static void draw_text(uint8_t font_index, int font_size, const char* text, float x, float y, float spacing, Color color, FontStyle style = FontStyle::Regular);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, rlRectangle rec, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, float x, float y, float width, float height, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, rlRectangle rec, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, float x, float y, float width, float height, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
 };
-
-Vector2 GetAlignedPosition(Font& font, const char* text, rlRectangle rec, float fontSize, float spacing, TextAlign align);
-void DrawText(uint8_t fontIndex, int fontSize, const char* text, float x, float y, Color color, FontStyle style = FontStyle::Regular);
-void DrawText(uint8_t fontIndex, int fontSize, const char* text, float x, float y, float spacing, Color color, FontStyle style = FontStyle::Regular);
-void DrawTextAligned(uint8_t fontIndex, int fontSize, const char* text, rlRectangle rec, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
-void DrawTextAligned(uint8_t fontIndex, int fontSize, const char* text, float x, float y, float width, float height, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
-void DrawTextAligned(uint8_t fontIndex, int fontSize, const char* text, rlRectangle rec, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
-void DrawTextAligned(uint8_t fontIndex, int fontSize, const char* text, float x, float y, float width, float height, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);

@@ -1,7 +1,7 @@
 #include "Scenes.h"
 #include "json.hpp"
 
-void CharacterSelectionScene::OnInitialize()
+void CharacterSelectionScene::on_initialize()
 {
 	if(!rlx::Directory::Exists(constant::SAVE_GAME_PATH))
 	{
@@ -10,29 +10,29 @@ void CharacterSelectionScene::OnInitialize()
 	}
 	using json = nlohmann::json;
 
-	auto saveFiles = rlx::Directory::GetFilesWithExtension(constant::SAVE_GAME_PATH, ".jsave");
-	for(auto& filePath : saveFiles)
+	auto SaveFiles = rlx::Directory::GetFilesWithExtension(constant::SAVE_GAME_PATH, ".jsave");
+	for(auto& FilePath : SaveFiles)
 	{
-		auto jsaveData = json::parse(rlx::File::ReadAllText(filePath));
+		auto JsaveData = json::parse(rlx::File::ReadAllText(FilePath));
 		// Parse character data
 	}
 }
 
-void CharacterSelectionScene::OnUninitialize()
+void CharacterSelectionScene::on_uninitialize()
 {
 
 }
 
-void CharacterSelectionScene::OnUpdate()
+void CharacterSelectionScene::on_update()
 {
-	if (m_characterList.empty())
+	if (_character_list.empty())
 	{
-		m_sceneManager.SetScene<CreateCharacterScene>();
+		scene_manager.set_scene<CreateCharacterScene>();
 		return;
 	}
 }
 
-void CharacterSelectionScene::OnRender()
+void CharacterSelectionScene::on_render()
 {
-	m_sprites[SPRID_CHARACTERSELECTSCREEN]->Draw(0, 0, SPR_CHARACTERSELECTSCREEN::BACKGROUND);
+	sprites[SPRID_CHARACTERSELECTSCREEN]->draw(0, 0, SPR_CHARACTERSELECTSCREEN::BACKGROUND);
 }

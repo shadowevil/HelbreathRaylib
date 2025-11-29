@@ -2,181 +2,181 @@
 #include <algorithm>
 #include "ItemMetadata.h"
 
-void LoadingScene::OnInitialize()
+void LoadingScene::on_initialize()
 {
-	CSpriteLoader::OpenPAK(constant::SPRITE_PATH / "Scenes.pak", [&](CSpriteLoader& loader) {
-		m_sprites[SPRID_LOADINGSCREEN] = loader.GetSprite(SPR_LOADINGSCREEN::PAK_INDEX);
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "Scenes.pak", [&](CSpriteLoader& Loader) {
+		sprites[SPRID_LOADINGSCREEN] = Loader.get_sprite(SPR_LOADINGSCREEN::PAK_INDEX);
 		});
 }
 
-void LoadingScene::OnUninitialize()
+void LoadingScene::on_uninitialize()
 {
 
 }
 
-void LoadingScene::OnUpdate()
+void LoadingScene::on_update()
 {
-	switch (m_loadingStep) {
-	case 0: LoadScenes(); break;
-	case 1: LoadInterface(); break;
-	case 15: LoadMaleGameModels(); break;
-	case 35: LoadFemaleGameModels(); break;
-	case 50: LoadItems(); break;
-	case 80: LoadRegisterMaps(); break;
+	switch (_loading_step) {
+	case 0: _load_scenes(); break;
+	case 1: _load_interface(); break;
+	case 15: _load_male_game_models(); break;
+	case 35: _load_female_game_models(); break;
+	case 50: _load_items(); break;
+	case 80: _load_register_maps(); break;
 	}
 
-	if (m_loadingStep == 100)
-		m_sceneManager.SetScene<TestScene>();
+	if (_loading_step == 100)
+		scene_manager.set_scene<MainMenuScene>();
 	else
-		m_loadingStep = (uint8_t)std::min(m_loadingStep + 1, 100);
+		_loading_step = (uint8_t)std::min(_loading_step + 1, 100);
 }
 
-void LoadingScene::OnRender()
+void LoadingScene::on_render()
 {
-	m_sprites[SPRID_LOADINGSCREEN]->Draw(0, 0, SPR_LOADINGSCREEN::BACKGROUND);
+	sprites[SPRID_LOADINGSCREEN]->draw(0, 0, SPR_LOADINGSCREEN::BACKGROUND);
 }
 
-void LoadingScene::LoadSprite(size_t uStart, size_t uCount, const std::string& file, CSpriteCollection& collection)
+void LoadingScene::_load_sprite(size_t u_start, size_t u_count, const std::string& file, CSpriteCollection& collection)
 {
-	CSpriteLoader::OpenPAK(file, [&](CSpriteLoader& loader) {
-		for (size_t i = 0; i < uCount; ++i)
-			collection[i + uStart] = loader.GetSprite(i);
+	CSpriteLoader::open_pak(file, [&](CSpriteLoader& Loader) {
+		for (size_t i = 0; i < u_count; ++i)
+			collection[i + u_start] = Loader.get_sprite(i);
 		});
 }
 
-void LoadingScene::LoadScenes()
+void LoadingScene::_load_scenes()
 {
-	CSpriteLoader::OpenPAK(constant::SPRITE_PATH / "scenes.pak", [&](CSpriteLoader& loader) {
-		m_sprites[SPRID_MAINMENUSCREEN] = loader.GetSprite(SPR_MAINMENUSCREEN::PAK_INDEX);
-		m_sprites[SPRID_EXITSCREEN] = loader.GetSprite(SPR_EXITSCREEN::PAK_INDEX);
-		m_sprites[SPRID_NEWACCOUNTSCREEN] = loader.GetSprite(SPR_NEWACCOUNTSCREEN::PAK_INDEX);
-		m_sprites[SPRID_LOGINSCREEN] = loader.GetSprite(SPR_LOGINSCREEN::PAK_INDEX);
-		m_sprites[SPRID_CHARACTERSELECTSCREEN] = loader.GetSprite(SPR_CHARACTERSELECTSCREEN::PAK_INDEX);
-		m_sprites[SPRID_CREATECHARARCTERSCREEN] = loader.GetSprite(SPR_CREATECHARARCTERSCREEN::PAK_INDEX);
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "scenes.pak", [&](CSpriteLoader& Loader) {
+		sprites[SPRID_MAINMENUSCREEN] = Loader.get_sprite(SPR_MAINMENUSCREEN::PAK_INDEX);
+		sprites[SPRID_EXITSCREEN] = Loader.get_sprite(SPR_EXITSCREEN::PAK_INDEX);
+		sprites[SPRID_NEWACCOUNTSCREEN] = Loader.get_sprite(SPR_NEWACCOUNTSCREEN::PAK_INDEX);
+		sprites[SPRID_LOGINSCREEN] = Loader.get_sprite(SPR_LOGINSCREEN::PAK_INDEX);
+		sprites[SPRID_CHARACTERSELECTSCREEN] = Loader.get_sprite(SPR_CHARACTERSELECTSCREEN::PAK_INDEX);
+		sprites[SPRID_CREATECHARARCTERSCREEN] = Loader.get_sprite(SPR_CREATECHARARCTERSCREEN::PAK_INDEX);
 		});
 }
 
-void LoadingScene::LoadInterface()
+void LoadingScene::_load_interface()
 {
-	CSpriteLoader::OpenPAK(constant::SPRITE_PATH / "interface.pak", [&](CSpriteLoader& loader) {
-		m_sprites[SPRID_MOUSECURSOR] = loader.GetSprite(SPR_MOUSECURSOR::PAK_INDEX);
-		m_sprites[SPRID_BUTTONS] = loader.GetSprite(SPR_BUTTONS::PAK_INDEX);
-		m_sprites[SPRID_EQUIP_MODEL] = loader.GetSprite(SPR_EQUIP::PAK_INDEX_MODEL);
-		m_sprites[SPRID_EQUIP_HAIRSTYLE] = loader.GetSprite(SPR_EQUIP::PAK_INDEX_HAIRSTYLE);
-		m_sprites[SPRID_EQUIP_UNDERWEAR] = loader.GetSprite(SPR_EQUIP::PAK_INDEX_UNDERWEAR);
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "interface.pak", [&](CSpriteLoader& Loader) {
+		sprites[SPRID_MOUSECURSOR] = Loader.get_sprite(SPR_MOUSECURSOR::PAK_INDEX);
+		sprites[SPRID_BUTTONS] = Loader.get_sprite(SPR_BUTTONS::PAK_INDEX);
+		sprites[SPRID_EQUIP_MODEL] = Loader.get_sprite(SPR_EQUIP::PAK_INDEX_MODEL);
+		sprites[SPRID_EQUIP_HAIRSTYLE] = Loader.get_sprite(SPR_EQUIP::PAK_INDEX_HAIRSTYLE);
+		sprites[SPRID_EQUIP_UNDERWEAR] = Loader.get_sprite(SPR_EQUIP::PAK_INDEX_UNDERWEAR);
 		});
 }
 
-void LoadingScene::LoadMaleGameModels()
+void LoadingScene::_load_male_game_models()
 {
-	CSpriteLoader::OpenPAK(constant::SPRITE_MALE_PATH / "male.pak", [&](CSpriteLoader& loader, PAKLib::pak& pak) {
-		for (auto& sprite : pak.sprites)
+	CSpriteLoader::open_pak(constant::SPRITE_MALE_PATH / "male.pak", [&](CSpriteLoader& Loader, PAKLib::pak& Pak) {
+		for (auto& Sprite : Pak.sprites)
 		{
-			size_t index = &sprite - pak.sprites.data();
-			m_modelSprites[MDLID_MALE_GAME_MODEL + index] = loader.GetSprite(index);
+			size_t Index = &Sprite - Pak.sprites.data();
+			model_sprites[MDLID_MALE_GAME_MODEL + Index] = Loader.get_sprite(Index);
 		}
 		});
-	for (size_t hairStyleIndex = 1; hairStyleIndex <= HairStyle::HAIR_STYLE_COUNT; ++hairStyleIndex)
+	for (size_t HairStyleIndex = 1; HairStyleIndex <= HairStyle::HAIR_STYLE_COUNT; ++HairStyleIndex)
 	{
-		CSpriteLoader::OpenPAK(constant::SPRITE_MALE_PATH / std::string("male_hair" + std::to_string(hairStyleIndex) + ".pak"), [&](CSpriteLoader& loader, PAKLib::pak& pak) {
-			for (auto& sprite : pak.sprites)
+		CSpriteLoader::open_pak(constant::SPRITE_MALE_PATH / std::string("male_hair" + std::to_string(HairStyleIndex) + ".pak"), [&](CSpriteLoader& Loader, PAKLib::pak& Pak) {
+			for (auto& Sprite : Pak.sprites)
 			{
-				size_t pakIndex = &sprite - pak.sprites.data();
-				m_modelSprites[MDLID_MALE_HAIRSTYLE_START + ((hairStyleIndex - 1) * 12) + pakIndex] = loader.GetSprite(pakIndex);
+				size_t PakIndex = &Sprite - Pak.sprites.data();
+				model_sprites[MDLID_MALE_HAIRSTYLE_START + ((HairStyleIndex - 1) * 12) + PakIndex] = Loader.get_sprite(PakIndex);
 			}
 			});
 	}
-	CSpriteLoader::OpenPAK(constant::SPRITE_MALE_PATH / "male_underwear.pak", [&](CSpriteLoader& loader, PAKLib::pak& pak) {
-		for (auto& sprite : pak.sprites)
+	CSpriteLoader::open_pak(constant::SPRITE_MALE_PATH / "male_underwear.pak", [&](CSpriteLoader& Loader, PAKLib::pak& Pak) {
+		for (auto& Sprite : Pak.sprites)
 		{
-			size_t index = &sprite - pak.sprites.data();
-			m_modelSprites[MDLID_MALE_UNDERWEAR + index] = loader.GetSprite(index);
+			size_t Index = &Sprite - Pak.sprites.data();
+			model_sprites[MDLID_MALE_UNDERWEAR + Index] = Loader.get_sprite(Index);
 		}
 		});
 }
 
-void LoadingScene::LoadFemaleGameModels()
+void LoadingScene::_load_female_game_models()
 {
-	CSpriteLoader::OpenPAK(constant::SPRITE_FEMALE_PATH / "female.pak", [&](CSpriteLoader& loader, PAKLib::pak& pak) {
-		for (auto& sprite : pak.sprites)
+	CSpriteLoader::open_pak(constant::SPRITE_FEMALE_PATH / "female.pak", [&](CSpriteLoader& Loader, PAKLib::pak& Pak) {
+		for (auto& Sprite : Pak.sprites)
 		{
-			size_t index = &sprite - pak.sprites.data();
-			m_modelSprites[MDLID_FEMALE_GAME_MODEL + index] = loader.GetSprite(index);
+			size_t Index = &Sprite - Pak.sprites.data();
+			model_sprites[MDLID_FEMALE_GAME_MODEL + Index] = Loader.get_sprite(Index);
 		}
 		});
-	for (size_t hairStyleIndex = 1; hairStyleIndex <= HairStyle::HAIR_STYLE_COUNT; ++hairStyleIndex)
+	for (size_t HairStyleIndex = 1; HairStyleIndex <= HairStyle::HAIR_STYLE_COUNT; ++HairStyleIndex)
 	{
-		CSpriteLoader::OpenPAK(constant::SPRITE_FEMALE_PATH / std::string("female_hair" + std::to_string(hairStyleIndex) + ".pak"), [&](CSpriteLoader& loader, PAKLib::pak& pak) {
-			for (auto& sprite : pak.sprites)
+		CSpriteLoader::open_pak(constant::SPRITE_FEMALE_PATH / std::string("female_hair" + std::to_string(HairStyleIndex) + ".pak"), [&](CSpriteLoader& Loader, PAKLib::pak& Pak) {
+			for (auto& Sprite : Pak.sprites)
 			{
-				size_t pakIndex = &sprite - pak.sprites.data();
-				m_modelSprites[MDLID_FEMALE_HAIRSTYLE_START + ((hairStyleIndex - 1) * 12) + pakIndex] = loader.GetSprite(pakIndex);
+				size_t PakIndex = &Sprite - Pak.sprites.data();
+				model_sprites[MDLID_FEMALE_HAIRSTYLE_START + ((HairStyleIndex - 1) * 12) + PakIndex] = Loader.get_sprite(PakIndex);
 			}
 			});
 	}
-	CSpriteLoader::OpenPAK(constant::SPRITE_FEMALE_PATH / "female_underwear.pak", [&](CSpriteLoader& loader, PAKLib::pak& pak) {
-		for (auto& sprite : pak.sprites)
+	CSpriteLoader::open_pak(constant::SPRITE_FEMALE_PATH / "female_underwear.pak", [&](CSpriteLoader& Loader, PAKLib::pak& Pak) {
+		for (auto& Sprite : Pak.sprites)
 		{
-			size_t index = &sprite - pak.sprites.data();
-			m_modelSprites[MDLID_FEMALE_UNDERWEAR + index] = loader.GetSprite(index);
+			size_t Index = &Sprite - Pak.sprites.data();
+			model_sprites[MDLID_FEMALE_UNDERWEAR + Index] = Loader.get_sprite(Index);
 		}
 		});
 }
 
-void LoadingScene::LoadItems()
+void LoadingScene::_load_items()
 {
 	// ------------------------------------------------------------
 	// Load item atlas (equip / ground / pack)
 	// ------------------------------------------------------------
-	CSpriteLoader::OpenPAK(constant::SPRITE_PATH / "item_atlas.pak",
-		[&](CSpriteLoader& loader)
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "item_atlas.pak",
+		[&](CSpriteLoader& Loader)
 		{
-			m_sprites[SPRID_ITEM_ATLAS_EQUIP] = loader.GetSprite(0);
-			m_sprites[SPRID_ITEM_ATLAS_GROUND] = loader.GetSprite(1);
-			m_sprites[SPRID_ITEM_ATLAS_PACK] = loader.GetSprite(2);
+			sprites[SPRID_ITEM_ATLAS_EQUIP] = Loader.get_sprite(0);
+			sprites[SPRID_ITEM_ATLAS_GROUND] = Loader.get_sprite(1);
+			sprites[SPRID_ITEM_ATLAS_PACK] = Loader.get_sprite(2);
 		});
 
 	// ------------------------------------------------------------
 	// Load metadata list
 	// ------------------------------------------------------------
-	m_itemMetadata = LoadMetadataEntries(constant::DATA_PATH / "ItemMetadata.json");
+	item_metadata = LoadMetadataEntries(constant::DATA_PATH / "ItemMetadata.json");
 
-	for (auto& metadata : m_itemMetadata)
+	for (auto& Metadata : item_metadata)
 	{
-		size_t index = &metadata - m_itemMetadata.data();
-		auto path = constant::SPRITE_ITEM_PATH / metadata.pak_file;
+		size_t Index = &Metadata - item_metadata.data();
+		auto Path = constant::SPRITE_ITEM_PATH / Metadata.pak_file;
 
 		// ------------------------------------------------------------
 		// Validate frame indices (only if metadata present)
 		// ------------------------------------------------------------
-		if (metadata.male)
+		if (Metadata.male)
 		{
-			m_sprites[SPRID_ITEM_ATLAS_EQUIP]->GetFrameRectangle(metadata.male->equip_frame_index);
-			m_sprites[SPRID_ITEM_ATLAS_GROUND]->GetFrameRectangle(metadata.male->ground_frame_index);
-			m_sprites[SPRID_ITEM_ATLAS_PACK]->GetFrameRectangle(metadata.male->pack_frame_index);
+			sprites[SPRID_ITEM_ATLAS_EQUIP]->get_frame_rectangle(Metadata.male->equip_frame_index);
+			sprites[SPRID_ITEM_ATLAS_GROUND]->get_frame_rectangle(Metadata.male->ground_frame_index);
+			sprites[SPRID_ITEM_ATLAS_PACK]->get_frame_rectangle(Metadata.male->pack_frame_index);
 
-			if (metadata.male->pak_end_index < metadata.male->pak_start_index)
+			if (Metadata.male->pak_end_index < Metadata.male->pak_start_index)
 			{
 				throw std::runtime_error(
-					"Invalid male sprite range in " + metadata.pak_file +
-					": start=" + std::to_string(metadata.male->pak_start_index) +
-					" end=" + std::to_string(metadata.male->pak_end_index)
+					"Invalid male sprite range in " + Metadata.pak_file +
+					": start=" + std::to_string(Metadata.male->pak_start_index) +
+					" end=" + std::to_string(Metadata.male->pak_end_index)
 				);
 			}
 		}
 
-		if (metadata.female)
+		if (Metadata.female)
 		{
-			m_sprites[SPRID_ITEM_ATLAS_EQUIP]->GetFrameRectangle(metadata.female->equip_frame_index);
-			m_sprites[SPRID_ITEM_ATLAS_GROUND]->GetFrameRectangle(metadata.female->ground_frame_index);
-			m_sprites[SPRID_ITEM_ATLAS_PACK]->GetFrameRectangle(metadata.female->pack_frame_index);
+			sprites[SPRID_ITEM_ATLAS_EQUIP]->get_frame_rectangle(Metadata.female->equip_frame_index);
+			sprites[SPRID_ITEM_ATLAS_GROUND]->get_frame_rectangle(Metadata.female->ground_frame_index);
+			sprites[SPRID_ITEM_ATLAS_PACK]->get_frame_rectangle(Metadata.female->pack_frame_index);
 
-			if (metadata.female->pak_end_index < metadata.female->pak_start_index)
+			if (Metadata.female->pak_end_index < Metadata.female->pak_start_index)
 			{
 				throw std::runtime_error(
-					"Invalid female sprite range in " + metadata.pak_file +
-					": start=" + std::to_string(metadata.female->pak_start_index) +
-					" end=" + std::to_string(metadata.female->pak_end_index)
+					"Invalid female sprite range in " + Metadata.pak_file +
+					": start=" + std::to_string(Metadata.female->pak_start_index) +
+					" end=" + std::to_string(Metadata.female->pak_end_index)
 				);
 			}
 		}
@@ -184,169 +184,169 @@ void LoadingScene::LoadItems()
 		// ------------------------------------------------------------
 		// Base index (fixed 24-slot stride)
 		// ------------------------------------------------------------
-		uint32_t male_base_index = MDLID_MALE_ITEM_START + static_cast<uint32_t>(index) * 24;
-		uint32_t female_base_index = MDLID_FEMALE_ITEM_START + static_cast<uint32_t>(index) * 24;
+		uint32_t MaleBaseIndex = MDLID_MALE_ITEM_START + static_cast<uint32_t>(Index) * 24;
+		uint32_t FemaleBaseIndex = MDLID_FEMALE_ITEM_START + static_cast<uint32_t>(Index) * 24;
 
 		// ------------------------------------------------------------
 		// Load sprites for this item PAK
 		// ------------------------------------------------------------
-		CSpriteLoader::OpenPAK(path, [&](CSpriteLoader& loader)
+		CSpriteLoader::open_pak(Path, [&](CSpriteLoader& Loader)
 			{
 				// -----------------------------
 				// Load MALE (if present)
 				// -----------------------------
-				if (metadata.male)
+				if (Metadata.male)
 				{
-					uint32_t start = metadata.male->pak_start_index;
-					uint32_t end = metadata.male->pak_end_index;
-					uint32_t count = (end - start + 1);
+					uint32_t Start = Metadata.male->pak_start_index;
+					uint32_t End = Metadata.male->pak_end_index;
+					uint32_t Count = (End - Start + 1);
 
-					for (uint32_t i = 0; i < count; i++)
+					for (uint32_t I = 0; I < Count; I++)
 					{
-						uint32_t pakIndex = start + i;
-						m_modelSprites[male_base_index + i] = loader.GetSprite(pakIndex);
+						uint32_t PakIndex = Start + I;
+						model_sprites[MaleBaseIndex + I] = Loader.get_sprite(PakIndex);
 					}
 				}
 
 				// -----------------------------
 				// Load FEMALE (if present)
 				// -----------------------------
-				if (metadata.female)
+				if (Metadata.female)
 				{
-					uint32_t start = metadata.female->pak_start_index;
-					uint32_t end = metadata.female->pak_end_index;
-					uint32_t count = (end - start + 1);
+					uint32_t Start = Metadata.female->pak_start_index;
+					uint32_t End = Metadata.female->pak_end_index;
+					uint32_t Count = (End - Start + 1);
 
-					for (uint32_t i = 0; i < count; i++)
+					for (uint32_t I = 0; I < Count; I++)
 					{
-						uint32_t pakIndex = start + i;
-						m_modelSprites[female_base_index + i] = loader.GetSprite(pakIndex);
+						uint32_t PakIndex = Start + I;
+						model_sprites[FemaleBaseIndex + I] = Loader.get_sprite(PakIndex);
 					}
 				}
 			});
 
-		printf("Loaded item metadata %zu: %s\n", index, metadata.pak_file.c_str());
+		printf("Loaded item metadata %zu: %s\n", Index, Metadata.pak_file.c_str());
 	}
 }
 
-void LoadingScene::LoadRegisterMaps()
+void LoadingScene::_load_register_maps()
 {
-	LoadSprite(0, 32, (constant::SPRITE_MAP_PATH / "maptiles1.pak").string(), m_mapTiles);
-	CSpriteLoader::OpenPAK((constant::SPRITE_MAP_PATH / "Structures1.pak").string(), [&](CSpriteLoader& inst) {
-		m_mapTiles[51] = inst.GetSprite(1);
-		m_mapTiles[55] = inst.GetSprite(5);
+	_load_sprite(0, 32, (constant::SPRITE_MAP_PATH / "maptiles1.pak").string(), map_tiles);
+	CSpriteLoader::open_pak((constant::SPRITE_MAP_PATH / "Structures1.pak").string(), [&](CSpriteLoader& Inst) {
+		map_tiles[51] = Inst.get_sprite(1);
+		map_tiles[55] = Inst.get_sprite(5);
 		});
-	LoadSprite(70, 27, (constant::SPRITE_MAP_PATH / "Sinside1.pak").string(), m_mapTiles);
-	LoadSprite(100, 46, (constant::SPRITE_MAP_PATH / "TREES1.pak").string(), m_mapTiles);
-	LoadSprite(200, 10, (constant::SPRITE_MAP_PATH / "Objects1.pak").string(), m_mapTiles);
-	LoadSprite(211, 5, (constant::SPRITE_MAP_PATH / "Objects2.pak").string(), m_mapTiles);
-	LoadSprite(216, 4, (constant::SPRITE_MAP_PATH / "Objects3.pak").string(), m_mapTiles);
-	LoadSprite(220, 2, (constant::SPRITE_MAP_PATH / "objects4.pak").string(), m_mapTiles);
-	LoadSprite(223, 3, (constant::SPRITE_MAP_PATH / "Tile223-225.pak").string(), m_mapTiles);
-	LoadSprite(226, 4, (constant::SPRITE_MAP_PATH / "Tile226-229.pak").string(), m_mapTiles);
-	LoadSprite(230, 9, (constant::SPRITE_MAP_PATH / "Objects5.pak").string(), m_mapTiles);
-	LoadSprite(238, 4, (constant::SPRITE_MAP_PATH / "Objects6.pak").string(), m_mapTiles);
-	LoadSprite(242, 7, (constant::SPRITE_MAP_PATH / "Objects7.pak").string(), m_mapTiles);
-	LoadSprite(300, 15, (constant::SPRITE_MAP_PATH / "maptiles2.pak").string(), m_mapTiles);
-	LoadSprite(320, 10, (constant::SPRITE_MAP_PATH / "maptiles4.pak").string(), m_mapTiles);
-	LoadSprite(330, 19, (constant::SPRITE_MAP_PATH / "maptiles5.pak").string(), m_mapTiles);
-	LoadSprite(349, 4, (constant::SPRITE_MAP_PATH / "maptiles6.pak").string(), m_mapTiles);
-	LoadSprite(353, 9, (constant::SPRITE_MAP_PATH / "maptiles353-361.pak").string(), m_mapTiles);
-	LoadSprite(363, 4, (constant::SPRITE_MAP_PATH / "Tile363-366.pak").string(), m_mapTiles);
-	LoadSprite(367, 1, (constant::SPRITE_MAP_PATH / "Tile367-367.pak").string(), m_mapTiles);
-	LoadSprite(370, 12, (constant::SPRITE_MAP_PATH / "Tile370-381.pak").string(), m_mapTiles);
-	LoadSprite(382, 6, (constant::SPRITE_MAP_PATH / "Tile382-387.pak").string(), m_mapTiles);
-	LoadSprite(388, 15, (constant::SPRITE_MAP_PATH / "Tile388-402.pak").string(), m_mapTiles);
-	LoadSprite(403, 3, (constant::SPRITE_MAP_PATH / "Tile403-405.pak").string(), m_mapTiles);
-	LoadSprite(406, 16, (constant::SPRITE_MAP_PATH / "Tile406-421.pak").string(), m_mapTiles);
-	LoadSprite(422, 8, (constant::SPRITE_MAP_PATH / "Tile422-429.pak").string(), m_mapTiles);
-	LoadSprite(430, 14, (constant::SPRITE_MAP_PATH / "Tile430-443.pak").string(), m_mapTiles);
-	LoadSprite(444, 1, (constant::SPRITE_MAP_PATH / "Tile444-444.pak").string(), m_mapTiles);
-	LoadSprite(445, 17, (constant::SPRITE_MAP_PATH / "Tile445-461.pak").string(), m_mapTiles);
-	LoadSprite(462, 12, (constant::SPRITE_MAP_PATH / "Tile462-473.pak").string(), m_mapTiles);
-	LoadSprite(474, 15, (constant::SPRITE_MAP_PATH / "Tile474-488.pak").string(), m_mapTiles);
-	LoadSprite(489, 34, (constant::SPRITE_MAP_PATH / "Tile489-522.pak").string(), m_mapTiles);
-	LoadSprite(523, 8, (constant::SPRITE_MAP_PATH / "Tile523-530.pak").string(), m_mapTiles);
-	LoadSprite(531, 10, (constant::SPRITE_MAP_PATH / "Tile531-540.pak").string(), m_mapTiles);
-	LoadSprite(541, 5, (constant::SPRITE_MAP_PATH / "Tile541-545.pak").string(), m_mapTiles);
+	_load_sprite(70, 27, (constant::SPRITE_MAP_PATH / "Sinside1.pak").string(), map_tiles);
+	_load_sprite(100, 46, (constant::SPRITE_MAP_PATH / "TREES1.pak").string(), map_tiles);
+	_load_sprite(200, 10, (constant::SPRITE_MAP_PATH / "Objects1.pak").string(), map_tiles);
+	_load_sprite(211, 5, (constant::SPRITE_MAP_PATH / "Objects2.pak").string(), map_tiles);
+	_load_sprite(216, 4, (constant::SPRITE_MAP_PATH / "Objects3.pak").string(), map_tiles);
+	_load_sprite(220, 2, (constant::SPRITE_MAP_PATH / "objects4.pak").string(), map_tiles);
+	_load_sprite(223, 3, (constant::SPRITE_MAP_PATH / "Tile223-225.pak").string(), map_tiles);
+	_load_sprite(226, 4, (constant::SPRITE_MAP_PATH / "Tile226-229.pak").string(), map_tiles);
+	_load_sprite(230, 9, (constant::SPRITE_MAP_PATH / "Objects5.pak").string(), map_tiles);
+	_load_sprite(238, 4, (constant::SPRITE_MAP_PATH / "Objects6.pak").string(), map_tiles);
+	_load_sprite(242, 7, (constant::SPRITE_MAP_PATH / "Objects7.pak").string(), map_tiles);
+	_load_sprite(300, 15, (constant::SPRITE_MAP_PATH / "maptiles2.pak").string(), map_tiles);
+	_load_sprite(320, 10, (constant::SPRITE_MAP_PATH / "maptiles4.pak").string(), map_tiles);
+	_load_sprite(330, 19, (constant::SPRITE_MAP_PATH / "maptiles5.pak").string(), map_tiles);
+	_load_sprite(349, 4, (constant::SPRITE_MAP_PATH / "maptiles6.pak").string(), map_tiles);
+	_load_sprite(353, 9, (constant::SPRITE_MAP_PATH / "maptiles353-361.pak").string(), map_tiles);
+	_load_sprite(363, 4, (constant::SPRITE_MAP_PATH / "Tile363-366.pak").string(), map_tiles);
+	_load_sprite(367, 1, (constant::SPRITE_MAP_PATH / "Tile367-367.pak").string(), map_tiles);
+	_load_sprite(370, 12, (constant::SPRITE_MAP_PATH / "Tile370-381.pak").string(), map_tiles);
+	_load_sprite(382, 6, (constant::SPRITE_MAP_PATH / "Tile382-387.pak").string(), map_tiles);
+	_load_sprite(388, 15, (constant::SPRITE_MAP_PATH / "Tile388-402.pak").string(), map_tiles);
+	_load_sprite(403, 3, (constant::SPRITE_MAP_PATH / "Tile403-405.pak").string(), map_tiles);
+	_load_sprite(406, 16, (constant::SPRITE_MAP_PATH / "Tile406-421.pak").string(), map_tiles);
+	_load_sprite(422, 8, (constant::SPRITE_MAP_PATH / "Tile422-429.pak").string(), map_tiles);
+	_load_sprite(430, 14, (constant::SPRITE_MAP_PATH / "Tile430-443.pak").string(), map_tiles);
+	_load_sprite(444, 1, (constant::SPRITE_MAP_PATH / "Tile444-444.pak").string(), map_tiles);
+	_load_sprite(445, 17, (constant::SPRITE_MAP_PATH / "Tile445-461.pak").string(), map_tiles);
+	_load_sprite(462, 12, (constant::SPRITE_MAP_PATH / "Tile462-473.pak").string(), map_tiles);
+	_load_sprite(474, 15, (constant::SPRITE_MAP_PATH / "Tile474-488.pak").string(), map_tiles);
+	_load_sprite(489, 34, (constant::SPRITE_MAP_PATH / "Tile489-522.pak").string(), map_tiles);
+	_load_sprite(523, 8, (constant::SPRITE_MAP_PATH / "Tile523-530.pak").string(), map_tiles);
+	_load_sprite(531, 10, (constant::SPRITE_MAP_PATH / "Tile531-540.pak").string(), map_tiles);
+	_load_sprite(541, 5, (constant::SPRITE_MAP_PATH / "Tile541-545.pak").string(), map_tiles);
 
-	CMapLoader::RegisterMapFile(MapID::middle2nd, constant::MAPDATA_PATH / "2ndmiddle.mtd");
-	CMapLoader::RegisterMapFile(MapID::Abaddon, constant::MAPDATA_PATH / "Abaddon.mtd");
-	CMapLoader::RegisterMapFile(MapID::arebrk11, constant::MAPDATA_PATH / "arebrk11.mtd");
-	CMapLoader::RegisterMapFile(MapID::arebrk12, constant::MAPDATA_PATH / "arebrk12.mtd");
-	CMapLoader::RegisterMapFile(MapID::arebrk21, constant::MAPDATA_PATH / "arebrk21.mtd");
-	CMapLoader::RegisterMapFile(MapID::arebrk22, constant::MAPDATA_PATH / "arebrk22.mtd");
-	CMapLoader::RegisterMapFile(MapID::arefarm, constant::MAPDATA_PATH / "arefarm.mtd");
-	CMapLoader::RegisterMapFile(MapID::arejail, constant::MAPDATA_PATH / "arejail.mtd");
-	CMapLoader::RegisterMapFile(MapID::ARESDEN, constant::MAPDATA_PATH / "ARESDEN.mtd");
-	CMapLoader::RegisterMapFile(MapID::aresdend1, constant::MAPDATA_PATH / "aresdend1.mtd");
-	CMapLoader::RegisterMapFile(MapID::areuni, constant::MAPDATA_PATH / "areuni.mtd");
-	CMapLoader::RegisterMapFile(MapID::arewrhus, constant::MAPDATA_PATH / "arewrhus.mtd");
-	CMapLoader::RegisterMapFile(MapID::bisle, constant::MAPDATA_PATH / "bisle.mtd");
-	CMapLoader::RegisterMapFile(MapID::bsmith_1, constant::MAPDATA_PATH / "bsmith_1.mtd");
-	CMapLoader::RegisterMapFile(MapID::bsmith_1f, constant::MAPDATA_PATH / "bsmith_1f.mtd");
-	CMapLoader::RegisterMapFile(MapID::bsmith_2, constant::MAPDATA_PATH / "bsmith_2.mtd");
-	CMapLoader::RegisterMapFile(MapID::bsmith_2f, constant::MAPDATA_PATH / "bsmith_2f.mtd");
-	CMapLoader::RegisterMapFile(MapID::BTField, constant::MAPDATA_PATH / "BTField.mtd");
-	CMapLoader::RegisterMapFile(MapID::cath_1, constant::MAPDATA_PATH / "cath_1.mtd");
-	CMapLoader::RegisterMapFile(MapID::cath_2, constant::MAPDATA_PATH / "cath_2.mtd");
-	CMapLoader::RegisterMapFile(MapID::cityhall_1, constant::MAPDATA_PATH / "cityhall_1.mtd");
-	CMapLoader::RegisterMapFile(MapID::cityhall_2, constant::MAPDATA_PATH / "cityhall_2.mtd");
-	CMapLoader::RegisterMapFile(MapID::Cmdhall_1, constant::MAPDATA_PATH / "Cmdhall_1.mtd");
-	CMapLoader::RegisterMapFile(MapID::Cmdhall_2, constant::MAPDATA_PATH / "Cmdhall_2.mtd");
-	CMapLoader::RegisterMapFile(MapID::Default, constant::MAPDATA_PATH / "Default.mtd");
-	CMapLoader::RegisterMapFile(MapID::dglv2, constant::MAPDATA_PATH / "dglv2.mtd");
-	CMapLoader::RegisterMapFile(MapID::dglv3, constant::MAPDATA_PATH / "dglv3.mtd");
-	CMapLoader::RegisterMapFile(MapID::dglv4, constant::MAPDATA_PATH / "dglv4.mtd");
-	CMapLoader::RegisterMapFile(MapID::DruncnCity, constant::MAPDATA_PATH / "DruncnCity.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvbrk11, constant::MAPDATA_PATH / "elvbrk11.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvbrk12, constant::MAPDATA_PATH / "elvbrk12.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvbrk21, constant::MAPDATA_PATH / "elvbrk21.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvbrk22, constant::MAPDATA_PATH / "elvbrk22.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvfarm, constant::MAPDATA_PATH / "elvfarm.mtd");
-	CMapLoader::RegisterMapFile(MapID::ELVINE, constant::MAPDATA_PATH / "ELVINE.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvined1, constant::MAPDATA_PATH / "elvined1.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvjail, constant::MAPDATA_PATH / "elvjail.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvuni, constant::MAPDATA_PATH / "elvuni.mtd");
-	CMapLoader::RegisterMapFile(MapID::elvwrhus, constant::MAPDATA_PATH / "elvwrhus.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone1, constant::MAPDATA_PATH / "fightzone1.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone2, constant::MAPDATA_PATH / "fightzone2.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone3, constant::MAPDATA_PATH / "fightzone3.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone4, constant::MAPDATA_PATH / "fightzone4.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone5, constant::MAPDATA_PATH / "fightzone5.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone6, constant::MAPDATA_PATH / "fightzone6.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone7, constant::MAPDATA_PATH / "fightzone7.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone8, constant::MAPDATA_PATH / "fightzone8.mtd");
-	CMapLoader::RegisterMapFile(MapID::fightzone9, constant::MAPDATA_PATH / "fightzone9.mtd");
-	CMapLoader::RegisterMapFile(MapID::gldhall_1, constant::MAPDATA_PATH / "gldhall_1.mtd");
-	CMapLoader::RegisterMapFile(MapID::gldhall_2, constant::MAPDATA_PATH / "gldhall_2.mtd");
-	CMapLoader::RegisterMapFile(MapID::GodH, constant::MAPDATA_PATH / "GodH.mtd");
-	CMapLoader::RegisterMapFile(MapID::gshop_1, constant::MAPDATA_PATH / "gshop_1.mtd");
-	CMapLoader::RegisterMapFile(MapID::gshop_1f, constant::MAPDATA_PATH / "gshop_1f.mtd");
-	CMapLoader::RegisterMapFile(MapID::gshop_2, constant::MAPDATA_PATH / "gshop_2.mtd");
-	CMapLoader::RegisterMapFile(MapID::gshop_2f, constant::MAPDATA_PATH / "gshop_2f.mtd");
-	CMapLoader::RegisterMapFile(MapID::HRampart, constant::MAPDATA_PATH / "HRampart.mtd");
-	CMapLoader::RegisterMapFile(MapID::huntzone1, constant::MAPDATA_PATH / "huntzone1.mtd");
-	CMapLoader::RegisterMapFile(MapID::huntzone2, constant::MAPDATA_PATH / "huntzone2.mtd");
-	CMapLoader::RegisterMapFile(MapID::huntzone3, constant::MAPDATA_PATH / "huntzone3.mtd");
-	CMapLoader::RegisterMapFile(MapID::huntzone4, constant::MAPDATA_PATH / "huntzone4.mtd");
-	CMapLoader::RegisterMapFile(MapID::icebound, constant::MAPDATA_PATH / "icebound.mtd");
-	CMapLoader::RegisterMapFile(MapID::inferniaA, constant::MAPDATA_PATH / "inferniaA.mtd");
-	CMapLoader::RegisterMapFile(MapID::inferniaB, constant::MAPDATA_PATH / "inferniaB.mtd");
-	CMapLoader::RegisterMapFile(MapID::maze, constant::MAPDATA_PATH / "maze.mtd");
-	CMapLoader::RegisterMapFile(MapID::middled1n, constant::MAPDATA_PATH / "middled1n.mtd");
-	CMapLoader::RegisterMapFile(MapID::middled1x, constant::MAPDATA_PATH / "middled1x.mtd");
-	CMapLoader::RegisterMapFile(MapID::middleland, constant::MAPDATA_PATH / "middleland.mtd");
-	CMapLoader::RegisterMapFile(MapID::procella, constant::MAPDATA_PATH / "procella.mtd");
-	CMapLoader::RegisterMapFile(MapID::Resurr1, constant::MAPDATA_PATH / "Resurr1.mtd");
-	CMapLoader::RegisterMapFile(MapID::Resurr2, constant::MAPDATA_PATH / "Resurr2.mtd");
-	CMapLoader::RegisterMapFile(MapID::Toh1, constant::MAPDATA_PATH / "Toh1.mtd");
-	CMapLoader::RegisterMapFile(MapID::Toh2, constant::MAPDATA_PATH / "Toh2.mtd");
-	CMapLoader::RegisterMapFile(MapID::Toh3, constant::MAPDATA_PATH / "Toh3.mtd");
-	CMapLoader::RegisterMapFile(MapID::wrhus_1, constant::MAPDATA_PATH / "wrhus_1.mtd");
-	CMapLoader::RegisterMapFile(MapID::wrhus_1f, constant::MAPDATA_PATH / "wrhus_1f.mtd");
-	CMapLoader::RegisterMapFile(MapID::wrhus_2, constant::MAPDATA_PATH / "wrhus_2.mtd");
-	CMapLoader::RegisterMapFile(MapID::wrhus_2f, constant::MAPDATA_PATH / "wrhus_2f.mtd");
-	CMapLoader::RegisterMapFile(MapID::wzdtwr_1, constant::MAPDATA_PATH / "wzdtwr_1.mtd");
-	CMapLoader::RegisterMapFile(MapID::wzdtwr_2, constant::MAPDATA_PATH / "wzdtwr_2.mtd");
+	CMapLoader::register_map_file(MapID::middle2nd, constant::MAPDATA_PATH / "2ndmiddle.mtd");
+	CMapLoader::register_map_file(MapID::Abaddon, constant::MAPDATA_PATH / "Abaddon.mtd");
+	CMapLoader::register_map_file(MapID::arebrk11, constant::MAPDATA_PATH / "arebrk11.mtd");
+	CMapLoader::register_map_file(MapID::arebrk12, constant::MAPDATA_PATH / "arebrk12.mtd");
+	CMapLoader::register_map_file(MapID::arebrk21, constant::MAPDATA_PATH / "arebrk21.mtd");
+	CMapLoader::register_map_file(MapID::arebrk22, constant::MAPDATA_PATH / "arebrk22.mtd");
+	CMapLoader::register_map_file(MapID::arefarm, constant::MAPDATA_PATH / "arefarm.mtd");
+	CMapLoader::register_map_file(MapID::arejail, constant::MAPDATA_PATH / "arejail.mtd");
+	CMapLoader::register_map_file(MapID::ARESDEN, constant::MAPDATA_PATH / "ARESDEN.mtd");
+	CMapLoader::register_map_file(MapID::aresdend1, constant::MAPDATA_PATH / "aresdend1.mtd");
+	CMapLoader::register_map_file(MapID::areuni, constant::MAPDATA_PATH / "areuni.mtd");
+	CMapLoader::register_map_file(MapID::arewrhus, constant::MAPDATA_PATH / "arewrhus.mtd");
+	CMapLoader::register_map_file(MapID::bisle, constant::MAPDATA_PATH / "bisle.mtd");
+	CMapLoader::register_map_file(MapID::bsmith_1, constant::MAPDATA_PATH / "bsmith_1.mtd");
+	CMapLoader::register_map_file(MapID::bsmith_1f, constant::MAPDATA_PATH / "bsmith_1f.mtd");
+	CMapLoader::register_map_file(MapID::bsmith_2, constant::MAPDATA_PATH / "bsmith_2.mtd");
+	CMapLoader::register_map_file(MapID::bsmith_2f, constant::MAPDATA_PATH / "bsmith_2f.mtd");
+	CMapLoader::register_map_file(MapID::BTField, constant::MAPDATA_PATH / "BTField.mtd");
+	CMapLoader::register_map_file(MapID::cath_1, constant::MAPDATA_PATH / "cath_1.mtd");
+	CMapLoader::register_map_file(MapID::cath_2, constant::MAPDATA_PATH / "cath_2.mtd");
+	CMapLoader::register_map_file(MapID::cityhall_1, constant::MAPDATA_PATH / "cityhall_1.mtd");
+	CMapLoader::register_map_file(MapID::cityhall_2, constant::MAPDATA_PATH / "cityhall_2.mtd");
+	CMapLoader::register_map_file(MapID::Cmdhall_1, constant::MAPDATA_PATH / "Cmdhall_1.mtd");
+	CMapLoader::register_map_file(MapID::Cmdhall_2, constant::MAPDATA_PATH / "Cmdhall_2.mtd");
+	CMapLoader::register_map_file(MapID::Default, constant::MAPDATA_PATH / "Default.mtd");
+	CMapLoader::register_map_file(MapID::dglv2, constant::MAPDATA_PATH / "dglv2.mtd");
+	CMapLoader::register_map_file(MapID::dglv3, constant::MAPDATA_PATH / "dglv3.mtd");
+	CMapLoader::register_map_file(MapID::dglv4, constant::MAPDATA_PATH / "dglv4.mtd");
+	CMapLoader::register_map_file(MapID::DruncnCity, constant::MAPDATA_PATH / "DruncnCity.mtd");
+	CMapLoader::register_map_file(MapID::elvbrk11, constant::MAPDATA_PATH / "elvbrk11.mtd");
+	CMapLoader::register_map_file(MapID::elvbrk12, constant::MAPDATA_PATH / "elvbrk12.mtd");
+	CMapLoader::register_map_file(MapID::elvbrk21, constant::MAPDATA_PATH / "elvbrk21.mtd");
+	CMapLoader::register_map_file(MapID::elvbrk22, constant::MAPDATA_PATH / "elvbrk22.mtd");
+	CMapLoader::register_map_file(MapID::elvfarm, constant::MAPDATA_PATH / "elvfarm.mtd");
+	CMapLoader::register_map_file(MapID::ELVINE, constant::MAPDATA_PATH / "ELVINE.mtd");
+	CMapLoader::register_map_file(MapID::elvined1, constant::MAPDATA_PATH / "elvined1.mtd");
+	CMapLoader::register_map_file(MapID::elvjail, constant::MAPDATA_PATH / "elvjail.mtd");
+	CMapLoader::register_map_file(MapID::elvuni, constant::MAPDATA_PATH / "elvuni.mtd");
+	CMapLoader::register_map_file(MapID::elvwrhus, constant::MAPDATA_PATH / "elvwrhus.mtd");
+	CMapLoader::register_map_file(MapID::fightzone1, constant::MAPDATA_PATH / "fightzone1.mtd");
+	CMapLoader::register_map_file(MapID::fightzone2, constant::MAPDATA_PATH / "fightzone2.mtd");
+	CMapLoader::register_map_file(MapID::fightzone3, constant::MAPDATA_PATH / "fightzone3.mtd");
+	CMapLoader::register_map_file(MapID::fightzone4, constant::MAPDATA_PATH / "fightzone4.mtd");
+	CMapLoader::register_map_file(MapID::fightzone5, constant::MAPDATA_PATH / "fightzone5.mtd");
+	CMapLoader::register_map_file(MapID::fightzone6, constant::MAPDATA_PATH / "fightzone6.mtd");
+	CMapLoader::register_map_file(MapID::fightzone7, constant::MAPDATA_PATH / "fightzone7.mtd");
+	CMapLoader::register_map_file(MapID::fightzone8, constant::MAPDATA_PATH / "fightzone8.mtd");
+	CMapLoader::register_map_file(MapID::fightzone9, constant::MAPDATA_PATH / "fightzone9.mtd");
+	CMapLoader::register_map_file(MapID::gldhall_1, constant::MAPDATA_PATH / "gldhall_1.mtd");
+	CMapLoader::register_map_file(MapID::gldhall_2, constant::MAPDATA_PATH / "gldhall_2.mtd");
+	CMapLoader::register_map_file(MapID::GodH, constant::MAPDATA_PATH / "GodH.mtd");
+	CMapLoader::register_map_file(MapID::gshop_1, constant::MAPDATA_PATH / "gshop_1.mtd");
+	CMapLoader::register_map_file(MapID::gshop_1f, constant::MAPDATA_PATH / "gshop_1f.mtd");
+	CMapLoader::register_map_file(MapID::gshop_2, constant::MAPDATA_PATH / "gshop_2.mtd");
+	CMapLoader::register_map_file(MapID::gshop_2f, constant::MAPDATA_PATH / "gshop_2f.mtd");
+	CMapLoader::register_map_file(MapID::HRampart, constant::MAPDATA_PATH / "HRampart.mtd");
+	CMapLoader::register_map_file(MapID::huntzone1, constant::MAPDATA_PATH / "huntzone1.mtd");
+	CMapLoader::register_map_file(MapID::huntzone2, constant::MAPDATA_PATH / "huntzone2.mtd");
+	CMapLoader::register_map_file(MapID::huntzone3, constant::MAPDATA_PATH / "huntzone3.mtd");
+	CMapLoader::register_map_file(MapID::huntzone4, constant::MAPDATA_PATH / "huntzone4.mtd");
+	CMapLoader::register_map_file(MapID::icebound, constant::MAPDATA_PATH / "icebound.mtd");
+	CMapLoader::register_map_file(MapID::inferniaA, constant::MAPDATA_PATH / "inferniaA.mtd");
+	CMapLoader::register_map_file(MapID::inferniaB, constant::MAPDATA_PATH / "inferniaB.mtd");
+	CMapLoader::register_map_file(MapID::maze, constant::MAPDATA_PATH / "maze.mtd");
+	CMapLoader::register_map_file(MapID::middled1n, constant::MAPDATA_PATH / "middled1n.mtd");
+	CMapLoader::register_map_file(MapID::middled1x, constant::MAPDATA_PATH / "middled1x.mtd");
+	CMapLoader::register_map_file(MapID::middleland, constant::MAPDATA_PATH / "middleland.mtd");
+	CMapLoader::register_map_file(MapID::procella, constant::MAPDATA_PATH / "procella.mtd");
+	CMapLoader::register_map_file(MapID::Resurr1, constant::MAPDATA_PATH / "Resurr1.mtd");
+	CMapLoader::register_map_file(MapID::Resurr2, constant::MAPDATA_PATH / "Resurr2.mtd");
+	CMapLoader::register_map_file(MapID::Toh1, constant::MAPDATA_PATH / "Toh1.mtd");
+	CMapLoader::register_map_file(MapID::Toh2, constant::MAPDATA_PATH / "Toh2.mtd");
+	CMapLoader::register_map_file(MapID::Toh3, constant::MAPDATA_PATH / "Toh3.mtd");
+	CMapLoader::register_map_file(MapID::wrhus_1, constant::MAPDATA_PATH / "wrhus_1.mtd");
+	CMapLoader::register_map_file(MapID::wrhus_1f, constant::MAPDATA_PATH / "wrhus_1f.mtd");
+	CMapLoader::register_map_file(MapID::wrhus_2, constant::MAPDATA_PATH / "wrhus_2.mtd");
+	CMapLoader::register_map_file(MapID::wrhus_2f, constant::MAPDATA_PATH / "wrhus_2f.mtd");
+	CMapLoader::register_map_file(MapID::wzdtwr_1, constant::MAPDATA_PATH / "wzdtwr_1.mtd");
+	CMapLoader::register_map_file(MapID::wzdtwr_2, constant::MAPDATA_PATH / "wzdtwr_2.mtd");
 }

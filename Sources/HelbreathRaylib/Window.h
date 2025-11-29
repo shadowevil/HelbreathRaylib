@@ -64,71 +64,71 @@ public:
     Window& operator=(const Window&) = delete;
 
     // Window state
-    bool IsOpen() const;
-    bool ShouldClose() const;
+    bool is_open() const;
+    bool should_close() const;
 
     // Window properties
-    int GetWidth() const { return m_Width; }
-    int GetHeight() const { return m_Height; }
-    const std::string& GetTitle() const { return m_Title; }
-    WindowFlags GetFlags() const { return m_Flags; }
+    int get_width() const { return _width; }
+    int get_height() const { return _height; }
+    const std::string& get_title() const { return _title; }
+    WindowFlags get_flags() const { return _flags; }
 
     // Frame timing
-    float GetDeltaTime() const;
-    float GetFPS() const;
-    float FramesPerSecond() const { return m_FramesPerSecond; }
-    int GetFrameCount() const;
+    float get_delta_time() const;
+    float get_fps() const;
+    float frames_per_second() const { return _frames_per_second; }
+    int get_frame_count() const;
 
     // Window control (called by Application only)
-    void BeginFrame();
-    void EndFrame();
-    void Close();
+    void begin_frame();
+    void end_frame();
+    void close();
 
     // Window modification (triggers recreation)
-    void SetTitle(const std::string& title);
-    void SetSize(int width, int height);
-    void ToggleFullscreen();
+    void set_title(const std::string& title);
+    void set_size(int width, int height);
+    void toggle_fullscreen();
 
     // Event callback
-    void SetEventCallback(const EventCallbackFn& callback) { m_EventCallback = callback; }
+    void set_event_callback(const EventCallbackFn& callback) { _event_callback = callback; }
 
     // Upscale event callbacks
-    void SetBeforeUpscaleCallback(const std::function<void()>& callback) { m_BeforeUpscaleCallback = callback; }
-    void SetAfterUpscaleCallback(const std::function<void()>& callback) { m_AfterUpscaleCallback = callback; }
+    void set_before_upscale_callback(const std::function<void()>& callback) { _before_upscale_callback = callback; }
+    void set_after_upscale_callback(const std::function<void()>& callback) { _after_upscale_callback = callback; }
 
     // Poll and dispatch window events (called by Application)
-    void PollEvents();
+    void poll_events();
 
 private:
-    void ApplyWindowFlags();
+    void _apply_window_flags();
 
 private:
-    std::string m_Title;
-    int m_Width;
-    int m_Height;
-    int m_TargetFPS;
-    WindowFlags m_Flags;
-    bool m_IsInitialized;
+    std::string _title;
+    int _width;
+    int _height;
+    int _target_fps;
+    WindowFlags _flags;
+    bool _is_initialized;
 
     // Custom FPS counter (frame accurate)
-    float m_FramesPerSecond;
-    float m_FPSTimeAccumulator;
-    int m_FPSFrameCount;
+    float _frames_per_second;
+    float _fps_time_accumulator;
+    int _fps_frame_count;
 
     // Event callback
-    EventCallbackFn m_EventCallback;
+    EventCallbackFn _event_callback;
 
     // State tracking for event generation
-    int m_LastWidth;
-    int m_LastHeight;
-    bool m_LastFocused;
+    int _last_width;
+    int _last_height;
+    bool _last_focused;
 
     // Render target for upscaling
-    RenderTexture2D m_RenderTarget;
-    int m_GameWidth;
-    int m_GameHeight;
+    RenderTexture2D _render_target;
+    int _game_width;
+    int _game_height;
 
     // Upscale event callbacks
-    std::function<void()> m_BeforeUpscaleCallback;
-    std::function<void()> m_AfterUpscaleCallback;
+    std::function<void()> _before_upscale_callback;
+    std::function<void()> _after_upscale_callback;
 };

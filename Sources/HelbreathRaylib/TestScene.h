@@ -23,17 +23,17 @@ inline std::unordered_set<uint32_t> ShadowlessObjects = {
 class TestScene : public Scene {
 public:
 	using Scene::Scene;
-	void OnInitialize() override;
-	void OnUninitialize() override;
-	void OnUpdate() override;
-	void OnRender() override;
+	void on_initialize() override;
+	void on_uninitialize() override;
+	void on_update() override;
+	void on_render() override;
 
 private:
-	Player* m_player{};
-	std::unique_ptr<CMapData> m_mapData{};
-	Camera2D m_camera{};
-	std::string m_debugText{};
+	Player* _player{};
+	std::unique_ptr<CMapData> _map_data{};
+	Camera2D _camera{};
+	std::string _debug_text{};
 
-    void DrawObjectsWithShadow();
-    void DrawAll(const std::vector<DrawEntry>& list);
+    void _draw_objects_with_shadow();
+    void _draw_all(const std::vector<DrawEntry>& list);
 };

@@ -17,153 +17,153 @@ public:
     Application& operator=(Application&&) = delete;
 
     // Application lifecycle (static interface)
-    static int Run();
-    static void Exit(int exitCode = 0);
+    static int run();
+    static void exit(int exit_code = 0);
 
     // Window management (static interface)
-    static bool CreateAppWindow(const WindowSpec& spec);
-    static void DestroyAppWindow();
-    static void RestartAppWindow();
-    static Window* GetWindow();
-    static bool HasWindow();
+    static bool create_app_window(const WindowSpec& spec);
+    static void destroy_app_window();
+    static void restart_app_window();
+    static Window* get_window();
+    static bool has_window();
 
     // Layer management (static template interface)
-    // Usage: Application::PushLayer<MyLayer>(constructor_args...);
+    // Usage: Application::push_layer<MyLayer>(constructor_args...);
     template<typename T, typename... Args>
-    static T* PushLayer(Args&&... args)
+    static T* push_layer(Args&&... args)
     {
         static_assert(std::is_base_of<ApplicationLayer, T>::value,
             "T must derive from ApplicationLayer");
 
-        Application& instance = Get();
-        auto layer = std::make_unique<T>(std::forward<Args>(args)...);
-        T* layerPtr = layer.get();
+        Application& Instance = _get();
+        auto Layer = std::make_unique<T>(std::forward<Args>(args)...);
+        T* LayerPtr = Layer.get();
 
-        layer->OnAttach();
-        printf("Layer attached: %s\n", layer->GetName());
-        instance.m_Layers.push_back(std::move(layer));
+        Layer->on_attach();
+        printf("Layer attached: %s\n", Layer->get_name());
+        Instance._layers.push_back(std::move(Layer));
 
-        return layerPtr;
+        return LayerPtr;
     }
 
     // Remove layer by type
     template<typename T>
-    static void RemoveLayer()
+    static void remove_layer()
     {
         static_assert(std::is_base_of<ApplicationLayer, T>::value,
             "T must derive from ApplicationLayer");
 
-        Application& instance = Get();
-        auto it = std::find_if(instance.m_Layers.begin(), instance.m_Layers.end(),
-            [](const std::unique_ptr<ApplicationLayer>& ptr) {
-                return dynamic_cast<T*>(ptr.get()) != nullptr;
+        Application& Instance = _get();
+        auto It = std::find_if(Instance._layers.begin(), Instance._layers.end(),
+            [](const std::unique_ptr<ApplicationLayer>& Ptr) {
+                return dynamic_cast<T*>(Ptr.get()) != nullptr;
             });
 
-        if (it != instance.m_Layers.end())
+        if (It != Instance._layers.end())
         {
-            (*it)->OnDetach();
-            printf("Layer removed: %s\n", (*it)->GetName());
-            instance.m_Layers.erase(it);
+            (*It)->on_detach();
+            printf("Layer removed: %s\n", (*It)->get_name());
+            Instance._layers.erase(It);
         }
     }
 
     // Remove layer by pointer
-    static void RemoveLayer(ApplicationLayer* layer);
+    static void remove_layer(ApplicationLayer* layer);
 
     // Remove top layer
-    static void PopLayer();
+    static void pop_layer();
 
     // Get layer by type
     template<typename T>
-    static T* GetLayerPtr()
+    static T* get_layer_ptr()
     {
         static_assert(std::is_base_of<ApplicationLayer, T>::value,
             "T must derive from ApplicationLayer");
 
-        Application& instance = Get();
-        for (auto& layer : instance.m_Layers)
+        Application& Instance = _get();
+        for (auto& Layer : Instance._layers)
         {
-            if (T* casted = dynamic_cast<T*>(layer.get()))
+            if (T* Casted = dynamic_cast<T*>(Layer.get()))
             {
-                return casted;
+                return Casted;
             }
         }
         return nullptr;
     }
 
     template<typename T>
-    static T& GetLayer()
+    static T& get_layer()
     {
         static_assert(std::is_base_of<ApplicationLayer, T>::value,
             "T must derive from ApplicationLayer");
 
-        T* layer = GetLayerPtr<T>();
-        if (!layer)
+        T* Layer = get_layer_ptr<T>();
+        if (!Layer)
         {
             throw std::runtime_error("Layer of specified type not found");
         }
-        return *layer;
+        return *Layer;
 	}
 
     // Event handling
-    static void OnEvent(Event& event);
+    static void on_event(Event& event);
 
     // Application state
-    static bool IsRunning();
-    static int GetExitCode();
-    static float GetDeltaTime();
-    static float GetFPS();
-    static float GetAvgFPS();
-    static float FramesPerSecond();
+    static bool is_running();
+    static int get_exit_code();
+    static float get_delta_time();
+    static float get_fps();
+    static float get_avg_fps();
+    static float frames_per_second();
 
 private:
     Application();
     ~Application();
 
     // Singleton access (private)
-    static Application& Get();
+    static Application& _get();
 
     // Internal implementation methods
-    int Run_Internal();
-    void Exit_Internal(int exitCode);
-    bool CreateAppWindow_Internal(const WindowSpec& spec);
-    void DestroyAppWindow_Internal();
-    void RestartAppWindow_Internal();
-    void PopLayer_Internal();
-    void RemoveLayer_Internal(ApplicationLayer* layer);
-    void OnEvent_Internal(Event& event);
-    float GetFPS_Internal() const;
-    float GetAvgFPS_Internal() const;
-    float FramesPerSecond_Internal() const;
+    int _run_internal();
+    void _exit_internal(int exit_code);
+    bool _create_app_window_internal(const WindowSpec& spec);
+    void _destroy_app_window_internal();
+    void _restart_app_window_internal();
+    void _pop_layer_internal();
+    void _remove_layer_internal(ApplicationLayer* layer);
+    void _on_event_internal(Event& event);
+    float _get_fps_internal() const;
+    float _get_avg_fps_internal() const;
+    float _frames_per_second_internal() const;
 
-    void MainLoop();
-    void UpdateLayers();
-    void RenderLayers();
+    void _main_loop();
+    void _update_layers();
+    void _render_layers();
 
 private:
-    std::unique_ptr<Window> m_Window;
-    std::vector<std::unique_ptr<ApplicationLayer>> m_Layers;
+    std::unique_ptr<Window> _window;
+    std::vector<std::unique_ptr<ApplicationLayer>> _layers;
 
-    bool m_Running;
-    bool m_WindowRestartRequested;
-    int m_ExitCode;
-    float m_DeltaTime;
+    bool _running;
+    bool _window_restart_requested;
+    int _exit_code;
+    float _delta_time;
 
     // Average FPS calculation
-    float m_AverageFPS;
-    float m_AvgFPSTimeAccumulator;
-    int m_AvgFPSFrameCount;
+    float _average_fps;
+    float _avg_fps_time_accumulator;
+    int _avg_fps_frame_count;
 
-    WindowSpec m_PendingWindowSpec;
+    WindowSpec _pending_window_spec;
 };
 
 namespace rlx {
     template<typename T>
-    inline bool RectangleContainsMouse(const rlx::Rectangle<T>& rect) {
+    inline bool rectangle_contains_mouse(const rlx::Rectangle<T>& rect) {
         return rlx::RectangleContainsScaledMouse(rect, constant::BASE_WIDTH, constant::BASE_HEIGHT);
     }
 
-    inline Vector2 GetMousePosition() {
+    inline Vector2 get_mouse_position() {
         return rlx::GetScaledMousePosition(constant::BASE_WIDTH, constant::BASE_HEIGHT);
     }
 }

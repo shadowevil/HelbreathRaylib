@@ -7,45 +7,45 @@
 Player::Player(const PlayerAppearance& appear)
 	: appearance(appear)
 {
-    current_animation = stand_animation;
+    current_animation = _stand_animation;
 }
 
-void Player::OnUpdate()
+void Player::on_update()
 {
     current_animation.update(GetTime());
 
-    if (m_attachedCamera)
+    if (_attached_camera)
     {
         // Click movement handling
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
         {
-            GamePosition target = GetTileWorldMousePosition(*m_attachedCamera);
-            bool run = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
-            MoveTo(target, run);
+            GamePosition Target = get_tile_world_mouse_position(*_attached_camera);
+            bool Run = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+            move_to(Target, Run);
         }
 
 		// Toggle combat/peace stance
         if (IsKeyPressed(KEY_TAB))
         {
-            current_stance = (current_stance == PEACE ? COMBAT : PEACE);
-            SetAnimation(current_animation_type, current_weapon_type);
+            _current_stance = (_current_stance == PEACE ? COMBAT : PEACE);
+            set_animation(current_animation_type, _current_weapon_type);
         }
 
 		// Running / Walking handling
         if(IsKeyDown(KEY_LEFT_SHIFT))
         {
-            if (current_animation_type != RUN && IsMoving())
+            if (current_animation_type != RUN && is_moving())
             {
-				SetAnimation(RUN, current_weapon_type);
-                m_isRunning = true;
+				set_animation(RUN, _current_weapon_type);
+                _is_running = true;
             }
         }
         else
         {   // Force walking if moving and not holding shift
-            if(current_animation_type != WALK && IsMoving())
+            if(current_animation_type != WALK && is_moving())
             {
-                SetAnimation(WALK, current_weapon_type);
-                m_isRunning = false;
+                set_animation(WALK, _current_weapon_type);
+                _is_running = false;
             }
 		}
 
@@ -53,11 +53,11 @@ void Player::OnUpdate()
         // If we're not moving, change direction to face mouse.
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
         {
-            if(!IsMoving()) {
-                current_direction = GetDirectionToPoint(position, GetTileWorldMousePosition(*m_attachedCamera));
+            if(!is_moving()) {
+                current_direction = get_direction_to_point(position, get_tile_world_mouse_position(*_attached_camera));
             }
             else {
-                RequestStopMovement();
+                _request_stop_movement();
             }
         }
 
@@ -66,17 +66,17 @@ void Player::OnUpdate()
         if (IsKeyDown(KEY_LEFT_ALT))
         {
             if (IsKeyPressed(KEY_ONE))
-                SetAnimation(ATTACK, HAND);
-            else if (IsKeyPressed(KEY_TWO) && current_stance == COMBAT)
-                SetAnimation(ATTACK, BOW);
-            else if (IsKeyPressed(KEY_THREE) && current_stance == COMBAT)
-                SetAnimation(ATTACK, CAST);
+                set_animation(ATTACK, HAND);
+            else if (IsKeyPressed(KEY_TWO) && _current_stance == COMBAT)
+                set_animation(ATTACK, BOW);
+            else if (IsKeyPressed(KEY_THREE) && _current_stance == COMBAT)
+                set_animation(ATTACK, CAST);
             else if (IsKeyPressed(KEY_FOUR))
-                SetAnimation(PICKUP, HAND);
+                set_animation(PICKUP, HAND);
             else if (IsKeyPressed(KEY_FIVE))
-                SetAnimation(TAKEDAMAGE, HAND);
+                set_animation(TAKEDAMAGE, HAND);
             else if (IsKeyPressed(KEY_SIX))
-                SetAnimation(DYING, HAND);
+                set_animation(DYING, HAND);
 
             if (IsKeyPressed(KEY_G))
             {
@@ -90,89 +90,89 @@ void Player::OnUpdate()
     }
 }
 
-void Player::OnRender() const
+void Player::on_render() const
 {
     // Model rendering
-    m_modelSprites[GetPlayerAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender)]
-        ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), SkinColorFromIndex(appearance.skin_color_index));
+    _model_sprites[get_player_animation_index(_current_stance, current_animation_type, _current_weapon_type, appearance.gender)]
+        ->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), SkinColorFromIndex(appearance.skin_color_index));
 
     // Hair rendering
 	if (appearance.hair_style != HAIR_STYLE_0)
-        m_modelSprites[GetPlayerHairAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender, appearance.hair_style)]
-            ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), HairColorFromIndex(appearance.hair_color_index));
+        _model_sprites[get_player_hair_animation_index(_current_stance, current_animation_type, _current_weapon_type, appearance.gender, appearance.hair_style)]
+            ->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), HairColorFromIndex(appearance.hair_color_index));
 
     // Underwear rendering
-    m_modelSprites[GetPlayerUnderwearAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender)]
-        ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), UnderwearColorFromIndex(appearance.underwear_color_index));
+    _model_sprites[get_player_underwear_animation_index(_current_stance, current_animation_type, _current_weapon_type, appearance.gender)]
+        ->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), UnderwearColorFromIndex(appearance.underwear_color_index));
 
     appearance.equipment.foreach([&](auto& slot, int idx) {
-        DrawModelItem(slot.Id(), WHITE);
+        _draw_model_item(slot.get_id(), WHITE);
         });
 }
 
-void Player::OnRenderShadow() const
+void Player::on_render_shadow() const
 {
     // Model rendering
-    m_modelSprites[GetPlayerAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender)]
-        ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), rlx::RGBA(0, 0, 0, 64));
+    _model_sprites[get_player_animation_index(_current_stance, current_animation_type, _current_weapon_type, appearance.gender)]
+        ->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), rlx::RGBA(0, 0, 0, 64));
 
     // Hair rendering
     if (appearance.hair_style != HAIR_STYLE_0)
-        m_modelSprites[GetPlayerHairAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender, appearance.hair_style)]
-            ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), rlx::RGBA(0, 0, 0, 32));
+        _model_sprites[get_player_hair_animation_index(_current_stance, current_animation_type, _current_weapon_type, appearance.gender, appearance.hair_style)]
+            ->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), rlx::RGBA(0, 0, 0, 32));
 
     // Underwear rendering
-    m_modelSprites[GetPlayerUnderwearAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender)]
-        ->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), rlx::RGBA(0, 0, 0, 32));
+    _model_sprites[get_player_underwear_animation_index(_current_stance, current_animation_type, _current_weapon_type, appearance.gender)]
+        ->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), rlx::RGBA(0, 0, 0, 32));
 
     appearance.equipment.foreach([&](auto& slot, int idx) {
-        DrawModelItem(slot.Id(), rlx::RGBA(0, 0, 0, 32), true);
+        _draw_model_item(slot.get_id(), rlx::RGBA(0, 0, 0, 32), true);
         });
 }
 
-PAKLib::sprite_rect Player::GetEntityBounds() const
+PAKLib::sprite_rect Player::get_entity_bounds() const
 {
-    return m_modelSprites[GetPlayerAnimationIndex(current_stance, current_animation_type, current_weapon_type, appearance.gender)]
-        ->GetFrameRectangle(current_animation.current_frame + (current_direction * current_animation.max_frame));
+    return _model_sprites[get_player_animation_index(_current_stance, current_animation_type, _current_weapon_type, appearance.gender)]
+        ->get_frame_rectangle(current_animation.current_frame + (current_direction * current_animation.max_frame));
 }
 
-void Player::SetAnimation(AnimationType newType, WeaponUsed newWeapon)
+void Player::set_animation(AnimationType new_type, WeaponUsed new_weapon)
 {
-    current_animation_type = newType;
-    current_weapon_type = newWeapon;
+    current_animation_type = new_type;
+    _current_weapon_type = new_weapon;
 
-    switch (newType)
+    switch (new_type)
     {
-    case STAND:      current_animation = stand_animation;      break;
-    case WALK:       current_animation = walk_animation;       break;
-    case RUN:        current_animation = run_animation;        break;
+    case STAND:      current_animation = _stand_animation;      break;
+    case WALK:       current_animation = _walk_animation;       break;
+    case RUN:        current_animation = _run_animation;        break;
     case ATTACK:
-        current_animation = (newWeapon == CAST)
-            ? cast_animation
-            : attack_animation;
+        current_animation = (new_weapon == CAST)
+            ? _cast_animation
+            : _attack_animation;
         break;
-    case PICKUP:     current_animation = pickup_animation;     break;
-    case TAKEDAMAGE: current_animation = takedamage_animation; break;
-    case DYING:      current_animation = dying_animation;      break;
+    case PICKUP:     current_animation = _pickup_animation;     break;
+    case TAKEDAMAGE: current_animation = _takedamage_animation; break;
+    case DYING:      current_animation = _dying_animation;      break;
     }
 
     current_animation.reset();
 }
 
-void Player::DrawModelItem(int16_t item_id, Color item_color, bool is_shadow) const
+void Player::_draw_model_item(int16_t item_id, Color item_color, bool is_shadow) const
 {
     if (item_id == -1)
         return;
 
-    auto sprite = m_modelSprites[GetPlayerItemAnimationIndex(item_id, current_stance, current_animation_type, current_weapon_type, appearance.gender)];
-    if (!sprite)    // sprite not found, return safely
+    auto Sprite = _model_sprites[get_player_item_animation_index(item_id, _current_stance, current_animation_type, _current_weapon_type, appearance.gender)];
+    if (!Sprite)    // sprite not found, return safely
         return;
 
     if (is_shadow)
     {
-        sprite->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), item_color);
+        Sprite->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), item_color);
     }
     else {
-        sprite->Draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), item_color);
+        Sprite->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), item_color);
     }
 }

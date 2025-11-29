@@ -6,10 +6,10 @@
 class MainMenuScene : public Scene {
 public:
 	using Scene::Scene;
-	void OnInitialize() override;
-	void OnUninitialize() override;
-	void OnUpdate() override;
-	void OnRender() override;
+	void on_initialize() override;
+	void on_uninitialize() override;
+	void on_update() override;
+	void on_render() override;
 
 private:
 	enum MainMenuButton {
@@ -18,5 +18,5 @@ private:
 		EXIT,
 		COUNT
 	};
-	std::vector<rlx::Rectangle<int16_t>> m_mainMenuButtonRects{};
+	std::vector<rlx::Rectangle<int16_t>> _main_menu_button_rects{};
 };

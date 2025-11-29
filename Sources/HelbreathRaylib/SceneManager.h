@@ -4,7 +4,6 @@
 #include <memory>
 #include <functional>
 
-
 class SceneManager {
 public:
     constexpr static float FAST_FADE_DURATION = 0.15f;
@@ -19,135 +18,135 @@ public:
     };
 
     struct TransitionConfig {
-        float fadeOutDuration = 0.5f;
-        float fadeInDuration = 0.5f;
-        Color fadeColor = BLACK;
+        float fade_out_duration = 0.5f;
+        float fade_in_duration = 0.5f;
+        Color fade_color = BLACK;
     };
 
     explicit SceneManager() = default;
 
     template<typename T, typename... Args>
-    void SetScene(Args&&... args) {
+    void set_scene(Args&&... args) {
         static_assert(std::is_base_of_v<Scene, T>, "T must derive from Scene");
-        m_pendingScene = [... args = std::forward<Args>(args)]() mutable {
+        _pending_scene = [... args = std::forward<Args>(args)]() mutable {
             return std::make_unique<T>(std::forward<Args>(args)...);
             };
-        m_transitionState = TransitionState::FadeOut;
-        m_transitionTime = 0.0f;
+        _transition_state = TransitionState::FadeOut;
+        _transition_time = 0.0f;
     }
 
     template<typename T, typename... Args>
-    void PushOverlay(Args&&... args) {
+    void push_overlay(Args&&... args) {
         static_assert(std::is_base_of_v<Scene, T>, "T must derive from Scene");
 
-        if (!m_currentScene) return;
+        if (!_current_scene) return;
 
-        auto overlay = std::make_unique<T>(std::forward<Args>(args)...);
-        overlay->OnInitialize();
-        m_overlay = std::move(overlay);
+        auto Overlay = std::make_unique<T>(std::forward<Args>(args)...);
+        Overlay->on_initialize();
+        _overlay = std::move(Overlay);
     }
 
-    void PopOverlay() {
-        if (m_overlay) {
-            m_overlay->OnUninitialize();
-            m_overlay.reset();
+    void pop_overlay() {
+        if (_overlay) {
+            _overlay->on_initialize();
+            _overlay.reset();
         }
     }
 
-    void Update() {
-        float dt = GetFrameTime();
+    void update() {
+        float Dt = GetFrameTime();
 
-        switch (m_transitionState) {
+        switch (_transition_state) {
         case TransitionState::FadeOut:
-            m_transitionTime += dt;
-            if (m_transitionTime >= m_config.fadeOutDuration) {
-                m_transitionState = TransitionState::Switching;
-                m_transitionTime = 0.0f;
+            _transition_time += Dt;
+            if (_transition_time >= _config.fade_out_duration) {
+                _transition_state = TransitionState::Switching;
+                _transition_time = 0.0f;
             }
             break;
 
         case TransitionState::Switching:
-            if (m_currentScene) {
-                m_currentScene->OnUninitialize();
+            if (_current_scene) {
+                _current_scene->on_uninitialize();
             }
-            if (m_overlay) {
-                m_overlay->OnUninitialize();
-                m_overlay.reset();
+            if (_overlay) {
+                _overlay->on_initialize();
+                _overlay.reset();
             }
-            m_currentScene = m_pendingScene();
-            m_pendingScene = nullptr;
-            m_currentScene->OnInitialize();
-            m_transitionState = TransitionState::FadeIn;
-            m_transitionTime = 0.0f;
+            _current_scene = _pending_scene();
+            _pending_scene = nullptr;
+            _current_scene->on_initialize();
+            _transition_state = TransitionState::FadeIn;
+            _transition_time = 0.0f;
             break;
 
         case TransitionState::FadeIn:
-            m_transitionTime += dt;
-            if (m_transitionTime >= m_config.fadeInDuration) {
-                m_transitionState = TransitionState::None;
-                m_transitionTime = 0.0f;
+            _transition_time += Dt;
+            if (_transition_time >= _config.fade_in_duration) {
+                _transition_state = TransitionState::None;
+                _transition_time = 0.0f;
             }
             break;
 
         case TransitionState::None:
-            if (m_currentScene) {
-                m_currentScene->OnUpdate();
+            if (_current_scene) {
+                _current_scene->on_update();
             }
-            if (m_overlay) {
-                m_overlay->OnUpdate();
+            if (_overlay) {
+                _overlay->on_update();
             }
             break;
         }
     }
 
-    void Render() {
-        if (m_currentScene) {
-            m_currentScene->OnRender();
+    void render() {
+        if (_current_scene) {
+            _current_scene->on_render();
         }
-        if (m_overlay) {
-            m_overlay->OnRender();
+        if (_overlay) {
+            _overlay->on_render();
         }
-        RenderTransition();
+        _render_transition();
     }
 
-    void SetTransitionConfig(const TransitionConfig& config) {
-        m_config = config;
+    void set_transition_config(const TransitionConfig& config) {
+        _config = config;
     }
 
-    bool IsTransitioning() const {
-        return m_transitionState != TransitionState::None;
+    bool is_transitioning() const {
+        return _transition_state != TransitionState::None;
     }
 
 private:
-    void RenderTransition() {
-        float alpha = 0.0f;
+    void _render_transition() {
+        float Alpha = 0.0f;
 
-        switch (m_transitionState) {
+        switch (_transition_state) {
         case TransitionState::FadeOut:
-            alpha = m_transitionTime / m_config.fadeOutDuration;
+            Alpha = _transition_time / _config.fade_out_duration;
             break;
 
         case TransitionState::Switching:
-            alpha = 1.0f;
+            Alpha = 1.0f;
             break;
 
         case TransitionState::FadeIn:
-            alpha = 1.0f - (m_transitionTime / m_config.fadeInDuration);
+            Alpha = 1.0f - (_transition_time / _config.fade_in_duration);
             break;
 
         case TransitionState::None:
             return;
         }
 
-        Color fadeColor = m_config.fadeColor;
-        fadeColor.a = static_cast<unsigned char>(alpha * 255);
-        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), fadeColor);
+        Color FadeColor = _config.fade_color;
+        FadeColor.a = static_cast<unsigned char>(Alpha * 255);
+        DrawRectangle(0, 0, constant::BASE_WIDTH, constant::BASE_HEIGHT, FadeColor);
     }
 
-    std::unique_ptr<Scene> m_currentScene;
-    std::unique_ptr<Scene> m_overlay;
-    std::function<std::unique_ptr<Scene>()> m_pendingScene;
-    TransitionState m_transitionState = TransitionState::None;
-    TransitionConfig m_config;
-    float m_transitionTime = 0.0f;
+    std::unique_ptr<Scene> _current_scene;
+    std::unique_ptr<Scene> _overlay;
+    std::function<std::unique_ptr<Scene>()> _pending_scene;
+    TransitionState _transition_state = TransitionState::None;
+    TransitionConfig _config;
+    float _transition_time = 0.0f;
 };

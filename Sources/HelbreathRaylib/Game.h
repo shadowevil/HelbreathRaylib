@@ -12,25 +12,25 @@
 class Game : public ApplicationLayer {
 public:
 	Game() : ApplicationLayer("Game") {}
-	void OnAttach() override;
-	void OnDetach() override;
-	void OnUpdate() override;
-	void OnRender() override;
-	void OnEvent(Event&) override;
+	void on_attach() override;
+	void on_detach() override;
+	void on_update() override;
+	void on_render() override;
+	void on_event(Event&) override;
 
-	CSpriteCollection m_sprites{};
-	CSpriteCollection m_modelSprites{};
-	CSpriteCollection m_mapTiles{};
-	std::vector<ItemMetadataEntry> m_itemMetadata{};
-	std::unique_ptr<SceneManager> m_pSceneManager{ nullptr };
+	CSpriteCollection sprites{};
+	CSpriteCollection model_sprites{};
+	CSpriteCollection map_tiles{};
+	std::vector<ItemMetadataEntry> item_metadata{};
+	std::unique_ptr<SceneManager> scene_manager{ nullptr };
 
 	// Replace with entity manager later
-	std::vector<std::unique_ptr<Entity>> m_entities{};
+	std::vector<std::unique_ptr<Entity>> entities{};
 
 	// Periodic Timer thread
-	std::atomic<bool> m_isRunning{ true };
-	std::thread m_perodicTimer{};
+	std::atomic<bool> is_running{ true };
+	std::thread periodic_timer{};
 
-	bool HardwareCursor = true;
+	bool hardware_cursor = true;
 };
 

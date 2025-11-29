@@ -1,35 +1,35 @@
 #include "Scenes.h"
 
-void ExitGameScene::OnInitialize()
+void ExitGameScene::on_initialize()
 {
 
 }
 
-void ExitGameScene::OnUninitialize()
+void ExitGameScene::on_uninitialize()
 {
 
 }
 
-void ExitGameScene::OnUpdate()
+void ExitGameScene::on_update()
 {
 	// Static timer to track elapsed time
-	static double exitTimer = GetTime();
+	static double ExitTimer = GetTime();
 
 	// Exit after 10 seconds
-	if(rlx::HasElapsed(exitTimer, 10.0))
+	if(rlx::HasElapsed(ExitTimer, 10.0))
 	{
-		Application::Exit();
+		Application::exit();
 	}
 
 	// Exit on mouse click or ESC after 3 seconds
-	if (rlx::HasElapsed(exitTimer, 3.0) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_ESCAPE)))
+	if (rlx::HasElapsed(ExitTimer, 3.0) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_ESCAPE)))
 	{
-		Application::Exit();
+		Application::exit();
 	}
 }
 
-void ExitGameScene::OnRender()
+void ExitGameScene::on_render()
 {
-	m_sprites[SPRID_EXITSCREEN]->Draw(0, 0, SPR_EXITSCREEN::BACKGROUND);
-	m_sprites[SPRID_EXITSCREEN]->Draw(254, 120, SPR_EXITSCREEN::OVERLAY);
+	sprites[SPRID_EXITSCREEN]->draw(0, 0, SPR_EXITSCREEN::BACKGROUND);
+	sprites[SPRID_EXITSCREEN]->draw(254, 120, SPR_EXITSCREEN::OVERLAY);
 }

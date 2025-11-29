@@ -1,149 +1,148 @@
 #include "Application.h"
-#include "Application.h"
 #include "Game.h"
 #include "entity.h"
 #include "CMap.h"
 #include "ItemMetadata.h"
 
 Entity::Entity()
-	: m_game(Application::GetLayer<Game>()),
-	m_modelSprites(m_game.m_modelSprites),
-	m_itemMetadata(m_game.m_itemMetadata),
-	m_entities(m_game.m_entities),
-	m_activeMap(nullptr)
+	: _game(Application::get_layer<Game>()),
+	_model_sprites(_game.model_sprites),
+	_item_metadata(_game.item_metadata),
+	_entities(_game.entities),
+	_active_map(nullptr)
 { }
 
-void Entity::Update()
+void Entity::update()
 {
-	if (m_isMoving)
+	if (_is_moving)
 	{
-		UpdateMovement();
+		_update_movement();
 	}
 
-	if (m_attachedCamera)
+	if (_attached_camera)
 	{
-		m_attachedCamera->target = { (float)position.get_pixel_x(), (float)position.get_pixel_y() };
+		_attached_camera->target = { (float)position.get_pixel_x(), (float)position.get_pixel_y() };
 	}
 
-	OnUpdate();
+	on_update();
 }
 
-void Entity::SetActiveMap(CMapData* map) {
-	m_activeMap = map;
-	m_mapWidth = map->Width();
-	m_mapHeight = map->Height();
-	m_reservedTiles = map->g_reservedTiles.get();
+void Entity::set_active_map(CMapData* map) {
+	_active_map = map;
+	_map_width = map->width();
+	_map_height = map->height();
+	_reserved_tiles = map->reserved_tiles.get();
 }
 
-void Entity::MoveTo(const GamePosition& target, bool run)
+void Entity::move_to(const GamePosition& target, bool run)
 {
 	if (position == target)
 		return;
-	if (m_finalTarget == target && m_isMoving)
+	if (_final_target == target && _is_moving)
 		return;
 
 	// Validate and adjust target if necessary
-	GamePosition validTarget = FindValidTarget(target);
+	GamePosition ValidTarget = find_valid_target(target);
 
-	m_finalTarget = validTarget;
-	m_isRunning = run;
-	m_stopRequested = false;
+	_final_target = ValidTarget;
+	_is_running = run;
+	_stop_requested = false;
 
-	GamePosition pathStart = m_isMoving ? m_currentStepTarget : position;
-	BuildPath(m_nextMovementPath, pathStart, validTarget);
+	GamePosition PathStart = _is_moving ? _current_step_target : position;
+	_build_path(_next_movement_path, PathStart, ValidTarget);
 
-	if (!m_isMoving && !m_nextMovementPath.empty())
+	if (!_is_moving && !_next_movement_path.empty())
 	{
-		m_movementPath = std::move(m_nextMovementPath);
-		m_nextMovementPath.clear();
-		m_isMoving = true;
-		m_currentPathIndex = 0;
-		StartNextStep();
+		_movement_path = std::move(_next_movement_path);
+		_next_movement_path.clear();
+		_is_moving = true;
+		_current_path_index = 0;
+		_start_next_step();
 		if (current_animation_type == STAND)
 		{
-			if(current_animation_type != RUN && m_isRunning) {
-				SetAnimation(RUN, WeaponUsed::HAND);
+			if(current_animation_type != RUN && _is_running) {
+				set_animation(RUN, WeaponUsed::HAND);
 			} else if(current_animation_type != WALK) {
-				SetAnimation(WALK, WeaponUsed::HAND);
+				set_animation(WALK, WeaponUsed::HAND);
 			}
 		}
 	}
 }
 
-GamePosition Entity::FindValidTarget(const GamePosition& target)
+GamePosition Entity::find_valid_target(const GamePosition& target)
 {
-	int tx = target.get_tile_x();
-	int ty = target.get_tile_y();
+	int Tx = target.get_tile_x();
+	int Ty = target.get_tile_y();
 
 	// Clamp to map bounds
-	if (m_mapWidth > 0 && m_mapHeight > 0)
+	if (_map_width > 0 && _map_height > 0)
 	{
-		tx = std::max(0, std::min(tx, (int)m_mapWidth - 1));
-		ty = std::max(0, std::min(ty, (int)m_mapHeight - 1));
+		Tx = std::max(0, std::min(Tx, (int)_map_width - 1));
+		Ty = std::max(0, std::min(Ty, (int)_map_height - 1));
 	}
 
 	// Check if target tile is valid
-	if (m_activeMap->GetTile(tx, ty)->m_bIsMoveAllowed && !IsTileOccupied(tx, ty))
+	if (_active_map->get_tile(Tx, Ty)->is_move_allowed && !is_tile_occupied(Tx, Ty))
 	{
-		return GamePosition(tx, ty);
+		return GamePosition(Tx, Ty);
 	}
 
 	// Target invalid - find closest valid tile
-	int offsets[8][2] = {
+	int Offsets[8][2] = {
 		{0, -1}, {1, 0}, {0, 1}, {-1, 0},
 		{1, -1}, {1, 1}, {-1, 1}, {-1, -1}
 	};
 
 	// Spiral search outward
-	for (int radius = 1; radius < 20; ++radius)
+	for (int Radius = 1; Radius < 20; ++Radius)
 	{
-		for (int dx = -radius; dx <= radius; ++dx)
+		for (int Dx = -Radius; Dx <= Radius; ++Dx)
 		{
-			for (int dy = -radius; dy <= radius; ++dy)
+			for (int Dy = -Radius; Dy <= Radius; ++Dy)
 			{
-				if (abs(dx) != radius && abs(dy) != radius)
+				if (abs(Dx) != Radius && abs(Dy) != Radius)
 					continue;
 
-				int checkX = tx + dx;
-				int checkY = ty + dy;
+				int CheckX = Tx + Dx;
+				int CheckY = Ty + Dy;
 
-				if (m_mapWidth > 0 && m_mapHeight > 0)
+				if (_map_width > 0 && _map_height > 0)
 				{
-					if (checkX < 0 || checkX >= (int)m_mapWidth ||
-						checkY < 0 || checkY >= (int)m_mapHeight)
+					if (CheckX < 0 || CheckX >= (int)_map_width ||
+						CheckY < 0 || CheckY >= (int)_map_height)
 						continue;
 				}
 
-				if (!m_activeMap->GetTile(checkX, checkY)->m_bIsMoveAllowed)
+				if (!_active_map->get_tile(CheckX, CheckY)->is_move_allowed)
 					continue;
 
-				if (IsTileOccupied(checkX, checkY))
+				if (is_tile_occupied(CheckX, CheckY))
 					continue;
 
 				// Check if this tile has at least one walkable neighbor
-				bool hasWalkableNeighbor = false;
-				for (int i = 0; i < 8; ++i)
+				bool HasWalkableNeighbor = false;
+				for (int I = 0; I < 8; ++I)
 				{
-					int neighborX = checkX + offsets[i][0];
-					int neighborY = checkY + offsets[i][1];
+					int NeighborX = CheckX + Offsets[I][0];
+					int NeighborY = CheckY + Offsets[I][1];
 
-					if (m_mapWidth > 0 && m_mapHeight > 0)
+					if (_map_width > 0 && _map_height > 0)
 					{
-						if (neighborX < 0 || neighborX >= (int)m_mapWidth ||
-							neighborY < 0 || neighborY >= (int)m_mapHeight)
+						if (NeighborX < 0 || NeighborX >= (int)_map_width ||
+							NeighborY < 0 || NeighborY >= (int)_map_height)
 							continue;
 					}
 
-					if (m_activeMap->GetTile(neighborX, neighborY)->m_bIsMoveAllowed)
+					if (_active_map->get_tile(NeighborX, NeighborY)->is_move_allowed)
 					{
-						hasWalkableNeighbor = true;
+						HasWalkableNeighbor = true;
 						break;
 					}
 				}
 
-				if (hasWalkableNeighbor)
+				if (HasWalkableNeighbor)
 				{
-					return GamePosition(checkX, checkY);
+					return GamePosition(CheckX, CheckY);
 				}
 			}
 		}
@@ -153,399 +152,399 @@ GamePosition Entity::FindValidTarget(const GamePosition& target)
 	return position;
 }
 
-bool Entity::IsTileOccupied(int tile_x, int tile_y) const
+bool Entity::is_tile_occupied(int tile_x, int tile_y) const
 {
-	uint64_t key = MakeTileKey(tile_x, tile_y);
+	uint64_t Key = _make_tile_key(tile_x, tile_y);
 
-	if (m_reservedTiles && m_reservedTiles->count(key) > 0)
+	if (_reserved_tiles && _reserved_tiles->count(Key) > 0)
 		return true;
 
-	for (const auto& entity : m_entities)
+	for (const auto& Entity : _entities)
 	{
-		if (entity.get() == this) continue;
+		if (Entity.get() == this) continue;
 
-		const auto& entity_pos = entity->GetPosition();
-		if (entity_pos.get_tile_x() == tile_x && entity_pos.get_tile_y() == tile_y)
+		const auto& EntityPos = Entity->get_position();
+		if (EntityPos.get_tile_x() == tile_x && EntityPos.get_tile_y() == tile_y)
 			return true;
 	}
 	return false;
 }
 
-void Entity::BuildPath(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end)
+void Entity::_build_path(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end)
 {
 	path.clear();
 
-	int startX = start.get_tile_x();
-	int startY = start.get_tile_y();
-	int endX = end.get_tile_x();
-	int endY = end.get_tile_y();
+	int StartX = start.get_tile_x();
+	int StartY = start.get_tile_y();
+	int EndX = end.get_tile_x();
+	int EndY = end.get_tile_y();
 
-	if (m_mapWidth > 0 && m_mapHeight > 0)
+	if (_map_width > 0 && _map_height > 0)
 	{
-		endX = std::max(0, std::min(endX, (int)m_mapWidth - 1));
-		endY = std::max(0, std::min(endY, (int)m_mapHeight - 1));
+		EndX = std::max(0, std::min(EndX, (int)_map_width - 1));
+		EndY = std::max(0, std::min(EndY, (int)_map_height - 1));
 	}
 
-	std::vector<GamePosition> directPath;
-	bool directSuccess = BuildPathDirect(directPath, start, GamePosition(endX, endY));
+	std::vector<GamePosition> DirectPath;
+	bool DirectSuccess = _build_path_direct(DirectPath, start, GamePosition(EndX, EndY));
 
-	if (directSuccess)
+	if (DirectSuccess)
 	{
-		path = directPath;
+		path = DirectPath;
 		return;
 	}
 
-	if (directPath.empty())
+	if (DirectPath.empty())
 	{
-		int offsets[8][2] = {
+		int Offsets[8][2] = {
 			{0, -1}, {1, 0}, {0, 1}, {-1, 0},
 			{1, -1}, {1, 1}, {-1, 1}, {-1, -1}
 		};
 
-		std::vector<GamePosition> bestPath;
+		std::vector<GamePosition> BestPath;
 
-		for (int i = 0; i < 8; ++i)
+		for (int I = 0; I < 8; ++I)
 		{
-			int neighborX = startX + offsets[i][0];
-			int neighborY = startY + offsets[i][1];
+			int NeighborX = StartX + Offsets[I][0];
+			int NeighborY = StartY + Offsets[I][1];
 
-			if (m_mapWidth > 0 && m_mapHeight > 0)
+			if (_map_width > 0 && _map_height > 0)
 			{
-				if (neighborX < 0 || neighborX >= (int)m_mapWidth ||
-					neighborY < 0 || neighborY >= (int)m_mapHeight)
+				if (NeighborX < 0 || NeighborX >= (int)_map_width ||
+					NeighborY < 0 || NeighborY >= (int)_map_height)
 					continue;
 			}
 
-			if (!m_activeMap->GetTile(neighborX, neighborY)->m_bIsMoveAllowed)
+			if (!_active_map->get_tile(NeighborX, NeighborY)->is_move_allowed)
 				continue;
 
-			if (IsTileOccupied(neighborX, neighborY))
+			if (is_tile_occupied(NeighborX, NeighborY))
 				continue;
 
-			std::vector<GamePosition> attemptPath;
-			attemptPath.emplace_back(neighborX, neighborY);
+			std::vector<GamePosition> AttemptPath;
+			AttemptPath.emplace_back(NeighborX, NeighborY);
 
-			std::vector<GamePosition> remainingPath;
-			bool success = BuildPathDirect(remainingPath, GamePosition(neighborX, neighborY), GamePosition(endX, endY));
+			std::vector<GamePosition> RemainingPath;
+			bool Success = _build_path_direct(RemainingPath, GamePosition(NeighborX, NeighborY), GamePosition(EndX, EndY));
 
-			attemptPath.insert(attemptPath.end(), remainingPath.begin(), remainingPath.end());
+			AttemptPath.insert(AttemptPath.end(), RemainingPath.begin(), RemainingPath.end());
 
-			if (success && attemptPath.size() > bestPath.size())
+			if (Success && AttemptPath.size() > BestPath.size())
 			{
-				bestPath = attemptPath;
+				BestPath = AttemptPath;
 			}
-			else if (!success && attemptPath.size() > bestPath.size())
+			else if (!Success && AttemptPath.size() > BestPath.size())
 			{
-				bestPath = attemptPath;
+				BestPath = AttemptPath;
 			}
 		}
 
-		path = bestPath;
+		path = BestPath;
 		return;
 	}
 
-	int offsets[8][2] = {
+	int Offsets[8][2] = {
 		{0, -1}, {1, 0}, {0, 1}, {-1, 0},
 		{1, -1}, {1, 1}, {-1, 1}, {-1, -1}
 	};
 
-	std::vector<GamePosition> bestPath = directPath;
+	std::vector<GamePosition> BestPath = DirectPath;
 
-	for (int attempt = 0; attempt < 8; ++attempt)
+	for (int Attempt = 0; Attempt < 8; ++Attempt)
 	{
-		int targetX = endX + offsets[attempt][0];
-		int targetY = endY + offsets[attempt][1];
+		int TargetX = EndX + Offsets[Attempt][0];
+		int TargetY = EndY + Offsets[Attempt][1];
 
-		if (m_mapWidth > 0 && m_mapHeight > 0)
+		if (_map_width > 0 && _map_height > 0)
 		{
-			if (targetX < 0 || targetX >= (int)m_mapWidth ||
-				targetY < 0 || targetY >= (int)m_mapHeight)
+			if (TargetX < 0 || TargetX >= (int)_map_width ||
+				TargetY < 0 || TargetY >= (int)_map_height)
 				continue;
 		}
 
-		if (!m_activeMap->GetTile(targetX, targetY)->m_bIsMoveAllowed)
+		if (!_active_map->get_tile(TargetX, TargetY)->is_move_allowed)
 			continue;
 
-		if (IsTileOccupied(targetX, targetY))
+		if (is_tile_occupied(TargetX, TargetY))
 			continue;
 
-		std::vector<GamePosition> attemptPath;
-		bool success = BuildPathDirect(attemptPath, start, GamePosition(targetX, targetY));
+		std::vector<GamePosition> AttemptPath;
+		bool Success = _build_path_direct(AttemptPath, start, GamePosition(TargetX, TargetY));
 
-		if (success && attemptPath.size() > bestPath.size())
+		if (Success && AttemptPath.size() > BestPath.size())
 		{
-			bestPath = attemptPath;
+			BestPath = AttemptPath;
 		}
-		else if (!success && attemptPath.size() > bestPath.size())
+		else if (!Success && AttemptPath.size() > BestPath.size())
 		{
-			bestPath = attemptPath;
+			BestPath = AttemptPath;
 		}
 	}
 
-	path = bestPath;
+	path = BestPath;
 }
 
-bool Entity::BuildPathDirect(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end)
+bool Entity::_build_path_direct(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end)
 {
 	path.clear();
 
-	int startX = start.get_tile_x();
-	int startY = start.get_tile_y();
-	int endX = end.get_tile_x();
-	int endY = end.get_tile_y();
+	int StartX = start.get_tile_x();
+	int StartY = start.get_tile_y();
+	int EndX = end.get_tile_x();
+	int EndY = end.get_tile_y();
 
-	int dx = endX - startX;
-	int dy = endY - startY;
+	int Dx = EndX - StartX;
+	int Dy = EndY - StartY;
 
-	int stepX = (dx > 0) ? 1 : (dx < 0) ? -1 : 0;
-	int stepY = (dy > 0) ? 1 : (dy < 0) ? -1 : 0;
+	int StepX = (Dx > 0) ? 1 : (Dx < 0) ? -1 : 0;
+	int StepY = (Dy > 0) ? 1 : (Dy < 0) ? -1 : 0;
 
-	int absX = std::abs(dx);
-	int absY = std::abs(dy);
+	int AbsX = std::abs(Dx);
+	int AbsY = std::abs(Dy);
 
-	bool reachedEnd = false;
+	bool ReachedEnd = false;
 
-	if (absX > absY)
+	if (AbsX > AbsY)
 	{
-		int error = absX / 2;
-		int currentX = startX;
-		int currentY = startY;
+		int Error = AbsX / 2;
+		int CurrentX = StartX;
+		int CurrentY = StartY;
 
-		for (int i = 0; i < absX; ++i)
+		for (int I = 0; I < AbsX; ++I)
 		{
-			currentX += stepX;
-			error -= absY;
+			CurrentX += StepX;
+			Error -= AbsY;
 
-			if (error < 0)
+			if (Error < 0)
 			{
-				currentY += stepY;
-				error += absX;
+				CurrentY += StepY;
+				Error += AbsX;
 			}
 
-			if (!m_activeMap->GetTile(currentX, currentY)->m_bIsMoveAllowed ||
-				IsTileOccupied(currentX, currentY))
+			if (!_active_map->get_tile(CurrentX, CurrentY)->is_move_allowed ||
+				is_tile_occupied(CurrentX, CurrentY))
 			{
 				break;
 			}
 
-			path.emplace_back(currentX, currentY);
+			path.emplace_back(CurrentX, CurrentY);
 
-			if (currentX == endX && currentY == endY)
+			if (CurrentX == EndX && CurrentY == EndY)
 			{
-				reachedEnd = true;
+				ReachedEnd = true;
 				break;
 			}
 		}
 	}
 	else
 	{
-		int error = absY / 2;
-		int currentX = startX;
-		int currentY = startY;
+		int Error = AbsY / 2;
+		int CurrentX = StartX;
+		int CurrentY = StartY;
 
-		for (int i = 0; i < absY; ++i)
+		for (int I = 0; I < AbsY; ++I)
 		{
-			currentY += stepY;
-			error -= absX;
+			CurrentY += StepY;
+			Error -= AbsX;
 
-			if (error < 0)
+			if (Error < 0)
 			{
-				currentX += stepX;
-				error += absY;
+				CurrentX += StepX;
+				Error += AbsY;
 			}
 
-			if (!m_activeMap->GetTile(currentX, currentY)->m_bIsMoveAllowed ||
-				IsTileOccupied(currentX, currentY))
+			if (!_active_map->get_tile(CurrentX, CurrentY)->is_move_allowed ||
+				is_tile_occupied(CurrentX, CurrentY))
 			{
 				break;
 			}
 
-			path.emplace_back(currentX, currentY);
+			path.emplace_back(CurrentX, CurrentY);
 
-			if (currentX == endX && currentY == endY)
+			if (CurrentX == EndX && CurrentY == EndY)
 			{
-				reachedEnd = true;
+				ReachedEnd = true;
 				break;
 			}
 		}
 	}
 
-	return reachedEnd;
+	return ReachedEnd;
 }
 
-void Entity::StartNextStep()
+void Entity::_start_next_step()
 {
-	if (m_currentPathIndex >= m_movementPath.size())
+	if (_current_path_index >= _movement_path.size())
 	{
-		m_isMoving = false;
-		SetAnimation(STAND, WeaponUsed::HAND);
+		_is_moving = false;
+		set_animation(STAND, WeaponUsed::HAND);
 		return;
 	}
 
-	m_currentStepTarget = m_movementPath[m_currentPathIndex];
+	_current_step_target = _movement_path[_current_path_index];
 
-	uint64_t key = MakeTileKey(m_currentStepTarget.get_tile_x(), m_currentStepTarget.get_tile_y());
+	uint64_t Key = _make_tile_key(_current_step_target.get_tile_x(), _current_step_target.get_tile_y());
 
-	if (IsTileOccupied(m_currentStepTarget.get_tile_x(), m_currentStepTarget.get_tile_y()))
+	if (is_tile_occupied(_current_step_target.get_tile_x(), _current_step_target.get_tile_y()))
 	{
-		StopMovement();
+		stop_movement();
 		return;
 	}
 
-	if (m_reservedTiles)
+	if (_reserved_tiles)
 	{
-		m_reservedTiles->insert(key);
-		m_reservedTileKey = key;
+		_reserved_tiles->insert(Key);
+		_reserved_tile_key = Key;
 	}
 
-	m_moveStartPixelX = position.get_pixel_x();
-	m_moveStartPixelY = position.get_pixel_y();
-	m_moveProgress = 0.0f;
-	current_direction = GetDirectionToPoint(position, m_currentStepTarget);
+	_move_start_pixel_x = position.get_pixel_x();
+	_move_start_pixel_y = position.get_pixel_y();
+	_move_progress = 0.0f;
+	current_direction = get_direction_to_point(position, _current_step_target);
 
-	int dx = m_currentStepTarget.get_pixel_x() - position.get_pixel_x();
-	int dy = m_currentStepTarget.get_pixel_y() - position.get_pixel_y();
-	m_currentStepDistance = sqrtf((float)(dx * dx + dy * dy));
+	int Dx = _current_step_target.get_pixel_x() - position.get_pixel_x();
+	int Dy = _current_step_target.get_pixel_y() - position.get_pixel_y();
+	_current_step_distance = sqrtf((float)(Dx * Dx + Dy * Dy));
 }
 
-void Entity::UpdateMovement()
+void Entity::_update_movement()
 {
-	float speedMultiplier = m_isRunning ? 1.00f : 0.5f;
-	float effectiveSpeed = m_baseSpeed * m_internalSpeedMultiplier * speedMultiplier;
+	float SpeedMultiplier = _is_running ? 1.00f : 0.5f;
+	float EffectiveSpeed = _base_speed * _internal_speed_multiplier * SpeedMultiplier;
 
-	float deltaProgress = (effectiveSpeed * GetFrameTime()) / m_currentStepDistance;
-	m_moveProgress += deltaProgress;
+	float DeltaProgress = (EffectiveSpeed * GetFrameTime()) / _current_step_distance;
+	_move_progress += DeltaProgress;
 
-	if (m_moveProgress >= 1.0f)
+	if (_move_progress >= 1.0f)
 	{
-		m_moveProgress = 0.0f;
-		position = m_currentStepTarget;
+		_move_progress = 0.0f;
+		position = _current_step_target;
 
-		if (m_reservedTiles && m_reservedTileKey != 0)
+		if (_reserved_tiles && _reserved_tile_key != 0)
 		{
-			m_reservedTiles->erase(m_reservedTileKey);
-			m_reservedTileKey = 0;
+			_reserved_tiles->erase(_reserved_tile_key);
+			_reserved_tile_key = 0;
 		}
 
-		m_currentPathIndex++;
+		_current_path_index++;
 
 		// Check for stop request first
-		if (m_stopRequested)
+		if (_stop_requested)
 		{
-			m_movementPath.clear();
-			m_nextMovementPath.clear();
-			m_isMoving = false;
-			m_stopRequested = false;
-			SetAnimation(STAND, WeaponUsed::HAND);
+			_movement_path.clear();
+			_next_movement_path.clear();
+			_is_moving = false;
+			_stop_requested = false;
+			set_animation(STAND, WeaponUsed::HAND);
 			return;
 		}
 
 		// Check for queued path
-		if (!m_nextMovementPath.empty())
+		if (!_next_movement_path.empty())
 		{
-			m_movementPath = std::move(m_nextMovementPath);
-			m_nextMovementPath.clear();
-			m_currentPathIndex = 0;
-			m_isMoving = true;
-			StartNextStep();
+			_movement_path = std::move(_next_movement_path);
+			_next_movement_path.clear();
+			_current_path_index = 0;
+			_is_moving = true;
+			_start_next_step();
 			return;
 		}
 
 		// No queued path - continue current path or recalculate to final target
-		if (m_currentPathIndex >= m_movementPath.size())
+		if (_current_path_index >= _movement_path.size())
 		{
-			if (position != m_finalTarget)
+			if (position != _final_target)
 			{
-				BuildPath(m_movementPath, position, m_finalTarget);
-				m_currentPathIndex = 0;
+				_build_path(_movement_path, position, _final_target);
+				_current_path_index = 0;
 
-				if (!m_movementPath.empty())
+				if (!_movement_path.empty())
 				{
-					StartNextStep();
+					_start_next_step();
 				}
 				else
 				{
-					m_isMoving = false;
-					SetAnimation(STAND, WeaponUsed::HAND);
+					_is_moving = false;
+					set_animation(STAND, WeaponUsed::HAND);
 				}
 			}
 			else
 			{
-				m_isMoving = false;
-				m_movementPath.clear();
-				SetAnimation(STAND, WeaponUsed::HAND);
+				_is_moving = false;
+				_movement_path.clear();
+				set_animation(STAND, WeaponUsed::HAND);
 			}
 		}
 		else
 		{
-			StartNextStep();
+			_start_next_step();
 		}
 	}
 	else
 	{
-		int32_t newPixelX = int32_t(m_moveStartPixelX + (((int32_t)m_currentStepTarget.get_pixel_x()) - m_moveStartPixelX) * m_moveProgress);
-		int32_t newPixelY = int32_t(m_moveStartPixelY + (((int32_t)m_currentStepTarget.get_pixel_y()) - m_moveStartPixelY) * m_moveProgress);
+		int32_t NewPixelX = int32_t(_move_start_pixel_x + (((int32_t)_current_step_target.get_pixel_x()) - _move_start_pixel_x) * _move_progress);
+		int32_t NewPixelY = int32_t(_move_start_pixel_y + (((int32_t)_current_step_target.get_pixel_y()) - _move_start_pixel_y) * _move_progress);
 
-		position.set_pixel_position(newPixelX, newPixelY);
+		position.set_pixel_position(NewPixelX, NewPixelY);
 	}
 }
 
-void Entity::RequestStopMovement()
+void Entity::_request_stop_movement()
 {
-	m_stopRequested = true;
+	_stop_requested = true;
 }
 
-void Entity::StopMovement()
+void Entity::stop_movement()
 {
-	if (m_reservedTiles && m_reservedTileKey != 0)
+	if (_reserved_tiles && _reserved_tile_key != 0)
 	{
-		m_reservedTiles->erase(m_reservedTileKey);
-		m_reservedTileKey = 0;
+		_reserved_tiles->erase(_reserved_tile_key);
+		_reserved_tile_key = 0;
 	}
 
-	m_movementPath.clear();
-	m_nextMovementPath.clear();
-	m_isMoving = false;
-	m_stopRequested = false;
-	SetAnimation(STAND, WeaponUsed::HAND);
+	_movement_path.clear();
+	_next_movement_path.clear();
+	_is_moving = false;
+	_stop_requested = false;
+	set_animation(STAND, WeaponUsed::HAND);
 }
 
-void Entity::RenderDebugMovement()
+void Entity::render_debug_movement()
 {
-	if (m_movementPath.empty())
+	if (_movement_path.empty())
 		return;
 
-	for (size_t i = 0; i < m_movementPath.size(); ++i)
+	for (size_t I = 0; I < _movement_path.size(); ++I)
 	{
-		const auto& step = m_movementPath[i];
-		int px = step.get_pixel_x();
-		int py = step.get_pixel_y();
+		const auto& Step = _movement_path[I];
+		int Px = Step.get_pixel_x();
+		int Py = Step.get_pixel_y();
 
-		Color tileColor = (i < m_currentPathIndex)
+		Color TileColor = (I < _current_path_index)
 			? Color{ 100, 100, 100, 100 }
 		: Color{ 0, 255, 0, 100 };
 
-		DrawRectangle(px - constant::TILE_HALF, py - constant::TILE_HALF, constant::TILE_SIZE, constant::TILE_SIZE, tileColor);
+		DrawRectangle(Px - constant::TILE_HALF, Py - constant::TILE_HALF, constant::TILE_SIZE, constant::TILE_SIZE, TileColor);
 
-		if (i == m_currentPathIndex)
+		if (I == _current_path_index)
 		{
 			DrawRectangleLinesEx(
-				rlRectangle{ (float)px - constant::TILE_HALF,
-				  (float)py - constant::TILE_HALF,
+				rlRectangle{ (float)Px - constant::TILE_HALF,
+				  (float)Py - constant::TILE_HALF,
 				  constant::TILE_SIZE,
 				  constant::TILE_SIZE },
 				1, YELLOW);
 		}
 	}
 
-	if (m_finalTarget.get_tile_x() > 0 || m_finalTarget.get_tile_y() > 0)
+	if (_final_target.get_tile_x() > 0 || _final_target.get_tile_y() > 0)
 	{
-		int fx = m_finalTarget.get_pixel_x();
-		int fy = m_finalTarget.get_pixel_y();
+		int Fx = _final_target.get_pixel_x();
+		int Fy = _final_target.get_pixel_y();
 
 		DrawRectangleLinesEx(
-			rlRectangle{ (float)fx - constant::TILE_HALF,
-			  (float)fy - constant::TILE_HALF,
+			rlRectangle{ (float)Fx - constant::TILE_HALF,
+			  (float)Fy - constant::TILE_HALF,
 			  constant::TILE_SIZE,
 			  constant::TILE_SIZE },
 			1, RED);

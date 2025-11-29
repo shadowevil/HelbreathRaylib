@@ -27,20 +27,20 @@ struct MTDHeader {
 #pragma pack(pop)
 
 struct CTile {
-    int16_t m_sTileSprite{};
-    int16_t m_sTileSpriteFrame{};
-    int16_t m_sObjectSprite{};
-    int16_t m_sObjectSpriteFrame{};
-    bool m_bIsMoveAllowed{};
-    bool m_bIsTeleport{};
+    int16_t tile_sprite{};
+    int16_t tile_sprite_frame{};
+    int16_t object_sprite{};
+    int16_t object_sprite_frame{};
+    bool is_move_allowed{};
+    bool is_teleport{};
 };
 
-inline std::pair<int, int> GetWorldTileMousePosition(Camera2D camera)
+inline std::pair<int, int> get_world_tile_mouse_position(Camera2D camera)
 {
-    Vector2 mposWorld = GetScreenToWorld2D(rlx::GetMousePosition(), camera);
-    const int tx = (int)floorf((mposWorld.x + constant::TILE_HALF) / constant::TILE_SIZE);
-    const int ty = (int)floorf((mposWorld.y + constant::TILE_HALF) / constant::TILE_SIZE);
-    return { tx, ty };
+    Vector2 MposWorld = GetScreenToWorld2D(rlx::get_mouse_position(), camera);
+    const int Tx = (int)floorf((MposWorld.x + constant::TILE_HALF) / constant::TILE_SIZE);
+    const int Ty = (int)floorf((MposWorld.y + constant::TILE_HALF) / constant::TILE_SIZE);
+    return { Tx, Ty };
 }
 
 class Entity;
@@ -48,61 +48,61 @@ class Entity;
 class CMapData {
 public:
     CMapData() = default;
-    explicit CMapData(int16_t _mapSizeX, int16_t _mapSizeY, int16_t _tileSize, const std::string& mapIdentifier, const std::string& mapName)
-        : mapSizeX(_mapSizeX), mapSizeY(_mapSizeY), tileSize(_tileSize), m_mapIdentifier(mapIdentifier), m_mapName(mapName)
+    explicit CMapData(int16_t map_size_x, int16_t map_size_y, int16_t tile_size, const std::string& map_identifier, const std::string& map_name)
+        : _map_size_x(map_size_x), _map_size_y(map_size_y), _tile_size(tile_size), _map_identifier(map_identifier), _map_name(map_name)
     {
-        m_tile.assign(mapSizeX, std::vector<CTile>(mapSizeY));
+        _tile.assign(_map_size_x, std::vector<CTile>(_map_size_y));
     }
 
-    bool InBounds(int16_t x, int16_t y) const
+    bool in_bounds(int16_t x, int16_t y) const
     {
         return x >= 0 && y >= 0 &&
-            x < mapSizeX &&
-            y < mapSizeY;
+            x < _map_size_x &&
+            y < _map_size_y;
     }
 
-    CTile* GetTile(int16_t x, int16_t y)
+    CTile* get_tile(int16_t x, int16_t y)
     {
-        if (!InBounds(x, y)) return nullptr;
-        return &m_tile[x][y];
+        if (!in_bounds(x, y)) return nullptr;
+        return &_tile[x][y];
     }
 
-    const CTile* GetTile(int16_t x, int16_t y) const
+    const CTile* get_tile(int16_t x, int16_t y) const
     {
-        if (!InBounds(x, y)) return nullptr;
-        return &m_tile[x][y];
+        if (!in_bounds(x, y)) return nullptr;
+        return &_tile[x][y];
     }
 
-    int Width() const { return mapSizeX; }
-    int Height() const { return mapSizeY; }
-    int TileSize() const { return tileSize; }
+    int width() const { return _map_size_x; }
+    int height() const { return _map_size_y; }
+    int tile_size() const { return _tile_size; }
 
-    void ForEachTileRegion(Camera2D camera, int x_range, int y_range, const std::vector<std::unique_ptr<Entity>>&,
+    void for_each_tile_region(Camera2D camera, int x_range, int y_range, const std::vector<std::unique_ptr<Entity>>&,
         const std::function<void(int16_t, int16_t, int32_t, int32_t, CTile&, Entity*)>& fn);
 
-    const std::string& GetMapIdentifier() const { return m_mapIdentifier; }
-    const std::string& GetMapName() const { return m_mapName; }
+    const std::string& get_map_identifier() const { return _map_identifier; }
+    const std::string& get_map_name() const { return _map_name; }
 
-    std::unique_ptr<std::unordered_set<uint64_t>> g_reservedTiles = std::make_unique<std::unordered_set<uint64_t>>();
+    std::unique_ptr<std::unordered_set<uint64_t>> reserved_tiles = std::make_unique<std::unordered_set<uint64_t>>();
 
 private:
-    int16_t mapSizeX{};
-    int16_t mapSizeY{};
-    int16_t tileSize{};
-    std::vector<std::vector<CTile>> m_tile;
-    std::string m_mapIdentifier{};
-    std::string m_mapName{};
+    int16_t _map_size_x{};
+    int16_t _map_size_y{};
+    int16_t _tile_size{};
+    std::vector<std::vector<CTile>> _tile;
+    std::string _map_identifier{};
+    std::string _map_name{};
 };
 
 
 class CMapLoader {
 private:
-    std::vector<std::filesystem::path> m_mapFiles;
+    std::vector<std::filesystem::path> _map_files;
 
     CMapLoader() = default;
 
 public:
-    static CMapLoader& Instance()
+    static CMapLoader& _get()
     {
         static CMapLoader instance;
         return instance;
@@ -111,137 +111,137 @@ public:
     CMapLoader(const CMapLoader&) = delete;
     CMapLoader& operator=(const CMapLoader&) = delete;
 
-    static void RegisterMapFile(uint8_t index, const std::filesystem::path& path)
+    static void register_map_file(uint8_t index, const std::filesystem::path& path)
     {
-        auto& self = Instance();
+        auto& Self = _get();
 
         if (!std::filesystem::exists(path)) {
             std::printf("Map file not found: %s\n", path.string().c_str());
             return;
         }
 
-        if (index >= self.m_mapFiles.size())
-            self.m_mapFiles.resize(index + 1);
+        if (index >= Self._map_files.size())
+            Self._map_files.resize(index + 1);
 
-        self.m_mapFiles[index] = path;
+        Self._map_files[index] = path;
         std::printf("Registered map at index %u: %s\n", index, path.string().c_str());
     }
 
-    static std::unique_ptr<CMapData> LoadByIndex(uint8_t index)
+    static std::unique_ptr<CMapData> load_by_index(uint8_t index)
     {
-        auto& self = Instance();
+        auto& Self = _get();
 
-        if (index >= self.m_mapFiles.size() || self.m_mapFiles[index].empty()) {
+        if (index >= Self._map_files.size() || Self._map_files[index].empty()) {
             std::printf("No map registered at index %u\n", index);
             return nullptr;
         }
 
-        return LoadMTDFile(self.m_mapFiles[index]);
+        return _load_mtd_file(Self._map_files[index]);
     }
 
-    static size_t GetMapCount()
+    static size_t get_map_count()
     {
-        return Instance().m_mapFiles.size();
+        return _get()._map_files.size();
     }
 
 private:
-    static std::unique_ptr<CMapData> LoadMTDFile(const std::filesystem::path& path)
+    static std::unique_ptr<CMapData> _load_mtd_file(const std::filesystem::path& path)
     {
         if (!std::filesystem::exists(path)) {
             std::printf("Map not found: %s\n", path.string().c_str());
             return nullptr;
         }
 
-        std::ifstream file(path, std::ios::binary);
-        if (!file.is_open()) {
+        std::ifstream File(path, std::ios::binary);
+        if (!File.is_open()) {
             std::printf("Failed to open %s\n", path.string().c_str());
             return nullptr;
         }
 
-        std::vector<uint8_t> data(std::istreambuf_iterator<char>(file), {});
-        if (data.size() < 5 + 4 + 2 + 2 + 2) {
+        std::vector<uint8_t> Data(std::istreambuf_iterator<char>(File), {});
+        if (Data.size() < 5 + 4 + 2 + 2 + 2) {
             std::printf("Invalid file: %s\n", path.string().c_str());
             return nullptr;
         }
 
-        const uint8_t* p = data.data();
-        if (std::memcmp(p, "<MTD>", 5) != 0) {
+        const uint8_t* P = Data.data();
+        if (std::memcmp(P, "<MTD>", 5) != 0) {
             std::printf("Invalid header in %s\n", path.string().c_str());
             return nullptr;
         }
-        p += 5;
+        P += 5;
 
-        uint32_t crc = 0;
-        std::memcpy(&crc, p, 4);
-        p += 4;
+        uint32_t Crc = 0;
+        std::memcpy(&Crc, P, 4);
+        P += 4;
 
-        int16_t idLen = 0;
-        std::memcpy(&idLen, p, 2);
-        p += 2;
-        std::string mapIdentifier(reinterpret_cast<const char*>(p), idLen);
-        p += idLen;
+        int16_t IdLen = 0;
+        std::memcpy(&IdLen, P, 2);
+        P += 2;
+        std::string MapIdentifier(reinterpret_cast<const char*>(P), IdLen);
+        P += IdLen;
 
-        int16_t nameLen = 0;
-        std::memcpy(&nameLen, p, 2);
-        p += 2;
-        std::string mapName(reinterpret_cast<const char*>(p), nameLen);
-        p += nameLen;
+        int16_t NameLen = 0;
+        std::memcpy(&NameLen, P, 2);
+        P += 2;
+        std::string MapName(reinterpret_cast<const char*>(P), NameLen);
+        P += NameLen;
 
-        int16_t mapSizeX = 0, mapSizeY = 0, tileSize = 0;
-        std::memcpy(&mapSizeX, p, 2); p += 2;
-        std::memcpy(&mapSizeY, p, 2); p += 2;
-        std::memcpy(&tileSize, p, 2); p += 2;
+        int16_t MapSizeX = 0, MapSizeY = 0, TileSize = 0;
+        std::memcpy(&MapSizeX, P, 2); P += 2;
+        std::memcpy(&MapSizeY, P, 2); P += 2;
+        std::memcpy(&TileSize, P, 2); P += 2;
 
-        p += 100;
+        P += 100;
 
-        if (mapSizeX <= 0 || mapSizeY <= 0) {
+        if (MapSizeX <= 0 || MapSizeY <= 0) {
             std::printf("Bad dimensions in %s\n", path.string().c_str());
             return nullptr;
         }
 
-        const int mapWidth = mapSizeX;
-        const int mapHeight = mapSizeY;
-        const int totalTiles = mapWidth * mapHeight;
-        const size_t tileBytes = static_cast<size_t>(totalTiles) * 10u;
+        const int MapWidth = MapSizeX;
+        const int MapHeight = MapSizeY;
+        const int TotalTiles = MapWidth * MapHeight;
+        const size_t TileBytes = static_cast<size_t>(TotalTiles) * 10u;
 
-        if (p + 7 + tileBytes + 8 > data.data() + data.size()) {
+        if (P + 7 + TileBytes + 8 > Data.data() + Data.size()) {
             std::printf("Unexpected EOF in %s\n", path.string().c_str());
             return nullptr;
         }
 
-        if (std::memcmp(p, "<TILES>", 7) != 0) {
+        if (std::memcmp(P, "<TILES>", 7) != 0) {
             std::printf("Missing <TILES> in %s\n", path.string().c_str());
             return nullptr;
         }
-        p += 7;
+        P += 7;
 
-        const uint8_t* tileStart = p;
-        uint64_t sum = 0;
-        for (size_t i = 0; i < tileBytes; ++i) sum += static_cast<uint64_t>(tileStart[i] + i);
-        const uint32_t computedCRC = static_cast<uint32_t>(sum ^ data.size());
-        if (computedCRC != crc) {
-            std::printf("CRC mismatch in %s (expected %u, got %u)\n", path.string().c_str(), crc, computedCRC);
+        const uint8_t* TileStart = P;
+        uint64_t Sum = 0;
+        for (size_t i = 0; i < TileBytes; ++i) Sum += static_cast<uint64_t>(TileStart[i] + i);
+        const uint32_t ComputedCRC = static_cast<uint32_t>(Sum ^ Data.size());
+        if (ComputedCRC != Crc) {
+            std::printf("CRC mismatch in %s (expected %u, got %u)\n", path.string().c_str(), Crc, ComputedCRC);
             return nullptr;
         }
 
-        auto mapData = std::make_unique<CMapData>(mapWidth, mapHeight, tileSize, mapIdentifier, mapName);
-        const uint8_t* tp = tileStart;
-        for (int y = 0; y < mapHeight; ++y) {
-            for (int x = 0; x < mapWidth; ++x) {
-                if (CTile* t = mapData->GetTile(static_cast<int16_t>(x), static_cast<int16_t>(y))) {
-                    std::memcpy(&t->m_sTileSprite, tp, 2); tp += 2;
-                    std::memcpy(&t->m_sTileSpriteFrame, tp, 2); tp += 2;
-                    std::memcpy(&t->m_sObjectSprite, tp, 2); tp += 2;
-                    std::memcpy(&t->m_sObjectSpriteFrame, tp, 2); tp += 2;
-                    t->m_bIsMoveAllowed = (*tp++) != 0;
-                    t->m_bIsTeleport = (*tp++) != 0;
+        auto MapData = std::make_unique<CMapData>(MapWidth, MapHeight, TileSize, MapIdentifier, MapName);
+        const uint8_t* Tp = TileStart;
+        for (int y = 0; y < MapHeight; ++y) {
+            for (int x = 0; x < MapWidth; ++x) {
+                if (CTile* T = MapData->get_tile(static_cast<int16_t>(x), static_cast<int16_t>(y))) {
+                    std::memcpy(&T->tile_sprite, Tp, 2); Tp += 2;
+                    std::memcpy(&T->tile_sprite_frame, Tp, 2); Tp += 2;
+                    std::memcpy(&T->object_sprite, Tp, 2); Tp += 2;
+                    std::memcpy(&T->object_sprite_frame, Tp, 2); Tp += 2;
+                    T->is_move_allowed = (*Tp++) != 0;
+                    T->is_teleport = (*Tp++) != 0;
                 }
             }
         }
 
         std::printf("Loaded MTD: %s (name: %s) %dx%d tiles (%d total), tile=%d, CRC %u OK\n",
-            mapIdentifier.c_str(), mapName.c_str(), mapWidth, mapHeight, totalTiles, tileSize, crc);
+            MapIdentifier.c_str(), MapName.c_str(), MapWidth, MapHeight, TotalTiles, TileSize, Crc);
 
-        return mapData;
+        return MapData;
     }
 };

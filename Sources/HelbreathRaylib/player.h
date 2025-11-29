@@ -28,23 +28,23 @@ public:
     // Item metadata would be replaced with actual item data,
     // since we aren't implementing items yet, we just have metadata
     // to get them to draw on the screen
-    bool TryEquip(int16_t item_id, const std::vector<ItemMetadataEntry>& _metadata)
+    bool try_equip(int16_t item_id, const std::vector<ItemMetadataEntry>& _metadata)
     {
-        const auto it = std::find_if(_metadata.begin(), _metadata.end(),
+        const auto It = std::find_if(_metadata.begin(), _metadata.end(),
 			[item_id](const ItemMetadataEntry& entry) { return entry.id == static_cast<uint32_t>(item_id); });
-        if (it == _metadata.end())
+        if (It == _metadata.end())
 			return false;
-		const ItemMetadataEntry& metadata = *it;
-        if (metadata.equip_type != Type)
+		const ItemMetadataEntry& Metadata = *It;
+        if (Metadata.equip_type != Type)
             return false;
         id = item_id;
         return true;
 	}
 
-	void Unequip() { id = -1; }
+	void unequip() { id = -1; }
 
-	const int16_t& Id() const { return id; }
-    static constexpr EquipType GetType() { return Type; }
+	const int16_t& get_id() const { return id; }
+    static constexpr EquipType get_type() { return Type; }
 private:
     int16_t id = -1;
 };
@@ -104,138 +104,138 @@ struct PlayerAppearance {
 class Player : public Entity {
 public:
 	Player(const PlayerAppearance& appear);
-	void OnUpdate() override;
-	void OnRender() const override;
-	void OnRenderShadow() const override;
-	PAKLib::sprite_rect GetEntityBounds() const override;
+	void on_update() override;
+	void on_render() const override;
+	void on_render_shadow() const override;
+	PAKLib::sprite_rect get_entity_bounds() const override;
 
-    PlayerAppearance& GetAppearance() {
+    PlayerAppearance& get_appearance() {
         return appearance;
     }
-    void UpdateAppearance(const PlayerAppearance& appear) {
+    void update_appearance(const PlayerAppearance& appear) {
         appearance = appear;
 	}
-    AnimationType GetCurrentAnimationType() const {
+    AnimationType get_current_animation_type() const {
         return current_animation_type;
 	}
-	void SetAnimation(AnimationType newType, WeaponUsed newWeapon) override;
+	void set_animation(AnimationType new_type, WeaponUsed new_weapon) override;
 
 protected:
-	void DrawModelItem(int16_t item_id, Color item_color, bool is_shadow = false) const;
+	void _draw_model_item(int16_t item_id, Color item_color, bool is_shadow = false) const;
 
 	PlayerAppearance appearance{};
 
 private:
-    Stance current_stance = PEACE;
-    WeaponUsed current_weapon_type = HAND;
-	const Animation stand_animation		    = Animation(0, 8, 0.1);
-	const Animation walk_animation		    = Animation(0, 8, 0.085);
-	const Animation run_animation		    = Animation(0, 8, 0.070);
-	const Animation attack_animation		= Animation(0, 8, 0.1);
-	const Animation cast_animation		    = Animation(0, 16, 0.1);
-	const Animation pickup_animation		= Animation(0, 4, 0.125);
-	const Animation takedamage_animation    = Animation(0, 4, 0.115);
-	const Animation dying_animation		    = Animation(0, 8, 0.125);
+    Stance _current_stance = PEACE;
+    WeaponUsed _current_weapon_type = HAND;
+	const Animation _stand_animation		    = Animation(0, 8, 0.1);
+	const Animation _walk_animation		    = Animation(0, 8, 0.085);
+	const Animation _run_animation		    = Animation(0, 8, 0.070);
+	const Animation _attack_animation		= Animation(0, 8, 0.1);
+	const Animation _cast_animation		    = Animation(0, 16, 0.1);
+	const Animation _pickup_animation		= Animation(0, 4, 0.125);
+	const Animation _takedamage_animation    = Animation(0, 4, 0.115);
+	const Animation _dying_animation		    = Animation(0, 8, 0.125);
 };
 
-inline size_t _GetPlayerAnimation(size_t baseIndex, Stance stance, AnimationType type, WeaponUsed weapon)
+inline size_t _get_player_animation(size_t base_index, Stance stance, AnimationType type, WeaponUsed weapon)
 {
     switch (type)
     {
     case STAND:
-        return baseIndex + (stance == PEACE ? SPR_GAME_ANIMATIONS::PAK_INDEX_STANDING_PEACE : SPR_GAME_ANIMATIONS::PAK_INDEX_STANDING_COMBAT);
+        return base_index + (stance == PEACE ? SPR_GAME_ANIMATIONS::PAK_INDEX_STANDING_PEACE : SPR_GAME_ANIMATIONS::PAK_INDEX_STANDING_COMBAT);
 
     case WALK:
-        return baseIndex + (stance == PEACE ? SPR_GAME_ANIMATIONS::PAK_INDEX_WALKING_PEACE : SPR_GAME_ANIMATIONS::PAK_INDEX_WALKING_COMBAT);
+        return base_index + (stance == PEACE ? SPR_GAME_ANIMATIONS::PAK_INDEX_WALKING_PEACE : SPR_GAME_ANIMATIONS::PAK_INDEX_WALKING_COMBAT);
 
     case RUN:
-        return baseIndex + SPR_GAME_ANIMATIONS::PAK_INDEX_RUNNING;
+        return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_RUNNING;
 
     case ATTACK:
         if (stance == PEACE)
-            return baseIndex + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_PEACE;
+            return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_PEACE;
 
         switch (weapon)
         {
-        case HAND: return baseIndex + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_HAND;
-        case BOW:  return baseIndex + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_BOW;
-        case CAST: return baseIndex + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_CAST;
+        case HAND: return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_HAND;
+        case BOW:  return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_BOW;
+        case CAST: return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_CAST;
         }
-        return baseIndex;
+        return base_index;
 
     case PICKUP:
-        return baseIndex + SPR_GAME_ANIMATIONS::PAK_INDEX_PICKUP;
+        return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_PICKUP;
 
     case TAKEDAMAGE:
-        return baseIndex + SPR_GAME_ANIMATIONS::PAK_INDEX_TAKEDAMAGE;
+        return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_TAKEDAMAGE;
 
     case DYING:
-        return baseIndex + SPR_GAME_ANIMATIONS::PAK_INDEX_DYING;
+        return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_DYING;
 
     default:
-        return baseIndex;
+        return base_index;
     }
 }
 
-inline size_t GetPlayerUnderwearAnimationIndex(Stance stance, AnimationType type, WeaponUsed weapon, Gender gender)
+inline size_t get_player_underwear_animation_index(Stance stance, AnimationType type, WeaponUsed weapon, Gender gender)
 {
-    size_t baseIndex = 0;
-    if (gender == GENDER_MALE) baseIndex = MDLID_MALE_UNDERWEAR;
-	else if(gender == GENDER_FEMALE) baseIndex = MDLID_FEMALE_UNDERWEAR;
+    size_t BaseIndex = 0;
+    if (gender == GENDER_MALE) BaseIndex = MDLID_MALE_UNDERWEAR;
+	else if(gender == GENDER_FEMALE) BaseIndex = MDLID_FEMALE_UNDERWEAR;
 
-    return _GetPlayerAnimation(baseIndex, stance, type, weapon);
+    return _get_player_animation(BaseIndex, stance, type, weapon);
 }
 
-inline size_t GetPlayerHairAnimationIndex(Stance stance, AnimationType type, WeaponUsed weapon, Gender gender, HairStyle style)
+inline size_t get_player_hair_animation_index(Stance stance, AnimationType type, WeaponUsed weapon, Gender gender, HairStyle style)
 {
-    size_t baseIndex = 0;
+    size_t BaseIndex = 0;
 
     if (gender == GENDER_MALE)
     {
         switch (style)
         {
-        case HAIR_STYLE_1: baseIndex = MDLID_MALE_HAIRSTYLE_1; break;
-        case HAIR_STYLE_2: baseIndex = MDLID_MALE_HAIRSTYLE_2; break;
-        case HAIR_STYLE_3: baseIndex = MDLID_MALE_HAIRSTYLE_3; break;
-        case HAIR_STYLE_4: baseIndex = MDLID_MALE_HAIRSTYLE_4; break;
-        case HAIR_STYLE_5: baseIndex = MDLID_MALE_HAIRSTYLE_5; break;
-        case HAIR_STYLE_6: baseIndex = MDLID_MALE_HAIRSTYLE_6; break;
-        case HAIR_STYLE_7: baseIndex = MDLID_MALE_HAIRSTYLE_7; break;
+        case HAIR_STYLE_1: BaseIndex = MDLID_MALE_HAIRSTYLE_1; break;
+        case HAIR_STYLE_2: BaseIndex = MDLID_MALE_HAIRSTYLE_2; break;
+        case HAIR_STYLE_3: BaseIndex = MDLID_MALE_HAIRSTYLE_3; break;
+        case HAIR_STYLE_4: BaseIndex = MDLID_MALE_HAIRSTYLE_4; break;
+        case HAIR_STYLE_5: BaseIndex = MDLID_MALE_HAIRSTYLE_5; break;
+        case HAIR_STYLE_6: BaseIndex = MDLID_MALE_HAIRSTYLE_6; break;
+        case HAIR_STYLE_7: BaseIndex = MDLID_MALE_HAIRSTYLE_7; break;
         default: return 0;
         }
     }
     else if(gender == GENDER_FEMALE) {
         switch (style)
         {
-        case HAIR_STYLE_1: baseIndex = MDLID_FEMALE_HAIRSTYLE_1; break;
-        case HAIR_STYLE_2: baseIndex = MDLID_FEMALE_HAIRSTYLE_2; break;
-        case HAIR_STYLE_3: baseIndex = MDLID_FEMALE_HAIRSTYLE_3; break;
-        case HAIR_STYLE_4: baseIndex = MDLID_FEMALE_HAIRSTYLE_4; break;
-        case HAIR_STYLE_5: baseIndex = MDLID_FEMALE_HAIRSTYLE_5; break;
-        case HAIR_STYLE_6: baseIndex = MDLID_FEMALE_HAIRSTYLE_6; break;
-        case HAIR_STYLE_7: baseIndex = MDLID_FEMALE_HAIRSTYLE_7; break;
+        case HAIR_STYLE_1: BaseIndex = MDLID_FEMALE_HAIRSTYLE_1; break;
+        case HAIR_STYLE_2: BaseIndex = MDLID_FEMALE_HAIRSTYLE_2; break;
+        case HAIR_STYLE_3: BaseIndex = MDLID_FEMALE_HAIRSTYLE_3; break;
+        case HAIR_STYLE_4: BaseIndex = MDLID_FEMALE_HAIRSTYLE_4; break;
+        case HAIR_STYLE_5: BaseIndex = MDLID_FEMALE_HAIRSTYLE_5; break;
+        case HAIR_STYLE_6: BaseIndex = MDLID_FEMALE_HAIRSTYLE_6; break;
+        case HAIR_STYLE_7: BaseIndex = MDLID_FEMALE_HAIRSTYLE_7; break;
         default: return 0;
         }
     }
 
-    return _GetPlayerAnimation(baseIndex, stance, type, weapon);
+    return _get_player_animation(BaseIndex, stance, type, weapon);
 }
 
-inline size_t GetPlayerAnimationIndex(Stance stance, AnimationType type, WeaponUsed weapon, Gender gender)
+inline size_t get_player_animation_index(Stance stance, AnimationType type, WeaponUsed weapon, Gender gender)
 {
-	size_t baseIndex = 0;
-    if (gender == GENDER_MALE) baseIndex = MDLID_MALE_GAME_MODEL;
-    else if (gender == GENDER_FEMALE) baseIndex = MDLID_FEMALE_GAME_MODEL;
+	size_t BaseIndex = 0;
+    if (gender == GENDER_MALE) BaseIndex = MDLID_MALE_GAME_MODEL;
+    else if (gender == GENDER_FEMALE) BaseIndex = MDLID_FEMALE_GAME_MODEL;
 
-    return _GetPlayerAnimation(baseIndex, stance, type, weapon);
+    return _get_player_animation(BaseIndex, stance, type, weapon);
 }
 
-inline size_t GetPlayerItemAnimationIndex(int16_t itemId, Stance stance, AnimationType type, WeaponUsed weapon, Gender gender)
+inline size_t get_player_item_animation_index(int16_t item_id, Stance stance, AnimationType type, WeaponUsed weapon, Gender gender)
 {
-    size_t baseIndex = 0;
+    size_t BaseIndex = 0;
     // ItemID * 24 because each item has 24 sprite sheets, 12 are for male aned 12 are for female.
-    if (gender == GENDER_MALE) baseIndex = MDLID_MALE_ITEM_START + (itemId * 24);
-    else if (gender == GENDER_FEMALE) baseIndex = MDLID_FEMALE_ITEM_START + (itemId * 24);
+    if (gender == GENDER_MALE) BaseIndex = MDLID_MALE_ITEM_START + (item_id * 24);
+    else if (gender == GENDER_FEMALE) BaseIndex = MDLID_FEMALE_ITEM_START + (item_id * 24);
 
-    return _GetPlayerAnimation(baseIndex, stance, type, weapon);
+    return _get_player_animation(BaseIndex, stance, type, weapon);
 }

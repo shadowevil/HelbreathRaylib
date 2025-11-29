@@ -62,9 +62,9 @@ protected:
     uint32_t pixel_y = 0;
 };
 
-inline GamePosition GetTileWorldMousePosition(Camera2D camera)
+inline GamePosition get_tile_world_mouse_position(Camera2D camera)
 {
-    Vector2 mposWorld = GetScreenToWorld2D(rlx::GetMousePosition(), camera);
+    Vector2 mposWorld = GetScreenToWorld2D(rlx::get_mouse_position(), camera);
     int tx = (int)floorf((mposWorld.x + constant::TILE_HALF) / constant::TILE_SIZE);
     int ty = (int)floorf((mposWorld.y + constant::TILE_HALF) / constant::TILE_SIZE);
     tx = std::max(0, tx);
@@ -72,7 +72,7 @@ inline GamePosition GetTileWorldMousePosition(Camera2D camera)
     return GamePosition(tx, ty);
 }
 
-inline Dir GetDirectionToPoint(const GamePosition& position, const GamePosition& desired_position)
+inline Dir get_direction_to_point(const GamePosition& position, const GamePosition& desired_position)
 {
     int dx = desired_position.get_tile_x() - position.get_tile_x();
     int dy = desired_position.get_tile_y() - position.get_tile_y();
@@ -130,47 +130,47 @@ public:
     Entity(Entity&&) = delete;
     Entity& operator=(Entity&&) = delete;
 
-    void Update();
-    virtual void OnUpdate() = 0;
-    virtual void OnRender() const = 0;
-	virtual void OnRenderShadow() const = 0;
-    virtual void SetAnimation(AnimationType newType, WeaponUsed newWeapon = WeaponUsed::HAND) = 0;
+    void update();
+    virtual void on_update() = 0;
+    virtual void on_render() const = 0;
+	virtual void on_render_shadow() const = 0;
+    virtual void set_animation(AnimationType new_type, WeaponUsed new_weapon = WeaponUsed::HAND) = 0;
 
-    void SetPosition(const GamePosition& newPosition) {
-        position = newPosition;
+    void set_position(const GamePosition& new_position) {
+        position = new_position;
     }
 
-    const GamePosition& GetPosition() const {
+    const GamePosition& get_position() const {
         return position;
     }
 
-    void AttachCamera(Camera2D& camera)
+    void attach_camera(Camera2D& camera)
     {
-        m_attachedCamera = &camera;
+        _attached_camera = &camera;
     }
 
-    void DetachCamera()
+    void detach_camera()
     {
-        m_attachedCamera = nullptr;
+        _attached_camera = nullptr;
     }
 
-    void SetActiveMap(CMapData* map);
+    void set_active_map(CMapData* map);
 
-    void MoveTo(const GamePosition& target, bool run = false);
-    GamePosition FindValidTarget(const GamePosition& target);
-    bool IsTileOccupied(int tile_x, int tile_y) const;
-    bool IsMoving() const { return m_isMoving; }
-    void StopMovement();
-    void RenderDebugMovement();
+    void move_to(const GamePosition& target, bool run = false);
+    GamePosition find_valid_target(const GamePosition& target);
+    bool is_tile_occupied(int tile_x, int tile_y) const;
+    bool is_moving() const { return _is_moving; }
+    void stop_movement();
+    void render_debug_movement();
 
-    Dir GetCurrentDirection() const { return current_direction; }
-    void SetDirection(Dir direction) { current_direction = direction; }
+    Dir get_current_direction() const { return current_direction; }
+    void set_direction(Dir direction) { current_direction = direction; }
 
 protected:
-    Game& m_game;
-    CSpriteCollection& m_modelSprites;
-	std::vector<ItemMetadataEntry>& m_itemMetadata;
-    std::vector<std::unique_ptr<Entity>>& m_entities;
+    Game& _game;
+    CSpriteCollection& _model_sprites;
+	std::vector<ItemMetadataEntry>& _item_metadata;
+    std::vector<std::unique_ptr<Entity>>& _entities;
 
     Animation current_animation{};
     Dir current_direction = NORTH;
@@ -178,43 +178,43 @@ protected:
 
     GamePosition position{};
 
-    Camera2D* m_attachedCamera = nullptr;
+    Camera2D* _attached_camera = nullptr;
 
     // Movement system
-    bool m_isMoving = false;
-    std::vector<GamePosition> m_movementPath{};
-    std::vector<GamePosition> m_nextMovementPath{};
-    size_t m_currentPathIndex = 0;
-    GamePosition m_currentStepTarget{};
-    float m_moveProgress = 0.0f;
-    int32_t m_moveStartPixelX = 0;
-    int32_t m_moveStartPixelY = 0;
-    float m_baseSpeed = 1.0f;
-    float m_internalSpeedMultiplier = 100.0f;
-    bool m_isRunning = false;
-    //bool m_canCancelMovement = false;
-	bool m_stopRequested = false;
-    GamePosition m_finalTarget{};
-    float m_currentStepDistance = constant::TILE_SIZE;
+    bool _is_moving = false;
+    std::vector<GamePosition> _movement_path{};
+    std::vector<GamePosition> _next_movement_path{};
+    size_t _current_path_index = 0;
+    GamePosition _current_step_target{};
+    float _move_progress = 0.0f;
+    int32_t _move_start_pixel_x = 0;
+    int32_t _move_start_pixel_y = 0;
+    float _base_speed = 1.0f;
+    float _internal_speed_multiplier = 100.0f;
+    bool _is_running = false;
+    //bool _can_cancel_movement = false;
+	bool _stop_requested = false;
+    GamePosition _final_target{};
+    float _current_step_distance = constant::TILE_SIZE;
 
-    std::unordered_set<uint64_t>* m_reservedTiles = nullptr; // Shared across all entities
-    uint64_t m_reservedTileKey = 0; // Current reservation
+    std::unordered_set<uint64_t>* _reserved_tiles = nullptr; // Shared across all entities
+    uint64_t _reserved_tile_key = 0; // Current reservation
 
-    static uint64_t MakeTileKey(int x, int y) {
+    static uint64_t _make_tile_key(int x, int y) {
         return ((uint64_t)x << 32) | (uint64_t)y;
     }
 
     // Entity Bounds
-	virtual PAKLib::sprite_rect GetEntityBounds() const = 0;
+	virtual PAKLib::sprite_rect get_entity_bounds() const = 0;
 
     // Map bounds
-    CMapData* m_activeMap;
-    int16_t m_mapWidth = 0;
-    int16_t m_mapHeight = 0;
+    CMapData* _active_map;
+    int16_t _map_width = 0;
+    int16_t _map_height = 0;
 
-    void UpdateMovement();
-    void RequestStopMovement();
-    void BuildPath(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end);
-    bool BuildPathDirect(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end);
-    void StartNextStep();
+    void _update_movement();
+    void _request_stop_movement();
+    void _build_path(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end);
+    bool _build_path_direct(std::vector<GamePosition>& path, const GamePosition& start, const GamePosition& end);
+    void _start_next_step();
 };

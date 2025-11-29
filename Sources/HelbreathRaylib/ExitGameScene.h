@@ -4,8 +4,8 @@
 class ExitGameScene : public Scene {
 public:
 	using Scene::Scene;
-	void OnInitialize() override;
-	void OnUninitialize() override;
-	void OnUpdate() override;
-	void OnRender() override;
+	void on_initialize() override;
+	void on_uninitialize() override;
+	void on_update() override;
+	void on_render() override;
 };

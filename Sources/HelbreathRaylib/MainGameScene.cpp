@@ -9,96 +9,96 @@
 #include "entity.h"
 #include "ItemIDs.h"
 
-void MainGameScene::OnInitialize()
+void MainGameScene::on_initialize()
 {
-	m_mapData = CMapLoader::LoadByIndex(MapID::Default);
+	_map_data = CMapLoader::load_by_index(MapID::Default);
 
-	m_camera.target = { (float)(m_player->GetPosition().get_pixel_x()), (float)(m_player->GetPosition().get_pixel_y()) };
-	m_camera.offset = { constant::BASE_WIDTH * 0.5f, constant::BASE_HEIGHT * 0.5f };
-	m_camera.zoom = 1.0f;
-	m_camera.rotation = 0.0f;
+	_camera.target = { (float)(_player->get_position().get_pixel_x()), (float)(_player->get_position().get_pixel_y()) };
+	_camera.offset = { constant::BASE_WIDTH * 0.5f, constant::BASE_HEIGHT * 0.5f };
+	_camera.zoom = 1.0f;
+	_camera.rotation = 0.0f;
 
 }
 
-void MainGameScene::OnUninitialize()
+void MainGameScene::on_uninitialize()
 {
 
 }
 
-void MainGameScene::OnUpdate()
+void MainGameScene::on_update()
 {
-	if (!m_mapData)
+	if (!_map_data)
 		return;
 }
 
-void MainGameScene::OnRender()
+void MainGameScene::on_render()
 {
-	if(!m_mapData)
+	if(!_map_data)
 		return;
 	rlPushMatrix();	// Pop upscale matrix
-	BeginMode2D(m_camera);	// Push camera matrix
+	BeginMode2D(_camera);	// Push camera matrix
 	{
 		// Map
-		m_mapData->ForEachTileRegion(m_camera, 18, 18, m_entities, [&](int16_t tileX, int16_t tileY, int pX, int pY, const CTile& tile, Entity* tile_owner) {
-			auto tileSpr = m_mapTiles[tile.m_sTileSprite];
+		_map_data->for_each_tile_region(_camera, 18, 18, entities, [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner) {
+			auto TileSpr = map_tiles[Tile.tile_sprite];
 
-			tileSpr->Draw(pX, pY, tile.m_sTileSpriteFrame);
+			TileSpr->draw(PX, PY, Tile.tile_sprite_frame);
 			});
 
-		//m_mapData->ForEachTileRegion(m_camera, [&](int16_t tileX, int16_t tileY, int pX, int pY, const CTile& tile)
+		//_map_data->ForEachTileRegion(_camera, [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile)
 		//    {
 		//        // non-visual debug
-		//        if (!tile.m_bIsMoveAllowed)
-		//            DrawRectangle(pX, pY, constant::TILE_SIZE, constant::TILE_SIZE, rlx::RGBA(255, 0, 0, 42));
-		//        if (tile.m_bIsTeleport)
-		//            DrawRectangle(pX, pY, constant::TILE_SIZE, constant::TILE_SIZE, rlx::RGBA(0, 0, 255, 42));
+		//        if (!Tile.m_bIsMoveAllowed)
+		//            DrawRectangle(PX, PY, constant::TILE_SIZE, constant::TILE_SIZE, rlx::RGBA(255, 0, 0, 42));
+		//        if (Tile.m_bIsTeleport)
+		//            DrawRectangle(PX, PY, constant::TILE_SIZE, constant::TILE_SIZE, rlx::RGBA(0, 0, 255, 42));
 		//    });
 
-		m_player->RenderDebugMovement();
+		_player->render_debug_movement();
 
 		// Objects
-		DrawObjectsWithShadow();
+		_draw_objects_with_shadow();
 	}
 	EndMode2D();
 	rlPopMatrix();	// Push upscale matrix
 }
 
-void MainGameScene::DrawObjectsWithShadow()
+void MainGameScene::_draw_objects_with_shadow()
 {
-	std::vector<DrawEntry> list;
-	list.reserve(512);
-	m_mapData->ForEachTileRegion(m_camera, 32, 32, m_entities, [&](int16_t tileX, int16_t tileY, int pX, int pY, const CTile& tile, Entity* tile_owner)
+	std::vector<DrawEntry> List;
+	List.reserve(512);
+	_map_data->for_each_tile_region(_camera, 32, 32, entities, [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner)
 		{
-			if (tile.m_sObjectSprite != 0)
+			if (Tile.object_sprite != 0)
 			{
-				list.push_back({ tileY, DrawEntry::ObjectShadow, &tile, nullptr, pX, pY });
-				list.push_back({ tileY, DrawEntry::Object, &tile, nullptr, pX, pY });
+				List.push_back({ TileY, DrawEntry::ObjectShadow, &Tile, nullptr, PX, PY });
+				List.push_back({ TileY, DrawEntry::Object, &Tile, nullptr, PX, PY });
 			}
 
-			if (!tile_owner)
+			if (!TileOwner)
 				return;
 
-			auto entity_tx = tile_owner->GetPosition().get_tile_x();
-			auto entity_ty = tile_owner->GetPosition().get_tile_y();
+			auto EntityTx = TileOwner->get_position().get_tile_x();
+			auto EntityTy = TileOwner->get_position().get_tile_y();
 
-			if (tileX == entity_tx && tileY == entity_ty)
+			if (TileX == EntityTx && TileY == EntityTy)
 			{
-				list.push_back({ entity_ty, DrawEntry::EntityShadow, nullptr, tile_owner, 0, 0 });
-				list.push_back({ entity_ty, DrawEntry::Entity, nullptr, tile_owner, 0, 0 });
+				List.push_back({ EntityTy, DrawEntry::EntityShadow, nullptr, TileOwner, 0, 0 });
+				List.push_back({ EntityTy, DrawEntry::Entity, nullptr, TileOwner, 0, 0 });
 			}
 		});
 
 	// Sort by Y, then by type
 	// Order: ObjectShadow < EntityShadow < Entity < Object
-	std::sort(list.begin(), list.end(),
-		[](const DrawEntry& a, const DrawEntry& b)
+	std::sort(List.begin(), List.end(),
+		[](const DrawEntry& A, const DrawEntry& B)
 		{
-			if (a.sortY != b.sortY)
-				return a.sortY < b.sortY;
+			if (A.sortY != B.sortY)
+				return A.sortY < B.sortY;
 
 			// Custom type order at same Y
-			auto getOrder = [](DrawEntry::Type t) {
-				switch (t) {
+			auto GetOrder = [](DrawEntry::Type T) {
+				switch (T) {
 				case DrawEntry::ObjectShadow: return 0;
 				case DrawEntry::EntityShadow: return 1;
 				case DrawEntry::Entity: return 2;
@@ -107,152 +107,152 @@ void MainGameScene::DrawObjectsWithShadow()
 				return 0;
 				};
 
-			return getOrder(a.type) < getOrder(b.type);
+			return GetOrder(A.type) < GetOrder(B.type);
 		});
-	DrawAll(list);
+	_draw_all(List);
 }
 
-void MainGameScene::DrawAll(const std::vector<DrawEntry>& list)
+void MainGameScene::_draw_all(const std::vector<DrawEntry>& list)
 {
-	static float lightTime = 0.5f;
-	//lightTime += GetFrameTime() * 0.5f;
-	float lightX = sinf(lightTime) * 1.5f;
-	float lightY = 0.75f;
-	const Vector2 lightDir = { lightX, lightY };
+	static float LightTime = 0.5f;
+	//LightTime += GetFrameTime() * 0.5f;
+	float LightX = sinf(LightTime) * 1.5f;
+	float LightY = 0.75f;
+	const Vector2 LightDir = { LightX, LightY };
 
 	// Calculate opacity based on light angle
-	// Fade out when lightX approaches extremes (-1.5 to 1.5)
-	float angleFactor = fabsf(lightX / 1.5f); // 0.0 at center, 1.0 at extremes
-	float fadeStart = 0.7f; // Start fading at 70% of max angle
-	float opacity = 1.0f;
-	if (angleFactor > fadeStart)
+	// Fade out when LightX approaches extremes (-1.5 to 1.5)
+	float AngleFactor = fabsf(LightX / 1.5f); // 0.0 at center, 1.0 at extremes
+	float FadeStart = 0.7f; // Start fading at 70% of max angle
+	float Opacity = 1.0f;
+	if (AngleFactor > FadeStart)
 	{
-		opacity = 1.0f - ((angleFactor - fadeStart) / (1.0f - fadeStart));
+		Opacity = 1.0f - ((AngleFactor - FadeStart) / (1.0f - FadeStart));
 	}
 
-	uint8_t shadowAlpha = uint8_t(128 * opacity);
-	Color shadowTint = { 0, 0, 0, shadowAlpha };
+	uint8_t ShadowAlpha = uint8_t(128 * Opacity);
+	Color ShadowTint = { 0, 0, 0, ShadowAlpha };
 
-	for (auto& e : list)
+	for (auto& E : list)
 	{
-		switch (e.type)
+		switch (E.type)
 		{
 		case DrawEntry::ObjectShadow:
 		{
 			// Skip shadow for certain objects, mostly trees and buildings
-			if (e.tile->m_sObjectSprite < 100 || e.tile->m_sObjectSprite >= 300 ||
-				ShadowlessObjects.contains(e.tile->m_sObjectSprite))
+			if (E.tile->object_sprite < 100 || E.tile->object_sprite >= 300 ||
+				ShadowlessObjects.contains(E.tile->object_sprite))
 				continue;
 
-			auto spr = m_mapTiles[e.tile->m_sObjectSprite];
-			auto frame = e.tile->m_sObjectSpriteFrame;
-			if ((e.tile->m_sObjectSprite >= 100 && e.tile->m_sObjectSprite < 150) && frame > 0)
-				frame = 0;
-			auto rect = spr->GetFrameRectangle(frame);
+			auto Spr = map_tiles[E.tile->object_sprite];
+			auto Frame = E.tile->object_sprite_frame;
+			if ((E.tile->object_sprite >= 100 && E.tile->object_sprite < 150) && Frame > 0)
+				Frame = 0;
+			auto Rect = Spr->get_frame_rectangle(Frame);
 
 			rlPushMatrix();
 
-			float baseX, baseY;
+			float BaseX, BaseY;
 
-			// offset fix for trees 
-			if (e.tile->m_sObjectSprite >= 100 && e.tile->m_sObjectSprite <= 150)
+			// offset fix for trees
+			if (E.tile->object_sprite >= 100 && E.tile->object_sprite <= 150)
 			{
-				baseX = (float)(e.pX);
-				baseY = (float)(e.pY);
+				BaseX = (float)(E.pX);
+				BaseY = (float)(E.pY);
 			}
 			else	// all other objects
 			{
-				float renderedLeft = (float)(e.pX + rect.pivotX);
-				float renderedTop = (float)(e.pY + rect.pivotY);
-				float renderedRight = renderedLeft + rect.width;
-				float renderedBottom = renderedTop + rect.height;
+				float RenderedLeft = (float)(E.pX + Rect.pivotX);
+				float RenderedTop = (float)(E.pY + Rect.pivotY);
+				float RenderedRight = RenderedLeft + Rect.width;
+				float RenderedBottom = RenderedTop + Rect.height;
 
-				baseX = (renderedLeft + renderedRight) * 0.5f;
-				baseY = renderedBottom;
+				BaseX = (RenderedLeft + RenderedRight) * 0.5f;
+				BaseY = RenderedBottom;
 			}
 
-			rlTranslatef(baseX, baseY, 0.0f);
+			rlTranslatef(BaseX, BaseY, 0.0f);
 
-			float skewMatrix[16] = {
+			float SkewMatrix[16] = {
 				1.0f, 0.0f, 0.0f, 0.0f,
-				lightDir.x, lightDir.y, 0.0f, 0.0f,
+				LightDir.x, LightDir.y, 0.0f, 0.0f,
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 			};
-			rlMultMatrixf(skewMatrix);
+			rlMultMatrixf(SkewMatrix);
 
-			rlTranslatef(-baseX, -baseY, 0.0f);
+			rlTranslatef(-BaseX, -BaseY, 0.0f);
 
-			spr->Draw(e.pX, e.pY, e.tile->m_sObjectSpriteFrame, shadowTint);
+			Spr->draw(E.pX, E.pY, E.tile->object_sprite_frame, ShadowTint);
 
 			rlPopMatrix();
 		}
 		break;
 		case DrawEntry::Object:
 		{
-			auto spr = m_mapTiles[e.tile->m_sObjectSprite];
-			uint8_t alpha = 255;
+			auto Spr = map_tiles[E.tile->object_sprite];
+			uint8_t Alpha = 255;
 
 			// Handle tree transparency when player is behind
-			if (e.tile->m_sObjectSprite >= 100 && e.tile->m_sObjectSprite <= 150)
+			if (E.tile->object_sprite >= 100 && E.tile->object_sprite <= 150)
 			{
-				auto pp = m_player->GetPosition();
-				int player_tx = pp.get_tile_x();
-				int player_ty = pp.get_tile_y();
+				auto Pp = _player->get_position();
+				int PlayerTx = Pp.get_tile_x();
+				int PlayerTy = Pp.get_tile_y();
 
-				auto rect = spr->GetFrameRectangle(e.tile->m_sObjectSpriteFrame);
+				auto Rect = Spr->get_frame_rectangle(E.tile->object_sprite_frame);
 
 				// Calculate object bounds in pixels (including pivot)
-				int objLeft = e.pX + rect.pivotX;
-				int objRight = e.pX + rect.pivotX + rect.width;
-				int objTop = e.pY + rect.pivotY;
-				int objBottom = e.pY + rect.pivotY + rect.height;
+				int ObjLeft = E.pX + Rect.pivotX;
+				int ObjRight = E.pX + Rect.pivotX + Rect.width;
+				int ObjTop = E.pY + Rect.pivotY;
+				int ObjBottom = E.pY + Rect.pivotY + Rect.height;
 
-				int playerPx = pp.get_pixel_x();
-				int playerPy = pp.get_pixel_y();
+				int PlayerPx = Pp.get_pixel_x();
+				int PlayerPy = Pp.get_pixel_y();
 
 				// Player is behind (lower Y) and within bounds
-				if (player_ty < e.sortY &&
-					playerPx >= objLeft && playerPx <= objRight &&
-					playerPy >= objTop && playerPy <= objBottom)
+				if (PlayerTy < E.sortY &&
+					PlayerPx >= ObjLeft && PlayerPx <= ObjRight &&
+					PlayerPy >= ObjTop && PlayerPy <= ObjBottom)
 				{
-					alpha = 128;
+					Alpha = 128;
 				}
 			}
 
-			spr->Draw(e.pX, e.pY, e.tile->m_sObjectSpriteFrame, rlx::RGBA(255, 255, 255, alpha));
+			Spr->draw(E.pX, E.pY, E.tile->object_sprite_frame, rlx::RGBA(255, 255, 255, Alpha));
 		}
 		break;
 		case DrawEntry::EntityShadow:
 		{
-			auto pp = e.entity->GetPosition();
-			int pX = pp.get_pixel_x();
-			int pY = pp.get_pixel_y();
+			auto Pp = E.entity->get_position();
+			int PX = Pp.get_pixel_x();
+			int PY = Pp.get_pixel_y();
 
 			rlPushMatrix();
 
-			float baseX = (float)pX;
-			float baseY = (float)pY;
+			float BaseX = (float)PX;
+			float BaseY = (float)PY;
 
-			rlTranslatef(baseX, baseY, 0.0f);
+			rlTranslatef(BaseX, BaseY, 0.0f);
 
-			float skewMatrix[16] = {
+			float SkewMatrix[16] = {
 				1.0f, 0.0f, 0.0f, 0.0f,
-				lightDir.x, lightDir.y, 0.0f, 0.0f,
+				LightDir.x, LightDir.y, 0.0f, 0.0f,
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 			};
-			rlMultMatrixf(skewMatrix);
+			rlMultMatrixf(SkewMatrix);
 
-			rlTranslatef(-baseX, -baseY, 0.0f);
+			rlTranslatef(-BaseX, -BaseY, 0.0f);
 
-			e.entity->OnRenderShadow();
+			E.entity->on_render_shadow();
 
 			rlPopMatrix();
 		}
 		break;
 		case DrawEntry::Entity:
-			e.entity->OnRender();
+			E.entity->on_render();
 			break;
 		}
 	}

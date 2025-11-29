@@ -2,136 +2,136 @@
 #include <stdio.h>
 
 Application::Application()
-    : m_Running(false)
-    , m_WindowRestartRequested(false)
-    , m_ExitCode(0)
-    , m_DeltaTime(0.0f)
-    , m_AverageFPS(0.0f)
-    , m_AvgFPSTimeAccumulator(0.0f)
-    , m_AvgFPSFrameCount(0)
+    : _running(false)
+    , _window_restart_requested(false)
+    , _exit_code(0)
+    , _delta_time(0.0f)
+    , _average_fps(0.0f)
+    , _avg_fps_time_accumulator(0.0f)
+    , _avg_fps_frame_count(0)
 {
 }
 
 Application::~Application()
 {
     // Clean up layers (smart pointers handle deletion automatically)
-    for (auto& layer : m_Layers)
+    for (auto& Layer : _layers)
     {
-        layer->OnDetach();
+        Layer->on_detach();
     }
-    m_Layers.clear();
+    _layers.clear();
 
     // Clean up window
-    DestroyAppWindow_Internal();
+    _destroy_app_window_internal();
 }
 
-Application& Application::Get()
+Application& Application::_get()
 {
-    static Application instance;
-    return instance;
+    static Application Instance;
+    return Instance;
 }
 
 // Static wrapper methods
-int Application::Run()
+int Application::run()
 {
-    return Get().Run_Internal();
+    return _get()._run_internal();
 }
 
-void Application::Exit(int exitCode)
+void Application::exit(int exit_code)
 {
-    Get().Exit_Internal(exitCode);
+    _get()._exit_internal(exit_code);
 }
 
-bool Application::CreateAppWindow(const WindowSpec& spec)
+bool Application::create_app_window(const WindowSpec& spec)
 {
-    return Get().CreateAppWindow_Internal(spec);
+    return _get()._create_app_window_internal(spec);
 }
 
-void Application::DestroyAppWindow()
+void Application::destroy_app_window()
 {
-    Get().DestroyAppWindow_Internal();
+    _get()._destroy_app_window_internal();
 }
 
-void Application::RestartAppWindow()
+void Application::restart_app_window()
 {
-    Get().RestartAppWindow_Internal();
+    _get()._restart_app_window_internal();
 }
 
-Window* Application::GetWindow()
+Window* Application::get_window()
 {
-    return Get().m_Window.get();
+    return _get()._window.get();
 }
 
-bool Application::HasWindow()
+bool Application::has_window()
 {
-    return Get().m_Window != nullptr;
+    return _get()._window != nullptr;
 }
 
-void Application::PopLayer()
+void Application::pop_layer()
 {
-    Get().PopLayer_Internal();
+    _get()._pop_layer_internal();
 }
 
-void Application::RemoveLayer(ApplicationLayer* layer)
+void Application::remove_layer(ApplicationLayer* layer)
 {
-    Get().RemoveLayer_Internal(layer);
+    _get()._remove_layer_internal(layer);
 }
 
-void Application::OnEvent(Event& event)
+void Application::on_event(Event& event)
 {
-    Get().OnEvent_Internal(event);
+    _get()._on_event_internal(event);
 }
 
-bool Application::IsRunning()
+bool Application::is_running()
 {
-    return Get().m_Running;
+    return _get()._running;
 }
 
-int Application::GetExitCode()
+int Application::get_exit_code()
 {
-    return Get().m_ExitCode;
+    return _get()._exit_code;
 }
 
-float Application::GetDeltaTime()
+float Application::get_delta_time()
 {
-    return Get().m_DeltaTime;
+    return _get()._delta_time;
 }
 
-float Application::GetFPS()
+float Application::get_fps()
 {
-    return Get().GetFPS_Internal();
+    return _get()._get_fps_internal();
 }
 
-float Application::GetAvgFPS()
+float Application::get_avg_fps()
 {
-    return Get().GetAvgFPS_Internal();
+    return _get()._get_avg_fps_internal();
 }
 
-float Application::FramesPerSecond()
+float Application::frames_per_second()
 {
-    return Get().FramesPerSecond_Internal();
+    return _get()._frames_per_second_internal();
 }
 
 // Internal implementation methods
-bool Application::CreateAppWindow_Internal(const WindowSpec& spec)
+bool Application::_create_app_window_internal(const WindowSpec& spec)
 {
     // Destroy existing window if any
-    DestroyAppWindow_Internal();
+    _destroy_app_window_internal();
 
     // Create new window
-    m_Window = std::make_unique<Window>(spec);
+    _window = std::make_unique<Window>(spec);
 
-    if (!m_Window->IsOpen())
+    if (!_window->is_open())
     {
         printf("ERROR: Failed to create window!\n");
-        m_Window.reset();
+        _window.reset();
         return false;
     }
     else
     {
         // Set up event callback to dispatch events to layers
-        m_Window->SetEventCallback([this](Event& e) {
-            OnEvent_Internal(e);
+        _window->set_event_callback([this](Event& e) {
+            _on_event_internal(e);
             });
 
         printf("Window created: %dx%d - %s\n",
@@ -140,217 +140,217 @@ bool Application::CreateAppWindow_Internal(const WindowSpec& spec)
     }
 }
 
-void Application::DestroyAppWindow_Internal()
+void Application::_destroy_app_window_internal()
 {
-    if (m_Window)
+    if (_window)
     {
         printf("Destroying window...\n");
-        m_Window.reset();
+        _window.reset();
     }
 }
 
-void Application::RestartAppWindow_Internal()
+void Application::_restart_app_window_internal()
 {
-    if (m_Window)
+    if (_window)
     {
         // Save current window spec
-        WindowSpec spec;
-        spec.Title = m_Window->GetTitle();
-        spec.Width = m_Window->GetWidth();
-        spec.Height = m_Window->GetHeight();
-        spec.Flags = m_Window->GetFlags();
+        WindowSpec Spec;
+        Spec.Title = _window->get_title();
+        Spec.Width = _window->get_width();
+        Spec.Height = _window->get_height();
+        Spec.Flags = _window->get_flags();
 
-        m_PendingWindowSpec = spec;
-        m_WindowRestartRequested = true;
+        _pending_window_spec = Spec;
+        _window_restart_requested = true;
 
         printf("Window restart requested...\n");
     }
 }
 
-int Application::Run_Internal()
+int Application::_run_internal()
 {
-    if (m_Running)
+    if (_running)
     {
         printf("WARNING: Application is already running!\n");
-        return m_ExitCode;
+        return _exit_code;
     }
 
-    if (!m_Window)
+    if (!_window)
     {
-        printf("ERROR: No window created! Call CreateAppWindow() before Run()\n");
+        printf("ERROR: No window created! Call create_app_window() before run()\n");
         return 1;
     }
 
-    m_Running = true;
-    m_ExitCode = 0;
+    _running = true;
+    _exit_code = 0;
 
     printf("Application starting main loop...\n");
-    MainLoop();
-    printf("Application exited with code: %d\n", m_ExitCode);
+    _main_loop();
+    printf("Application exited with code: %d\n", _exit_code);
 
-    return m_ExitCode;
+    return _exit_code;
 }
 
-void Application::Exit_Internal(int exitCode)
+void Application::_exit_internal(int exit_code)
 {
-    printf("Application exit requested (code: %d)\n", exitCode);
-    m_Running = false;
-    m_ExitCode = exitCode;
+    printf("Application exit requested (code: %d)\n", exit_code);
+    _running = false;
+    _exit_code = exit_code;
 }
 
-void Application::MainLoop()
+void Application::_main_loop()
 {
-    while (m_Running)
+    while (_running)
     {
         // Handle window restart if requested
-        if (m_WindowRestartRequested)
+        if (_window_restart_requested)
         {
-            for (auto& layer : m_Layers)
+            for (auto& Layer : _layers)
             {
-                layer->OnDetach();
+                Layer->on_detach();
             }
 
-            m_WindowRestartRequested = false;
-            CreateAppWindow_Internal(m_PendingWindowSpec);
+            _window_restart_requested = false;
+            _create_app_window_internal(_pending_window_spec);
 
-            if (!m_Window)
+            if (!_window)
             {
                 // Window recreation failed - exit
-                Exit_Internal(1);
+                _exit_internal(1);
                 break;
             }
 
-            for (auto& layer : m_Layers)
+            for (auto& Layer : _layers)
             {
-                layer->OnAttach();
+                Layer->on_attach();
             }
         }
 
         // Check if window is still valid
-        if (!m_Window || !m_Window->IsOpen())
+        if (!_window || !_window->is_open())
         {
             printf("Window closed unexpectedly!\n");
-            Exit_Internal(1);
+            _exit_internal(1);
             break;
         }
 
         // Check if user requested window close
-        if (m_Window->ShouldClose())
+        if (_window->should_close())
         {
             printf("Window close requested by user\n");
-            Exit_Internal(0);
+            _exit_internal(0);
             break;
         }
 
         // Poll and dispatch window events
-        m_Window->PollEvents();
+        _window->poll_events();
 
         // Calculate delta time
-        m_DeltaTime = m_Window->GetDeltaTime();
+        _delta_time = _window->get_delta_time();
 
         // Update average FPS calculation
-        m_AvgFPSTimeAccumulator += m_DeltaTime;
-        m_AvgFPSFrameCount++;
+        _avg_fps_time_accumulator += _delta_time;
+        _avg_fps_frame_count++;
 
         // Calculate average FPS every second
-        if (m_AvgFPSTimeAccumulator >= 1.0f)
+        if (_avg_fps_time_accumulator >= 1.0f)
         {
-            m_AverageFPS = static_cast<float>(m_AvgFPSFrameCount) / m_AvgFPSTimeAccumulator;
-            m_AvgFPSTimeAccumulator = 0.0f;
-            m_AvgFPSFrameCount = 0;
+            _average_fps = static_cast<float>(_avg_fps_frame_count) / _avg_fps_time_accumulator;
+            _avg_fps_time_accumulator = 0.0f;
+            _avg_fps_frame_count = 0;
         }
 
         // Begin frame
-        m_Window->BeginFrame();
+        _window->begin_frame();
 
         // Update all layers
-        UpdateLayers();
+        _update_layers();
 
         // Render all layers
-        RenderLayers();
+        _render_layers();
 
         // End frame
-        m_Window->EndFrame();
+        _window->end_frame();
     }
 }
 
-void Application::UpdateLayers()
+void Application::_update_layers()
 {
-    for (auto& layer : m_Layers)
+    for (auto& Layer : _layers)
     {
-        if (layer->IsEnabled())
+        if (Layer->is_enabled())
         {
-            layer->OnUpdate();
+            Layer->on_update();
         }
     }
 }
 
-void Application::RenderLayers()
+void Application::_render_layers()
 {
-    for (auto& layer : m_Layers)
+    for (auto& Layer : _layers)
     {
-        if (layer->IsEnabled())
+        if (Layer->is_enabled())
         {
-            layer->OnRender();
+            Layer->on_render();
         }
     }
 }
 
-void Application::PopLayer_Internal()
+void Application::_pop_layer_internal()
 {
-    if (!m_Layers.empty())
+    if (!_layers.empty())
     {
-        auto& layer = m_Layers.back();
-        layer->OnDetach();
-        printf("Layer detached: %s\n", layer->GetName());
-        m_Layers.pop_back();
+        auto& Layer = _layers.back();
+        Layer->on_detach();
+        printf("Layer detached: %s\n", Layer->get_name());
+        _layers.pop_back();
         // unique_ptr automatically deletes layer
     }
 }
 
-void Application::RemoveLayer_Internal(ApplicationLayer* layer)
+void Application::_remove_layer_internal(ApplicationLayer* layer)
 {
-    auto it = std::find_if(m_Layers.begin(), m_Layers.end(),
-        [layer](const std::unique_ptr<ApplicationLayer>& ptr) {
-            return ptr.get() == layer;
+    auto It = std::find_if(_layers.begin(), _layers.end(),
+        [layer](const std::unique_ptr<ApplicationLayer>& Ptr) {
+            return Ptr.get() == layer;
         });
 
-    if (it != m_Layers.end())
+    if (It != _layers.end())
     {
-        (*it)->OnDetach();
-        printf("Layer removed: %s\n", (*it)->GetName());
-        m_Layers.erase(it);
+        (*It)->on_detach();
+        printf("Layer removed: %s\n", (*It)->get_name());
+        _layers.erase(It);
         // unique_ptr automatically deletes layer
     }
 }
 
-void Application::OnEvent_Internal(Event& event)
+void Application::_on_event_internal(Event& event)
 {
     // Dispatch events to layers in reverse order (top layer gets first)
-    for (auto it = m_Layers.rbegin(); it != m_Layers.rend(); ++it)
+    for (auto It = _layers.rbegin(); It != _layers.rend(); ++It)
     {
-        if (event.IsHandled())
+        if (event.is_handled())
             break;
 
-        if ((*it)->IsEnabled())
+        if ((*It)->is_enabled())
         {
-            (*it)->OnEvent(event);
+            (*It)->on_event(event);
         }
     }
 }
 
-float Application::GetFPS_Internal() const
+float Application::_get_fps_internal() const
 {
     // Return our custom frame-accurate FPS counter
-    return m_Window ? m_Window->FramesPerSecond() : 0.0f;
+    return _window ? _window->frames_per_second() : 0.0f;
 }
 
-float Application::GetAvgFPS_Internal() const
+float Application::_get_avg_fps_internal() const
 {
-    return m_AverageFPS;
+    return _average_fps;
 }
 
-float Application::FramesPerSecond_Internal() const
+float Application::_frames_per_second_internal() const
 {
-    return m_Window ? m_Window->FramesPerSecond() : 0.0f;
+    return _window ? _window->frames_per_second() : 0.0f;
 }

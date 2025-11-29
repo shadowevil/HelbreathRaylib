@@ -11,144 +11,144 @@
 
 class CSprite {
 public:
-	inline static std::unique_ptr<CSprite> Create(const PAKLib::pak& pak, size_t index) {
-		std::unique_ptr<CSprite> sprite(new CSprite());
+	inline static std::unique_ptr<CSprite> create(const PAKLib::pak& pak, size_t index) {
+		std::unique_ptr<CSprite> Sprite(new CSprite());
 
-		sprite->m_sprite_rectangles = pak.sprites[index].sprite_rectangles;
-		sprite->file_path = pak.pak_file_path;
-		sprite->sprite_index = index;
-		return sprite;
+		Sprite->_sprite_rectangles = pak.sprites[index].sprite_rectangles;
+		Sprite->_file_path = pak.pak_file_path;
+		Sprite->_sprite_index = index;
+		return Sprite;
 	}
 
 	~CSprite() {
-		UnloadTexture(m_texture);
+		UnloadTexture(_texture);
 	}
 
-	void Preload() {
-        //if (!this || !file_path.size())  // or a dedicated 'is valid' flag
+	void preload() {
+        //if (!this || !_file_path.size())  // or a dedicated 'is valid' flag
         //    return;
-		last_used_time = GetTime();
-		if (IsTextureValid(m_texture))
+		_last_used_time = GetTime();
+		if (IsTextureValid(_texture))
 			return;
 
-		const auto& sprite_obj = PAKLib::get_sprite_fast(file_path, sprite_index);
-		Image image = LoadImageFromMemory(constant::SPRITE_IMAGE_TYPE.c_str(), sprite_obj.image_data.data(), static_cast<int>(sprite_obj.image_data.size()));
-		m_texture = LoadTextureFromImage(image);
-		SetTextureFilter(m_texture, TEXTURE_FILTER_POINT);
-		UnloadImage(image);
+		const auto& SpriteObj = PAKLib::get_sprite_fast(_file_path, _sprite_index);
+		Image Image_ = LoadImageFromMemory(constant::SPRITE_IMAGE_TYPE.c_str(), SpriteObj.image_data.data(), static_cast<int>(SpriteObj.image_data.size()));
+		_texture = LoadTextureFromImage(Image_);
+		SetTextureFilter(_texture, TEXTURE_FILTER_POINT);
+		UnloadImage(Image_);
 	}
 
-	void UnloadIfUnused(double current_time, double timeout_seconds) {
-		if (IsTextureValid(m_texture) && (current_time - last_used_time) >= timeout_seconds) {
-			UnloadTexture(m_texture);
-			m_texture = {};
+	void unload_if_unused(double current_time, double timeout_seconds) {
+		if (IsTextureValid(_texture) && (current_time - _last_used_time) >= timeout_seconds) {
+			UnloadTexture(_texture);
+			_texture = {};
 		}
 	}
 
-	void Draw(int x, int y, size_t frame);
-    void Draw(int x, int y, size_t frame, Color tint);
+	void draw(int x, int y, size_t frame);
+    void draw(int x, int y, size_t frame, Color tint);
 
-    PAKLib::sprite_rect GetFrameRectangle(size_t frame) const {
-        size_t frame_count = m_sprite_rectangles.size();
-        if (frame_count == 0 || frame >= frame_count)
+    PAKLib::sprite_rect get_frame_rectangle(size_t frame) const {
+        size_t FrameCount = _sprite_rectangles.size();
+        if (FrameCount == 0 || frame >= FrameCount)
             throw std::out_of_range("Frame index is out of range.");
-        const auto& rect = m_sprite_rectangles[frame];
-        return rect;
+        const auto& Rect = _sprite_rectangles[frame];
+        return Rect;
 	}
 
 private:
 	CSprite() = default;
 
 protected:
-	double last_used_time{};
-	std::vector<PAKLib::sprite_rect> m_sprite_rectangles{};
-	std::string file_path{};
-	size_t sprite_index{};
-	Texture2D m_texture{};
+	double _last_used_time{};
+	std::vector<PAKLib::sprite_rect> _sprite_rectangles{};
+	std::string _file_path{};
+	size_t _sprite_index{};
+	Texture2D _texture{};
 };
 
 class CSpriteLoader {
 public:
-	static void OpenPAK(const std::filesystem::path& PAKFile, const std::function<void(CSpriteLoader&)>& use) {
-		CSpriteLoader loader;
-		loader.m_currentPAK = PAKLib::loadpak_fast(PAKFile.string());
-		loader.m_isPAKOpen = true;
+	static void open_pak(const std::filesystem::path& pak_file, const std::function<void(CSpriteLoader&)>& use) {
+		CSpriteLoader Loader;
+		Loader._current_pak = PAKLib::loadpak_fast(pak_file.string());
+		Loader._is_pak_open = true;
 
 		try {
-			use(loader);
+			use(Loader);
 		}
 		catch (...) {
-			loader.m_isPAKOpen = false;
+			Loader._is_pak_open = false;
 			throw;
 		}
 
-		loader.m_isPAKOpen = false;
+		Loader._is_pak_open = false;
 	}
 
-    static void OpenPAK(const std::filesystem::path& PAKFile, const std::function<void(CSpriteLoader&, PAKLib::pak&)>& use) {
-        CSpriteLoader loader;
-        loader.m_currentPAK = PAKLib::loadpak_fast(PAKFile.string());
-        loader.m_isPAKOpen = true;
+    static void open_pak(const std::filesystem::path& pak_file, const std::function<void(CSpriteLoader&, PAKLib::pak&)>& use) {
+        CSpriteLoader Loader;
+        Loader._current_pak = PAKLib::loadpak_fast(pak_file.string());
+        Loader._is_pak_open = true;
 
         try {
-            use(loader, loader.m_currentPAK);
+            use(Loader, Loader._current_pak);
         }
         catch (...) {
-            loader.m_isPAKOpen = false;
+            Loader._is_pak_open = false;
             throw;
         }
 
-        loader.m_isPAKOpen = false;
+        Loader._is_pak_open = false;
     }
 
-	std::unique_ptr<CSprite> GetSprite(size_t index) {
-		if (!m_isPAKOpen)
+	std::unique_ptr<CSprite> get_sprite(size_t index) {
+		if (!_is_pak_open)
 			throw std::runtime_error("No PAK file is currently open.");
-		if (index >= m_currentPAK.sprites.size())
+		if (index >= _current_pak.sprites.size())
 			throw std::out_of_range("Sprite index is out of range.");
-		return CSprite::Create(m_currentPAK, index);
+		return CSprite::create(_current_pak, index);
 	}
 
 private:
-	bool m_isPAKOpen = false;
-	PAKLib::pak m_currentPAK;
+	bool _is_pak_open = false;
+	PAKLib::pak _current_pak;
 };
 
 class CSpriteCollection {
 public:
     class SpriteProxy {
     private:
-        CSpriteCollection& collection;
-        size_t index;
+        CSpriteCollection& _collection;
+        size_t _index;
 
     public:
-        SpriteProxy(CSpriteCollection& coll, size_t idx) : collection(coll), index(idx) {}
+        SpriteProxy(CSpriteCollection& coll, size_t idx) : _collection(coll), _index(idx) {}
 
         CSprite* operator->() {
-            return collection.Get(index);
+            return _collection.get(_index);
         }
 
         const CSprite* operator->() const {
-            return collection.Get(index);
+            return _collection.get(_index);
         }
 
         SpriteProxy& operator=(const CSprite& sprite) {
-            collection.Set(index, sprite);
+            _collection.set(_index, sprite);
             return *this;
         }
 
         SpriteProxy& operator=(CSprite&& sprite) {
-            collection.Set(index, std::move(sprite));
+            _collection.set(_index, std::move(sprite));
             return *this;
         }
 
         SpriteProxy& operator=(std::unique_ptr<CSprite> sprite) {
-            collection.Set(index, std::move(sprite));
+            _collection.set(_index, std::move(sprite));
             return *this;
         }
 
         operator bool() const {
-            return collection.Get(index) != nullptr;
+            return _collection.get(_index) != nullptr;
         }
     };
 
@@ -157,60 +157,60 @@ public:
     }
 
     const CSprite* operator[](size_t index) const {
-        return Get(index);
+        return get(index);
     }
 
-    CSprite* Get(size_t index) {
-        auto it = sprites.find(index);
-        if (it != sprites.end()) {
-            return it->second.get();
+    CSprite* get(size_t index) {
+        auto It = _sprites.find(index);
+        if (It != _sprites.end()) {
+            return It->second.get();
         }
         return nullptr;
     }
 
-    const CSprite* Get(size_t index) const {
-        auto it = sprites.find(index);
-        if (it != sprites.end()) {
-            return it->second.get();
+    const CSprite* get(size_t index) const {
+        auto It = _sprites.find(index);
+        if (It != _sprites.end()) {
+            return It->second.get();
         }
         return nullptr;
     }
 
-    void Set(size_t index, const CSprite& sprite) {
-        sprites[index] = std::make_unique<CSprite>(sprite);
+    void set(size_t index, const CSprite& sprite) {
+        _sprites[index] = std::make_unique<CSprite>(sprite);
     }
 
-    void Set(size_t index, CSprite&& sprite) {
-        sprites[index] = std::make_unique<CSprite>(std::move(sprite));
+    void set(size_t index, CSprite&& sprite) {
+        _sprites[index] = std::make_unique<CSprite>(std::move(sprite));
     }
 
-    void Set(size_t index, std::unique_ptr<CSprite> sprite) {
-        sprites[index] = std::move(sprite);
+    void set(size_t index, std::unique_ptr<CSprite> sprite) {
+        _sprites[index] = std::move(sprite);
     }
 
-    void Remove(size_t index) {
-        sprites.erase(index);
+    void remove(size_t index) {
+        _sprites.erase(index);
     }
 
-    void Clear() {
-        sprites.clear();
+    void clear() {
+        _sprites.clear();
     }
 
-    size_t Size() const {
-        return sprites.size();
+    size_t size() const {
+        return _sprites.size();
     }
 
-    bool Contains(size_t index) const {
-        return sprites.find(index) != sprites.end();
+    bool contains(size_t index) const {
+        return _sprites.find(index) != _sprites.end();
     }
 
-    auto begin() { return sprites.begin(); }
-    auto end() { return sprites.end(); }
-    auto cbegin() const { return sprites.cbegin(); }
-    auto cend() const { return sprites.cend(); }
-    auto begin() const { return sprites.begin(); }
-    auto end() const { return sprites.end(); }
+    auto begin() { return _sprites.begin(); }
+    auto end() { return _sprites.end(); }
+    auto cbegin() const { return _sprites.cbegin(); }
+    auto cend() const { return _sprites.cend(); }
+    auto begin() const { return _sprites.begin(); }
+    auto end() const { return _sprites.end(); }
 
 private:
-    std::unordered_map<size_t, std::unique_ptr<CSprite>> sprites;
+    std::unordered_map<size_t, std::unique_ptr<CSprite>> _sprites;
 };
