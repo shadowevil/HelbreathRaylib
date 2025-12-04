@@ -45,6 +45,9 @@ namespace internal_PAK {
 		path[len] = '\0';
 		return std::string(path);
 
+#elif defined(__EMSCRIPTEN__)
+		return "";
+
 #else
 #error Unsupported platform
 #endif

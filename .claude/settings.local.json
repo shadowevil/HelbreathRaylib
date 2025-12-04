@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir SourcesDependenciesLibs)",
+      "Bash(cat:*)",
+      "Bash(powershell:*)",
+      "Bash(ls:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File build_web.ps1)",
+      "Bash(tee:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File serve.ps1)",
+      "Bash(cmake --build:*)",
+      "Bash(ninja -v:*)",
+      "Bash(source \"/c/Users/ShadowEvil/source/repos/emsdk/emsdk/emsdk_env.sh\":*)",
+      "Bash(emcmake cmake:*)",
+      "Bash(\"/c/Users/ShadowEvil/source/repos/emsdk/emsdk/upstream/emscripten/emcmake\" cmake .. -G Ninja -DPLATFORM=Web -DCMAKE_BUILD_TYPE=Release -DGRAPHICS=GRAPHICS_API_OPENGL_ES2)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File build_raylib_web.ps1)",
+      "Bash(find:*)",
+      "Bash(while read f)",
+      "Bash(do basename \"$f\")",
+      "Bash(done)",
+      "Bash(python:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

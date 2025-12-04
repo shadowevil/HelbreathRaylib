@@ -1,0 +1,56 @@
+cmake_minimum_required(VERSION 3.13)
+project(HelbreathRaylibWeb C CXX)
+
+# Set C++ standard to C++20
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# For Emscripten builds, fetch and build raylib from source
+if(EMSCRIPTEN)
+    include(FetchContent)
+
+    # Fetch raylib
+    FetchContent_Declare(
+        raylib
+        GIT_REPOSITORY https://github.com/raysan5/raylib.git
+        GIT_TAG 5.0
+    )
+
+    # Build raylib
+    set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(raylib)
+endif()
+
+# Collect all C/C++ source files in Sources/
+file(GLOB_RECURSE SRC "Sources/HelbreathRaylib/*.cpp" "Sources/HelbreathRaylib/*.c")
+
+add_executable(helbreath_web ${SRC})
+
+# Your include dirs
+target_include_directories(helbreath_web PRIVATE
+    Sources/HelbreathRaylib
+    Sources/Dependencies/Includes
+)
+
+# Emscripten-specific settings
+if(EMSCRIPTEN)
+    # Link raylib (built from source)
+    target_link_libraries(helbreath_web PRIVATE raylib)
+
+    # Add Emscripten linker flags
+    target_link_options(helbreath_web PRIVATE
+        "-sUSE_GLFW=3"
+        "-sASYNCIFY"
+        "-sALLOW_MEMORY_GROWTH=1"
+        "-sFULL_ES3=1"
+        "--preload-file" "${CMAKE_SOURCE_DIR}/Binaries/Game@Game"
+    )
+
+    # Output must be .html for Emscripten
+    set_target_properties(helbreath_web PROPERTIES SUFFIX ".html")
+else()
+    # Path to your raylib static library for native builds
+    set(RAYLIB_LIB "C:/Users/ShadowEvil/source/repos2/HelbreathRaylib/Sources/Dependencies/Libs/libraylib.a")
+    target_link_libraries(helbreath_web PRIVATE ${RAYLIB_LIB})
+endif()

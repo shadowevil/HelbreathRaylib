@@ -137,6 +137,8 @@ private:
     float _frames_per_second_internal() const;
 
     void _main_loop();
+    void _main_loop_iteration(); // Single frame iteration for Emscripten
+    static void _emscripten_loop_callback(); // Static callback for emscripten_set_main_loop
     void _update_layers();
     void _render_layers();
 

@@ -5,7 +5,7 @@
 #include "CMap.h"
 #include <unordered_set>
 
-class ::Entity;
+class Entity;
 
 struct DrawEntry
 {

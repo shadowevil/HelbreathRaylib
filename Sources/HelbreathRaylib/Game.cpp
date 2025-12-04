@@ -38,6 +38,7 @@ void Game::on_attach()
 
 	scene_manager->set_scene<LoadingScene>();
 
+#ifndef __EMSCRIPTEN__
 	periodic_timer = std::thread([this]() {
 		while (is_running.load()) {
 			PeriodicTimerEvent ev{};
@@ -46,14 +47,17 @@ void Game::on_attach()
 		}
 		});
 	periodic_timer.detach();
+#endif
 }
 
 void Game::on_detach()
 {
 	is_running.store(false);
+#ifndef __EMSCRIPTEN__
 	if(periodic_timer.joinable()) {
 		periodic_timer.join();
 	}
+#endif
 	scene_manager.reset();
 }
 

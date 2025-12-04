@@ -4,7 +4,7 @@
 #include "MainMenuScene.h"
 #include "ExitGameScene.h"
 
-//#include "TestScene.h"
+#include "TestScene.h"
 #ifndef TEST_SCENE_ENABLED
 #include "MainGameScene.h"
 #endif

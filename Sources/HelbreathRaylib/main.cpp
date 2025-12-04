@@ -7,8 +7,13 @@ int main() {
 	SetTraceLogLevel(LOG_ERROR);
 	WindowSpec Spec;
 	Spec.Title = "Helbreath Raylib";
-	Spec.Width = constant::BASE_WIDTH;
-	Spec.Height = constant::BASE_HEIGHT;
+	#ifdef __EMSCRIPTEN__
+	Spec.Width = 1024;
+	Spec.Height = 768;
+#else
+	Spec.Width = 1920;
+	Spec.Height = 1080;
+#endif
 	Spec.Flags = WindowFlags::Resizable /*| WindowFlags::VSync*/ | WindowFlags::MSAA_4X | WindowFlags::Upscaled;
 	Spec.TargetFPS = 0;
 	if (!Application::create_app_window(Spec))

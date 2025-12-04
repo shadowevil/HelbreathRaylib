@@ -18,18 +18,21 @@ void CreateCharacterScene::on_uninitialize()
 
 void CreateCharacterScene::on_update()
 {
-	GamePosition Pos{};
-	Pos.set_pixel_position(500, 168);
-	created_character.set_position(Pos);
-	if (created_character.get_current_animation_type() != AnimationType::WALK)
-		created_character.set_animation(AnimationType::WALK, WeaponUsed::HAND);
-	static double DirectionTimer = GetTime();
-	static double LastInterval = 5.0;
-	if (rlx::HasElapsed(DirectionTimer, LastInterval))
-	{
-		created_character.set_direction((Dir)GetRandomValue(0, Dir::DIRECTION_COUNT - 1));
-		DirectionTimer = GetTime();
-		LastInterval = static_cast<double>(GetRandomValue(5, 10));
+	{	// Set character position and animation, random position ever 5 seconds
+		// Should move this to a unversal method for animated view entities
+		GamePosition Pos{};
+		Pos.set_pixel_position(500, 168);
+		created_character.set_position(Pos);
+		if (created_character.get_current_animation_type() != AnimationType::WALK)
+			created_character.set_animation(AnimationType::WALK, WeaponUsed::HAND);
+		static double DirectionTimer = GetTime();
+		static double LastInterval = 5.0;
+		if (rlx::HasElapsed(DirectionTimer, LastInterval))
+		{
+			created_character.set_direction((Dir)GetRandomValue(0, Dir::DIRECTION_COUNT - 1));
+			DirectionTimer = GetTime();
+			LastInterval = static_cast<double>(GetRandomValue(5, 10));
+		}
 	}
 
 	created_character.update();

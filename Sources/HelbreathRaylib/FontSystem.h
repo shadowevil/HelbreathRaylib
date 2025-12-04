@@ -63,9 +63,12 @@ struct FontKey {
 
 struct FontKeyHash {
     size_t operator()(const FontKey& k) const {
-        return (static_cast<size_t>(k.font_index) << 40) |
-            (static_cast<size_t>(k.font_size) << 8) |
-            static_cast<size_t>(k.style);
+        // Use a hash combination that works on both 32-bit and 64-bit platforms
+        size_t hash = 0;
+        hash ^= std::hash<uint32_t>{}(k.font_index) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        hash ^= std::hash<uint32_t>{}(k.font_size) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        hash ^= std::hash<uint32_t>{}(static_cast<uint32_t>(k.style)) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        return hash;
     }
 };
 

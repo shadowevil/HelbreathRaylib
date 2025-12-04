@@ -4,7 +4,7 @@
 
 void LoadingScene::on_initialize()
 {
-	CSpriteLoader::open_pak(constant::SPRITE_PATH / "Scenes.pak", [&](CSpriteLoader& Loader) {
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "scenes.pak", [&](CSpriteLoader& Loader) {
 		sprites[SPRID_LOADINGSCREEN] = Loader.get_sprite(SPR_LOADINGSCREEN::PAK_INDEX);
 		});
 }
@@ -26,7 +26,7 @@ void LoadingScene::on_update()
 	}
 
 	if (_loading_step == 100)
-		scene_manager.set_scene<MainMenuScene>();
+		scene_manager.set_scene<TestScene>();
 	else
 		_loading_step = (uint8_t)std::min(_loading_step + 1, 100);
 }
@@ -237,7 +237,7 @@ void LoadingScene::_load_register_maps()
 		map_tiles[55] = Inst.get_sprite(5);
 		});
 	_load_sprite(70, 27, (constant::SPRITE_MAP_PATH / "Sinside1.pak").string(), map_tiles);
-	_load_sprite(100, 46, (constant::SPRITE_MAP_PATH / "TREES1.pak").string(), map_tiles);
+	_load_sprite(100, 46, (constant::SPRITE_MAP_PATH / "TREES1.PAK").string(), map_tiles);
 	_load_sprite(200, 10, (constant::SPRITE_MAP_PATH / "Objects1.pak").string(), map_tiles);
 	_load_sprite(211, 5, (constant::SPRITE_MAP_PATH / "Objects2.pak").string(), map_tiles);
 	_load_sprite(216, 4, (constant::SPRITE_MAP_PATH / "Objects3.pak").string(), map_tiles);

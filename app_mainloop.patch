@@ -1,0 +1,14 @@
+void Application::_main_loop()
+{
+#ifdef __EMSCRIPTEN__
+    // For Emscripten, use emscripten_set_main_loop instead of while loop
+    // This allows the browser to handle events and prevents freezing
+    emscripten_set_main_loop(_emscripten_loop_callback, 0, 1);
+#else
+    // Native builds use traditional while loop
+    while (_running)
+    {
+        _main_loop_iteration();
+    }
+#endif
+}

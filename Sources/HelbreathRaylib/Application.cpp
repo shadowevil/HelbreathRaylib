@@ -1,5 +1,8 @@
 #include "Application.h"
 #include <stdio.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 Application::Application()
     : _running(false)
@@ -200,78 +203,17 @@ void Application::_exit_internal(int exit_code)
 
 void Application::_main_loop()
 {
+#ifdef __EMSCRIPTEN__
+    // For Emscripten, use emscripten_set_main_loop instead of while loop
+    // This allows the browser to handle events and prevents freezing
+    emscripten_set_main_loop(_emscripten_loop_callback, 0, 1);
+#else
+    // Native builds use traditional while loop
     while (_running)
     {
-        // Handle window restart if requested
-        if (_window_restart_requested)
-        {
-            for (auto& Layer : _layers)
-            {
-                Layer->on_detach();
-            }
-
-            _window_restart_requested = false;
-            _create_app_window_internal(_pending_window_spec);
-
-            if (!_window)
-            {
-                // Window recreation failed - exit
-                _exit_internal(1);
-                break;
-            }
-
-            for (auto& Layer : _layers)
-            {
-                Layer->on_attach();
-            }
-        }
-
-        // Check if window is still valid
-        if (!_window || !_window->is_open())
-        {
-            printf("Window closed unexpectedly!\n");
-            _exit_internal(1);
-            break;
-        }
-
-        // Check if user requested window close
-        if (_window->should_close())
-        {
-            printf("Window close requested by user\n");
-            _exit_internal(0);
-            break;
-        }
-
-        // Poll and dispatch window events
-        _window->poll_events();
-
-        // Calculate delta time
-        _delta_time = _window->get_delta_time();
-
-        // Update average FPS calculation
-        _avg_fps_time_accumulator += _delta_time;
-        _avg_fps_frame_count++;
-
-        // Calculate average FPS every second
-        if (_avg_fps_time_accumulator >= 1.0f)
-        {
-            _average_fps = static_cast<float>(_avg_fps_frame_count) / _avg_fps_time_accumulator;
-            _avg_fps_time_accumulator = 0.0f;
-            _avg_fps_frame_count = 0;
-        }
-
-        // Begin frame
-        _window->begin_frame();
-
-        // Update all layers
-        _update_layers();
-
-        // Render all layers
-        _render_layers();
-
-        // End frame
-        _window->end_frame();
+        _main_loop_iteration();
     }
+#endif
 }
 
 void Application::_update_layers()
@@ -353,4 +295,86 @@ float Application::_get_avg_fps_internal() const
 float Application::_frames_per_second_internal() const
 {
     return _window ? _window->frames_per_second() : 0.0f;
+}
+#ifdef __EMSCRIPTEN__
+// Static callback for Emscripten main loop
+void Application::_emscripten_loop_callback()
+{
+    Application& app = _get();
+    app._main_loop_iteration();
+}
+#endif
+
+// Single frame iteration - extracted from _main_loop for Emscripten
+void Application::_main_loop_iteration()
+{
+    // Handle window restart if requested
+    if (_window_restart_requested)
+    {
+        for (auto& Layer : _layers)
+        {
+            Layer->on_detach();
+        }
+
+        _window_restart_requested = false;
+        _create_app_window_internal(_pending_window_spec);
+
+        if (!_window)
+        {
+            // Window recreation failed - exit
+            _exit_internal(1);
+            return;
+        }
+
+        for (auto& Layer : _layers)
+        {
+            Layer->on_attach();
+        }
+    }
+
+    // Check if window is still valid
+    if (!_window || !_window->is_open())
+    {
+        printf("Window closed unexpectedly!\n");
+        _exit_internal(1);
+        return;
+    }
+
+    // Check if user requested window close
+    if (_window->should_close())
+    {
+        printf("Window close requested by user\n");
+        _exit_internal(0);
+        return;
+    }
+
+    // Poll and dispatch window events
+    _window->poll_events();
+
+    // Calculate delta time
+    _delta_time = _window->get_delta_time();
+
+    // Update average FPS calculation
+    _avg_fps_time_accumulator += _delta_time;
+    _avg_fps_frame_count++;
+
+    // Calculate average FPS every second
+    if (_avg_fps_time_accumulator >= 1.0f)
+    {
+        _average_fps = static_cast<float>(_avg_fps_frame_count) / _avg_fps_time_accumulator;
+        _avg_fps_time_accumulator = 0.0f;
+        _avg_fps_frame_count = 0;
+    }
+
+    // Begin frame
+    _window->begin_frame();
+
+    // Update all layers
+    _update_layers();
+
+    // Render all layers
+    _render_layers();
+
+    // End frame
+    _window->end_frame();
 }

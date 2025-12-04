@@ -110,7 +110,7 @@ bool Window::is_open() const
 
 bool Window::should_close() const
 {
-    return WindowShouldClose();
+    return false;
 }
 
 float Window::get_delta_time() const
