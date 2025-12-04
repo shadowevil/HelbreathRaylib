@@ -4,7 +4,7 @@
 
 void LoadingScene::on_initialize()
 {
-	CSpriteLoader::open_pak(constant::SPRITE_PATH / "scenes.pak", [&](CSpriteLoader& Loader) {
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "Scenes.pak", [&](CSpriteLoader& Loader) {
 		sprites[SPRID_LOADINGSCREEN] = Loader.get_sprite(SPR_LOADINGSCREEN::PAK_INDEX);
 		});
 }
@@ -46,7 +46,7 @@ void LoadingScene::_load_sprite(size_t u_start, size_t u_count, const std::strin
 
 void LoadingScene::_load_scenes()
 {
-	CSpriteLoader::open_pak(constant::SPRITE_PATH / "scenes.pak", [&](CSpriteLoader& Loader) {
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "Scenes.pak", [&](CSpriteLoader& Loader) {
 		sprites[SPRID_MAINMENUSCREEN] = Loader.get_sprite(SPR_MAINMENUSCREEN::PAK_INDEX);
 		sprites[SPRID_EXITSCREEN] = Loader.get_sprite(SPR_EXITSCREEN::PAK_INDEX);
 		sprites[SPRID_NEWACCOUNTSCREEN] = Loader.get_sprite(SPR_NEWACCOUNTSCREEN::PAK_INDEX);
