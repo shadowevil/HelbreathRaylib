@@ -33,9 +33,21 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y cmake ninja-build
 
-    - name: Clone and build raylib
+    - name: Cache raylib
+      id: cache-raylib
+      uses: actions/cache@v4
+      with:
+        path: raylib/build_web
+        key: raylib-5.5-emscripten-3.1.51-${{ runner.os }}
+
+    - name: Clone raylib (if not cached)
+      if: steps.cache-raylib.outputs.cache-hit != 'true'
       run: |
         git clone --depth 1 --branch 5.5 https://github.com/raysan5/raylib.git
+
+    - name: Build raylib (if not cached)
+      if: steps.cache-raylib.outputs.cache-hit != 'true'
+      run: |
         cd raylib
         mkdir -p build_web
         cd build_web
@@ -45,6 +57,11 @@ jobs:
           -DGRAPHICS=GRAPHICS_API_OPENGL_ES2 \
           -DBUILD_EXAMPLES=OFF
         cmake --build . --target raylib
+
+    - name: Restore raylib source (if cached)
+      if: steps.cache-raylib.outputs.cache-hit == 'true'
+      run: |
+        git clone --depth 1 --branch 5.5 https://github.com/raysan5/raylib.git
 
     - name: Configure CMake
       run: |
