@@ -37,6 +37,9 @@
             width: auto;
             height: auto;
             object-fit: contain;
+            pointer-events: auto;
+            cursor: default;
+            outline: none;
         }
 
         #status {
@@ -91,7 +94,7 @@
 </head>
 <body>
     <div id="canvas-container">
-        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
     </div>
 
     <div id="status">Downloading...</div>
@@ -124,6 +127,16 @@
             },
             canvas: (function() {
                 var canvas = document.getElementById('canvas');
+                
+                // Focus canvas immediately and on any user interaction
+                canvas.focus();
+                document.addEventListener('click', function() {
+                    canvas.focus();
+                }, false);
+                document.addEventListener('touchstart', function() {
+                    canvas.focus();
+                }, false);
+                
                 canvas.addEventListener("webglcontextlost", function(e) {
                     alert('WebGL context lost. You will need to reload the page.');
                     e.preventDefault();
