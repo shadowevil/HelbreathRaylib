@@ -48,6 +48,7 @@ if(EMSCRIPTEN)
         "-sINITIAL_MEMORY=512MB"
         "-sALLOW_MEMORY_GROWTH=1"
         "-sFULL_ES2=1"
+        "-sGL_ENABLE_GET_PROC_ADDRESS"
         "-sDISABLE_EXCEPTION_CATCHING=0"
         "-fexceptions"
         "-sSTACK_SIZE=5MB"
