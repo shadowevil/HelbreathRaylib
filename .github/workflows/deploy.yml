@@ -42,8 +42,9 @@ jobs:
         emcmake cmake .. -G Ninja \
           -DPLATFORM=Web \
           -DCMAKE_BUILD_TYPE=Release \
-          -DGRAPHICS=GRAPHICS_API_OPENGL_ES2
-        cmake --build .
+          -DGRAPHICS=GRAPHICS_API_OPENGL_ES2 \
+          -DBUILD_EXAMPLES=OFF
+        cmake --build . --target raylib
 
     - name: Configure CMake
       run: |
