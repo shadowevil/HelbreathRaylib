@@ -53,6 +53,7 @@ if(EMSCRIPTEN)
         "-fexceptions"
         "-sSTACK_SIZE=5MB"
         "-sASSERTIONS=1"
+        "-sFORCE_FILESYSTEM=1"
         "--preload-file" "${CMAKE_SOURCE_DIR}/Binaries/Game@/"
         "--shell-file" "${CMAKE_SOURCE_DIR}/shell.html"
     )
