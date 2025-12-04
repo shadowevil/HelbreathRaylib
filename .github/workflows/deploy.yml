@@ -33,11 +33,24 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y cmake ninja-build
 
+    - name: Clone and build raylib
+      run: |
+        git clone --depth 1 --branch 5.0 https://github.com/raysan5/raylib.git
+        cd raylib
+        mkdir -p build_web
+        cd build_web
+        emcmake cmake .. -G Ninja \
+          -DPLATFORM=Web \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DGRAPHICS=GRAPHICS_API_OPENGL_ES2
+        cmake --build .
+
     - name: Configure CMake
       run: |
         mkdir -p web_build
         cd web_build
-        emcmake cmake .. -G Ninja
+        emcmake cmake .. -G Ninja \
+          -DRAYLIB_PATH="${GITHUB_WORKSPACE}/raylib/build_web/raylib"
 
     - name: Build
       run: |

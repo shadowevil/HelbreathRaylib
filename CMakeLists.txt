@@ -21,7 +21,11 @@ target_include_directories(helbreath_web PRIVATE
 # Emscripten-specific settings
 if(EMSCRIPTEN)
     # Link the Emscripten-built raylib library
-    set(RAYLIB_LIB "C:/Users/ShadowEvil/source/repos/emsdk/raylib/build_web/raylib/libraylib.a")
+    if(DEFINED RAYLIB_PATH)
+        set(RAYLIB_LIB "${RAYLIB_PATH}/libraylib.a")
+    else()
+        set(RAYLIB_LIB "C:/Users/ShadowEvil/source/repos/emsdk/raylib/build_web/raylib/libraylib.a")
+    endif()
     target_link_libraries(helbreath_web PRIVATE ${RAYLIB_LIB})
 
     # Add Emscripten compiler flags
