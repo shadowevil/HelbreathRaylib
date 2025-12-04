@@ -58,7 +58,7 @@ void LoadingScene::_load_scenes()
 
 void LoadingScene::_load_interface()
 {
-	CSpriteLoader::open_pak(constant::SPRITE_PATH / "interface.pak", [&](CSpriteLoader& Loader) {
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "Interface.pak", [&](CSpriteLoader& Loader) {
 		sprites[SPRID_MOUSECURSOR] = Loader.get_sprite(SPR_MOUSECURSOR::PAK_INDEX);
 		sprites[SPRID_BUTTONS] = Loader.get_sprite(SPR_BUTTONS::PAK_INDEX);
 		sprites[SPRID_EQUIP_MODEL] = Loader.get_sprite(SPR_EQUIP::PAK_INDEX_MODEL);
