@@ -35,7 +35,7 @@ jobs:
 
     - name: Clone and build raylib
       run: |
-        git clone --depth 1 --branch 5.0 https://github.com/raysan5/raylib.git
+        git clone --depth 1 --branch 5.5 https://github.com/raysan5/raylib.git
         cd raylib
         mkdir -p build_web
         cd build_web
