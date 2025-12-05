@@ -7,14 +7,27 @@
 #include "ApplicationEvents.h"
 #include "GameEvents.h"
 #include "SceneManager.h"
+#include "Application.h"
+#include "Platform/Desktop/DesktopCursorManager.h"
 
 void Game::on_attach()
 {
-	// Hide cursor on desktop, use CSS cursor:none on web
-#ifndef __EMSCRIPTEN__
-	HideCursor();
-	rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
-#endif
+	// Get platform services from Application
+	_platform = Application::get_platform();
+
+	// Hide and lock cursor using platform services
+	auto& cursor = _platform->getCursorManager();
+
+	// Set game area for desktop cursor lock
+	if (_platform->getPlatformType() == PlatformType::Desktop) {
+		auto* desktopCursor = dynamic_cast<DesktopCursorManager*>(&cursor);
+		if (desktopCursor) {
+			desktopCursor->setGameArea(constant::BASE_WIDTH, constant::BASE_HEIGHT);
+		}
+	}
+
+	cursor.hide();
+	cursor.lock();
 
 	scene_manager = std::make_unique<SceneManager>();
 
@@ -41,31 +54,33 @@ void Game::on_attach()
 
 	scene_manager->set_scene<LoadingScene>();
 
-#ifndef __EMSCRIPTEN__
-	periodic_timer = std::thread([this]() {
-		while (is_running.load()) {
-			PeriodicTimerEvent ev{};
-			Application::on_event(ev);
-			std::this_thread::sleep_for(std::chrono::seconds(1));
-		}
-		});
-	periodic_timer.detach();
-#endif
+	// Schedule periodic timer using platform service
+	auto& timer = _platform->getTimerService();
+	_sprite_unload_timer = timer.scheduleRepeating([]() {
+		PeriodicTimerEvent ev{};
+		Application::on_event(ev);
+	}, 1.0f);
 }
 
 void Game::on_detach()
 {
-	is_running.store(false);
-#ifndef __EMSCRIPTEN__
-	if(periodic_timer.joinable()) {
-		periodic_timer.join();
+	// Cancel periodic timer using platform service
+	if (_platform && _sprite_unload_timer != 0) {
+		auto& timer = _platform->getTimerService();
+		timer.cancel(_sprite_unload_timer);
 	}
-#endif
+
 	scene_manager.reset();
 }
 
 void Game::on_update()
 {
+	// Update timer service (needed for web platform frame-based timing)
+	if (_platform) {
+		auto& timer = _platform->getTimerService();
+		timer.update(Application::get_delta_time());
+	}
+
 	scene_manager->update();
 }
 
@@ -92,18 +107,20 @@ void Game::on_event(Event& event)
 	EventDispatcher Dispatcher(event);
 
 	Dispatcher.dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {
-#ifndef __EMSCRIPTEN__
-		HideCursor();
-		rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
-#endif
+		if (_platform) {
+			auto& cursor = _platform->getCursorManager();
+			cursor.hide();
+			cursor.lock();
+		}
 		return false;
 		});
 
 	Dispatcher.dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {
-#ifndef __EMSCRIPTEN__
-		ShowCursor();
-		rlx::UnlockCursor();
-#endif
+		if (_platform) {
+			auto& cursor = _platform->getCursorManager();
+			cursor.show();
+			cursor.unlock();
+		}
 		return false;
 		});
 

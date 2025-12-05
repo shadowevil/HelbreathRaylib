@@ -37,6 +37,15 @@
     <Filter Include="constants">
       <UniqueIdentifier>{bc7e80b7-cd5e-4a76-8d8e-7bcc09f92f10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{863058de-c5f9-4a2a-9835-d8cf4cbed3d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Desktop">
+      <UniqueIdentifier>{aed3eebb-edff-42ec-8ac9-dadf716bbd86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Web">
+      <UniqueIdentifier>{fd81d862-eb36-45e1-81e4-b1b802ed3566}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -88,6 +97,39 @@
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Desktop\DesktopCursorManager.cpp">
+      <Filter>Platform\Desktop</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Desktop\DesktopInputTranslator.cpp">
+      <Filter>Platform\Desktop</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Desktop\DesktopPlatform.cpp">
+      <Filter>Platform\Desktop</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Desktop\DesktopPlatformInfo.cpp">
+      <Filter>Platform\Desktop</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Desktop\DesktopTimerService.cpp">
+      <Filter>Platform\Desktop</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\PlatformFactory.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Web\WebCursorManager.cpp">
+      <Filter>Platform\Web</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Web\WebInputTranslator.cpp">
+      <Filter>Platform\Web</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Web\WebPlatform.cpp">
+      <Filter>Platform\Web</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Web\WebPlatformInfo.cpp">
+      <Filter>Platform\Web</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Web\WebTimerService.cpp">
+      <Filter>Platform\Web</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +226,54 @@
     </ClInclude>
     <ClInclude Include="GameEvents.h">
       <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Desktop\DesktopCursorManager.h">
+      <Filter>Platform\Desktop</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Desktop\DesktopInputTranslator.h">
+      <Filter>Platform\Desktop</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Desktop\DesktopPlatform.h">
+      <Filter>Platform\Desktop</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Desktop\DesktopPlatformInfo.h">
+      <Filter>Platform\Desktop</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Desktop\DesktopTimerService.h">
+      <Filter>Platform\Desktop</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\ITimerService.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\ICursorManager.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\IInputTranslator.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\IPlatformInfo.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\IPlatformServices.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\PlatformFactory.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Web\WebCursorManager.h">
+      <Filter>Platform\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Web\WebInputTranslator.h">
+      <Filter>Platform\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Web\WebPlatform.h">
+      <Filter>Platform\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Web\WebPlatformInfo.h">
+      <Filter>Platform\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Web\WebTimerService.h">
+      <Filter>Platform\Web</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,30 +1,70 @@
 # Simple HTTP server with CORS headers for SharedArrayBuffer support
-# Serves files from the web_build directory
+# Serves files from Build/Web/<Configuration> directory
 
 param(
-    [int]$port = 8000
+    [Parameter(Mandatory=$true)]
+    [ValidateSet("Debug", "Release", IgnoreCase=$true)]
+    [string]$Configuration,
+
+    [int]$Port = 8000
 )
 
-$webBuildPath = Join-Path $PSScriptRoot "web_build"
+# Normalize Configuration to proper case
+$Configuration = (Get-Culture).TextInfo.ToTitleCase($Configuration.ToLower())
 
-# Check if web_build directory exists
+$webBuildPath = Join-Path $PSScriptRoot "Build\Web\$Configuration"
+
+# Check if build directory exists
 if (-not (Test-Path $webBuildPath)) {
-    Write-Host "Error: web_build directory not found!" -ForegroundColor Red
-    Write-Host "Please run build_web.ps1 first to generate the web build."
+    Write-Host "Error: Build directory not found: $webBuildPath" -ForegroundColor Red
+    Write-Host "Please run: .\build_web.ps1 -Configuration $Configuration" -ForegroundColor Yellow
     exit 1
 }
 
-$url = "http://localhost:$port/"
+# Check if helbreath_web.html exists
+if (-not (Test-Path (Join-Path $webBuildPath "helbreath_web.html"))) {
+    Write-Host "Error: helbreath_web.html not found in $webBuildPath" -ForegroundColor Red
+    Write-Host "Please run: .\build_web.ps1 -Configuration $Configuration" -ForegroundColor Yellow
+    exit 1
+}
+
+# Kill any process already using the port
+Write-Host "Checking if port $Port is already in use..." -ForegroundColor Yellow
+$connections = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
+if ($connections) {
+    Write-Host "Port $Port is in use. Stopping existing process(es)..." -ForegroundColor Yellow
+    foreach ($conn in $connections) {
+        try {
+            Stop-Process -Id $conn.OwningProcess -Force -ErrorAction SilentlyContinue
+            Write-Host "  Killed process $($conn.OwningProcess)" -ForegroundColor Green
+        } catch {
+            Write-Host "  Warning: Could not kill process $($conn.OwningProcess)" -ForegroundColor Red
+        }
+    }
+    # Wait a moment for the port to be released
+    Start-Sleep -Milliseconds 500
+}
+
+$url = "http://localhost:$Port/"
 
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add($url)
-$listener.Start()
+
+try {
+    $listener.Start()
+} catch {
+    Write-Host ""
+    Write-Host "Error: Failed to start server on port $Port" -ForegroundColor Red
+    Write-Host "The port may still be in use. Try running the script again." -ForegroundColor Yellow
+    exit 1
+}
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  Server Started Successfully!" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
+Write-Host "  Configuration: $Configuration" -ForegroundColor White
 Write-Host "  Open in browser: " -NoNewline
 Write-Host "$($url)helbreath_web.html" -ForegroundColor Yellow
 Write-Host ""

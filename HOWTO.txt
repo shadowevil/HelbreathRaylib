@@ -1,0 +1,5 @@
+Build for web:
+ - Debug
+    - powershell -ExecutionPolicy Bypass -File build_web.ps1 -Configuration Debug
+ - Release
+    - powershell -ExecutionPolicy Bypass -File build_web.ps1 -Configuration Release

@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Platform/PlatformFactory.h"
 #include <stdio.h>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -45,9 +46,14 @@ void Application::exit(int exit_code)
     _get()._exit_internal(exit_code);
 }
 
-bool Application::create_app_window(const WindowSpec& spec)
+bool Application::create_app_window(const WindowSpec& spec, std::unique_ptr<IPlatformServices> platform)
 {
-    return _get()._create_app_window_internal(spec);
+    return _get()._create_app_window_internal(spec, std::move(platform));
+}
+
+IPlatformServices* Application::get_platform()
+{
+    return _get()._platform.get();
 }
 
 void Application::destroy_app_window()
@@ -116,10 +122,18 @@ float Application::frames_per_second()
 }
 
 // Internal implementation methods
-bool Application::_create_app_window_internal(const WindowSpec& spec)
+bool Application::_create_app_window_internal(const WindowSpec& spec, std::unique_ptr<IPlatformServices> platform)
 {
     // Destroy existing window if any
     _destroy_app_window_internal();
+
+    // Store platform services (create default using PlatformFactory if not provided)
+    if (platform) {
+        _platform = std::move(platform);
+    } else if (!_platform) {
+        // Use PlatformFactory to create appropriate platform
+        _platform = PlatformFactory::create();
+    }
 
     // Create new window
     _window = std::make_unique<Window>(spec);
@@ -317,7 +331,7 @@ void Application::_main_loop_iteration()
         }
 
         _window_restart_requested = false;
-        _create_app_window_internal(_pending_window_spec);
+        _create_app_window_internal(_pending_window_spec, nullptr);
 
         if (!_window)
         {

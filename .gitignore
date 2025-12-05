@@ -361,12 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-# Emscripten build output
-web_build/
-*.wasm
-*.data
-*.js.mem
-
-# Build artifacts  
-build_errors.txt
+# Build artifacts and logs
+build.log
 

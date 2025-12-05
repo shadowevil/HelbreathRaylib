@@ -3,6 +3,7 @@
 #include "Window.h"
 #include "ApplicationLayer.h"
 #include "SceneManager.h"
+#include "Platform/IPlatformServices.h"
 #include <vector>
 #include <memory>
 #include <stdexcept>
@@ -21,11 +22,14 @@ public:
     static void exit(int exit_code = 0);
 
     // Window management (static interface)
-    static bool create_app_window(const WindowSpec& spec);
+    static bool create_app_window(const WindowSpec& spec, std::unique_ptr<IPlatformServices> platform = nullptr);
     static void destroy_app_window();
     static void restart_app_window();
     static Window* get_window();
     static bool has_window();
+
+    // Platform services access
+    static IPlatformServices* get_platform();
 
     // Layer management (static template interface)
     // Usage: Application::push_layer<MyLayer>(constructor_args...);
@@ -126,7 +130,7 @@ private:
     // Internal implementation methods
     int _run_internal();
     void _exit_internal(int exit_code);
-    bool _create_app_window_internal(const WindowSpec& spec);
+    bool _create_app_window_internal(const WindowSpec& spec, std::unique_ptr<IPlatformServices> platform);
     void _destroy_app_window_internal();
     void _restart_app_window_internal();
     void _pop_layer_internal();
@@ -144,6 +148,7 @@ private:
 
 private:
     std::unique_ptr<Window> _window;
+    std::unique_ptr<IPlatformServices> _platform;
     std::vector<std::unique_ptr<ApplicationLayer>> _layers;
 
     bool _running;

@@ -7,15 +7,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Collect all C/C++ source files in Sources/
-file(GLOB_RECURSE SRC "Sources/HelbreathRaylib/*.cpp" "Sources/HelbreathRaylib/*.c")
+file(GLOB_RECURSE SRC "${CMAKE_SOURCE_DIR}/../Sources/HelbreathRaylib/*.cpp" "${CMAKE_SOURCE_DIR}/../Sources/HelbreathRaylib/*.c")
 
 add_executable(helbreath_web ${SRC})
 
 # Your include dirs
 target_include_directories(helbreath_web PRIVATE
-    Sources/HelbreathRaylib
-    Sources/Dependencies/Includes
-    Sources/Dependencies/Shared
+    ${CMAKE_SOURCE_DIR}/../Sources/HelbreathRaylib
+    ${CMAKE_SOURCE_DIR}/../Sources/Dependencies/Includes
+    ${CMAKE_SOURCE_DIR}/../Sources/Dependencies/Shared
 )
 
 # Emscripten-specific settings
@@ -30,8 +30,9 @@ if(EMSCRIPTEN)
 
     # Add Emscripten compiler flags
     target_compile_options(helbreath_web PRIVATE
-        "-O3"
         "-fexceptions"
+        "$<$<CONFIG:Release>:-O3>"
+        "$<$<CONFIG:Debug>:-O0;-g>"
     )
 
     # Define platform and graphics API for raylib
@@ -42,7 +43,6 @@ if(EMSCRIPTEN)
 
     # Add Emscripten linker flags
     target_link_options(helbreath_web PRIVATE
-        "-O3"
         "-sUSE_GLFW=3"
         "-sASYNCIFY"
         "-sINITIAL_MEMORY=512MB"
@@ -52,11 +52,13 @@ if(EMSCRIPTEN)
         "-sDISABLE_EXCEPTION_CATCHING=0"
         "-fexceptions"
         "-sSTACK_SIZE=5MB"
-        "-sASSERTIONS=1"
         "-sFORCE_FILESYSTEM=1"
-        "--preload-file" "${CMAKE_SOURCE_DIR}/Binaries/Game@/"
+        "--preload-file" "${CMAKE_SOURCE_DIR}/../Binaries/Game@/"
         "--shell-file" "${CMAKE_SOURCE_DIR}/shell.html"
         "-sLZ4=1"
+        "-sEMULATE_FUNCTION_POINTER_CASTS=1"
+        "$<$<CONFIG:Release>:-O3>"
+        "$<$<CONFIG:Debug>:-O0;-g;-sASSERTIONS=1>"
     )
 
     # Output must be .html for Emscripten

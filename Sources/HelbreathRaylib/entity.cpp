@@ -529,7 +529,7 @@ void Entity::render_debug_movement()
 		if (I == _current_path_index)
 		{
 			DrawRectangleLinesEx(
-				rlRectangle{ (float)Px - constant::TILE_HALF,
+				raylib::Rectangle{ (float)Px - constant::TILE_HALF,
 				  (float)Py - constant::TILE_HALF,
 				  constant::TILE_SIZE,
 				  constant::TILE_SIZE },
@@ -543,7 +543,7 @@ void Entity::render_debug_movement()
 		int Fy = _final_target.get_pixel_y();
 
 		DrawRectangleLinesEx(
-			rlRectangle{ (float)Fx - constant::TILE_HALF,
+			raylib::Rectangle{ (float)Fx - constant::TILE_HALF,
 			  (float)Fy - constant::TILE_HALF,
 			  constant::TILE_SIZE,
 			  constant::TILE_SIZE },

@@ -170,11 +170,11 @@ public:
         Inst._loaded_fonts.clear();
     }
 
-    static Vector2 get_aligned_position(Font& font, const char* text, rlRectangle rec, float font_size, float spacing, TextAlign align);
+    static Vector2 get_aligned_position(Font& font, const char* text, raylib::Rectangle rec, float font_size, float spacing, TextAlign align);
     static void draw_text(uint8_t font_index, int font_size, const char* text, float x, float y, Color color, FontStyle style = FontStyle::Regular);
     static void draw_text(uint8_t font_index, int font_size, const char* text, float x, float y, float spacing, Color color, FontStyle style = FontStyle::Regular);
-    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, rlRectangle rec, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, raylib::Rectangle rec, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
     static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, float x, float y, float width, float height, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
-    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, rlRectangle rec, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, raylib::Rectangle rec, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
     static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, float x, float y, float width, float height, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
 };

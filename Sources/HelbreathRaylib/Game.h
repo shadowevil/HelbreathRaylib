@@ -5,9 +5,9 @@
 #include "Sprite.h"
 #include "ItemMetadata.h"
 #include "entity.h"
-#include <thread>
+#include "Platform/IPlatformServices.h"
+#include "Platform/ITimerService.h"
 #include <atomic>
-#include <chrono>
 
 class Game : public ApplicationLayer {
 public:
@@ -27,9 +27,11 @@ public:
 	// Replace with entity manager later
 	std::vector<std::unique_ptr<Entity>> entities{};
 
-	// Periodic Timer thread
-	std::atomic<bool> is_running{ true };
-	std::thread periodic_timer{};
+	// Platform services (accessed via Application)
+	IPlatformServices* _platform{ nullptr };
+
+	// Timer ID for periodic events
+	TimerID _sprite_unload_timer{ 0 };
 
 	bool hardware_cursor = true;
 };

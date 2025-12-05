@@ -17,13 +17,13 @@ void CSprite::draw(int x, int y, size_t frame)
 
 	DrawTexturePro(
 		_texture,
-		rlRectangle{
+		raylib::Rectangle{
 			static_cast<float>(Rect.x),
 			static_cast<float>(Rect.y),
 			static_cast<float>(Rect.width),
 			static_cast<float>(Rect.height)
 		},
-		rlRectangle{
+		raylib::Rectangle{
 			static_cast<float>(x + Rect.pivotX),
 			static_cast<float>(y + Rect.pivotY),
 			static_cast<float>(Rect.width),
@@ -52,13 +52,13 @@ void CSprite::draw(int x, int y, size_t frame, Color tint)
 
 	DrawTexturePro(
 		_texture,
-		rlRectangle{
+		raylib::Rectangle{
 			static_cast<float>(Rect.x),
 			static_cast<float>(Rect.y),
 			static_cast<float>(Rect.width),
 			static_cast<float>(Rect.height)
 		},
-		rlRectangle{
+		raylib::Rectangle{
 			static_cast<float>(x + Rect.pivotX),
 			static_cast<float>(y + Rect.pivotY),
 			static_cast<float>(Rect.width),

@@ -24,7 +24,8 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nAdd Emscripten web build support and GitHub Actions deployment\n\n- Add CMakeLists.txt for Emscripten builds with optimizations\n- Implement non-blocking main loop using emscripten_set_main_loop\n- Add custom HTML shell with proper canvas styling (no scrollbars)\n- Configure 1024x768 resolution for web builds\n- Add build scripts (build_web.ps1, serve.ps1)\n- Fix platform-specific code for web compatibility\n- Add GitHub Actions workflow for automated Pages deployment\n- Update .gitignore to exclude build artifacts\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

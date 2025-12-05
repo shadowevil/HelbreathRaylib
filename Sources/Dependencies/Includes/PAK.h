@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <stdexcept>
 #include <fstream>
-#include <type_traits>
 #include <sstream>
 
 namespace internal_PAK {
@@ -21,24 +20,24 @@ namespace internal_PAK {
 
 	inline std::string get_executable_path() {
 #if defined(_WIN32)
-		char path[MAX_PATH];
-		DWORD len = GetModuleFileNameA(nullptr, path, MAX_PATH);
-		if (len == 0 || len == MAX_PATH)
+		char path[PLATFORM_MAX_PATH];
+		DWORD len = GetModuleFileNameA(nullptr, path, PLATFORM_MAX_PATH);
+		if (len == 0 || len == PLATFORM_MAX_PATH)
 			throw std::runtime_error("Failed to get executable path");
 		return std::string(path);
 
 #elif defined(__APPLE__)
-		char path[PATH_MAX];
+		char path[PLATFORM_MAX_PATH];
 		uint32_t size = sizeof(path);
 		if (_NSGetExecutablePath(path, &size) != 0)
 			throw std::runtime_error("Failed to get executable path");
-		char resolved[PATH_MAX];
+		char resolved[PLATFORM_MAX_PATH];
 		if (realpath(path, resolved) == nullptr)
 			throw std::runtime_error("Failed to resolve executable path");
 		return std::string(resolved);
 
 #elif defined(__linux__)
-		char path[PATH_MAX];
+		char path[PLATFORM_MAX_PATH];
 		ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
 		if (len == -1)
 			throw std::runtime_error("Failed to get executable path");

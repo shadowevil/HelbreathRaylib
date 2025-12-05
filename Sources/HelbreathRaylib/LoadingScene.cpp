@@ -4,7 +4,7 @@
 
 void LoadingScene::on_initialize()
 {
-	CSpriteLoader::open_pak(constant::SPRITE_PATH / "Scenes.pak", [&](CSpriteLoader& Loader) {
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "scenes.pak", [&](CSpriteLoader& Loader) {
 		sprites[SPRID_LOADINGSCREEN] = Loader.get_sprite(SPR_LOADINGSCREEN::PAK_INDEX);
 		});
 }
@@ -46,7 +46,7 @@ void LoadingScene::_load_sprite(size_t u_start, size_t u_count, const std::strin
 
 void LoadingScene::_load_scenes()
 {
-	CSpriteLoader::open_pak(constant::SPRITE_PATH / "Scenes.pak", [&](CSpriteLoader& Loader) {
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "scenes.pak", [&](CSpriteLoader& Loader) {
 		sprites[SPRID_MAINMENUSCREEN] = Loader.get_sprite(SPR_MAINMENUSCREEN::PAK_INDEX);
 		sprites[SPRID_EXITSCREEN] = Loader.get_sprite(SPR_EXITSCREEN::PAK_INDEX);
 		sprites[SPRID_NEWACCOUNTSCREEN] = Loader.get_sprite(SPR_NEWACCOUNTSCREEN::PAK_INDEX);
@@ -58,7 +58,7 @@ void LoadingScene::_load_scenes()
 
 void LoadingScene::_load_interface()
 {
-	CSpriteLoader::open_pak(constant::SPRITE_PATH / "Interface.pak", [&](CSpriteLoader& Loader) {
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "interface.pak", [&](CSpriteLoader& Loader) {
 		sprites[SPRID_MOUSECURSOR] = Loader.get_sprite(SPR_MOUSECURSOR::PAK_INDEX);
 		sprites[SPRID_BUTTONS] = Loader.get_sprite(SPR_BUTTONS::PAK_INDEX);
 		sprites[SPRID_EQUIP_MODEL] = Loader.get_sprite(SPR_EQUIP::PAK_INDEX_MODEL);
