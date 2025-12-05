@@ -126,6 +126,19 @@
             overflow: hidden;
         }
 
+        /* Center canvas when in fullscreen */
+        #canvas-container:fullscreen,
+        #canvas-container:-webkit-full-screen,
+        #canvas-container:-moz-full-screen,
+        #canvas-container:-ms-fullscreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            max-width: none;
+            max-height: none;
+        }
+
         canvas.emscripten {
             border: 2px solid rgba(139, 115, 85, 0.4);
             background-color: black;
@@ -139,6 +152,15 @@
             box-shadow:
                 0 0 40px rgba(0, 0, 0, 0.8),
                 inset 0 0 100px rgba(0, 0, 0, 0.3);
+            margin: 0 auto; /* Center horizontally when in block display */
+        }
+
+        /* Additional centering for canvas in fullscreen */
+        #canvas-container:fullscreen canvas.emscripten,
+        #canvas-container:-webkit-full-screen canvas.emscripten,
+        #canvas-container:-moz-full-screen canvas.emscripten,
+        #canvas-container:-ms-fullscreen canvas.emscripten {
+            margin: auto;
         }
 
         #status {
@@ -255,6 +277,36 @@
         var progressBar = document.getElementById('progress-bar');
         var progressText = document.getElementById('progress-text');
 
+        // Toggle fullscreen for canvas container
+        function toggleCanvasFullscreen() {
+            var canvasContainer = document.getElementById('canvas-container');
+
+            if (!document.fullscreenElement) {
+                // Enter fullscreen
+                if (canvasContainer.requestFullscreen) {
+                    canvasContainer.requestFullscreen();
+                } else if (canvasContainer.webkitRequestFullscreen) {
+                    canvasContainer.webkitRequestFullscreen();
+                } else if (canvasContainer.msRequestFullscreen) {
+                    canvasContainer.msRequestFullscreen();
+                }
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // Listen for fullscreen changes to adjust canvas size
+        document.addEventListener('fullscreenchange', resizeCanvas);
+        document.addEventListener('webkitfullscreenchange', resizeCanvas);
+        document.addEventListener('msfullscreenchange', resizeCanvas);
+
         // Canvas scaling logic - force 640x480 and scale with CSS
         function resizeCanvas() {
             var container = document.getElementById('canvas-container');
@@ -267,34 +319,56 @@
             canvas.width = 640;
             canvas.height = 480;
 
-            // Get available space (accounting for padding and banners)
-            var availableWidth = gameWrapper.clientWidth - 40;
-            var availableHeight = gameWrapper.clientHeight - 20;
+            // Check if in fullscreen mode
+            var isFullscreen = document.fullscreenElement === container ||
+                               document.webkitFullscreenElement === container ||
+                               document.msFullscreenElement === container;
+
+            var availableWidth, availableHeight;
+
+            if (isFullscreen) {
+                // In fullscreen, use entire screen space
+                availableWidth = window.innerWidth;
+                availableHeight = window.innerHeight;
+            } else {
+                // Normal mode - use game wrapper space (accounting for padding and banners)
+                availableWidth = gameWrapper.clientWidth - 40;
+                availableHeight = gameWrapper.clientHeight - 20;
+            }
 
             // Native canvas resolution (4:3 aspect ratio)
             var baseWidth = 640;
             var baseHeight = 480;
             var aspectRatio = baseWidth / baseHeight;
 
-            // Maximum dimensions (1.5x scale)
-            var maxWidth = 960;
-            var maxHeight = 720;
-
-            // Calculate what width/height would be based on available space
-            var widthBasedHeight = availableWidth / aspectRatio;
-            var heightBasedWidth = availableHeight * aspectRatio;
-
             var finalWidth, finalHeight;
 
-            // Determine which dimension is the limiting factor
-            if (availableWidth / aspectRatio <= availableHeight) {
-                // Width is the limiting factor
-                finalWidth = Math.min(availableWidth, maxWidth);
-                finalHeight = finalWidth / aspectRatio;
+            if (isFullscreen) {
+                // In fullscreen, ignore max scale and use full available space
+                if (availableWidth / aspectRatio <= availableHeight) {
+                    // Width is the limiting factor
+                    finalWidth = availableWidth;
+                    finalHeight = finalWidth / aspectRatio;
+                } else {
+                    // Height is the limiting factor
+                    finalHeight = availableHeight;
+                    finalWidth = finalHeight * aspectRatio;
+                }
             } else {
-                // Height is the limiting factor
-                finalHeight = Math.min(availableHeight, maxHeight);
-                finalWidth = finalHeight * aspectRatio;
+                // Normal mode - apply 1.5x max scale (960x720)
+                var maxWidth = 960;
+                var maxHeight = 720;
+
+                // Determine which dimension is the limiting factor
+                if (availableWidth / aspectRatio <= availableHeight) {
+                    // Width is the limiting factor
+                    finalWidth = Math.min(availableWidth, maxWidth);
+                    finalHeight = finalWidth / aspectRatio;
+                } else {
+                    // Height is the limiting factor
+                    finalHeight = Math.min(availableHeight, maxHeight);
+                    finalWidth = finalHeight * aspectRatio;
+                }
             }
 
             // Round to integers
@@ -413,6 +487,17 @@
                 }, false);
                 
                 document.addEventListener('keydown', function(e) {
+                    // Block F11 globally to prevent browser fullscreen
+                    if (e.key === 'F11') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+
+                        // Toggle our custom fullscreen instead
+                        toggleCanvasFullscreen();
+                        return false;
+                    }
+
                     if (isGameActive) {
                         if (e.key.startsWith('F') && e.key.length <= 3) {
                             e.preventDefault();
