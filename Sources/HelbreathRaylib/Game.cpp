@@ -108,12 +108,18 @@ void Game::on_event(Event& event)
 
 	Dispatcher.dispatch<AfterUpscaleEvent>([this](AfterUpscaleEvent& e) {
 		if (hardware_cursor) {
-			// Draw mouse cursor
+			// Draw mouse cursor using raw window coordinates
+			auto [offsetX, offsetY, renderW, renderH] = rlx::GetUpscaledTargetArea(constant::BASE_WIDTH, constant::BASE_HEIGHT);
 			auto [MouseX, MouseY] = GetMousePosition();
+
+			// Clamp to the upscaled game area
+			float clampedX = std::max(offsetX, std::min(MouseX, offsetX + renderW));
+			float clampedY = std::max(offsetY, std::min(MouseY, offsetY + renderH));
+
 			if (sprites.contains(SPRID_MOUSECURSOR)) {
 				sprites[SPRID_MOUSECURSOR]->draw(
-					(int)MouseX,
-					(int)MouseY,
+					(int)clampedX,
+					(int)clampedY,
 					SPR_MOUSECURSOR::DEFAULT
 				);
 			}
