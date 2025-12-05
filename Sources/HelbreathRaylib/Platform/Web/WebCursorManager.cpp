@@ -6,19 +6,15 @@ WebCursorManager::WebCursorManager()
 }
 
 void WebCursorManager::hide() {
-	// Show or hide cursor via css in web platform
-	//if (_isVisible) {
-	//	raylib::HideCursor();
-	//	_isVisible = false;
-	//}
+	// Don't use raylib::HideCursor() on web - it interferes with mouse input
+	// Cursor is hidden via CSS (cursor: none) in shell.html instead
+	_isVisible = false;
 }
 
 void WebCursorManager::show() {
-	// Show or hide cursor via css in web platform
-	//if (!_isVisible) {
-	//	raylib::ShowCursor();
-	//	_isVisible = true;
-	//}
+	// Don't use raylib::ShowCursor() on web - see hide() comment
+	// CSS handles cursor visibility
+	_isVisible = true;
 }
 
 void WebCursorManager::lock() {
