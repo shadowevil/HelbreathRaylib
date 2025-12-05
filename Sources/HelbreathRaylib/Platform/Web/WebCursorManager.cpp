@@ -1,5 +1,8 @@
 #include "WebCursorManager.h"
 #include "../../Dependencies/Includes/raylib_include.h"
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 WebCursorManager::WebCursorManager()
 	: _isVisible(true), _isLocked(false) {
@@ -7,14 +10,34 @@ WebCursorManager::WebCursorManager()
 
 void WebCursorManager::hide() {
 	// Don't use raylib::HideCursor() on web - it interferes with mouse input
-	// Cursor is hidden via CSS (cursor: none) in shell.html instead
+	// Instead, use Emscripten to set CSS cursor style to 'none'
 	_isVisible = false;
+	_updateCursorStyle();
 }
 
 void WebCursorManager::show() {
 	// Don't use raylib::ShowCursor() on web - see hide() comment
-	// CSS handles cursor visibility
+	// Instead, use Emscripten to set CSS cursor style to 'default'
 	_isVisible = true;
+	_updateCursorStyle();
+}
+
+void WebCursorManager::_updateCursorStyle() {
+#ifdef __EMSCRIPTEN__
+	if (_isVisible) {
+		// Show hardware cursor
+		EM_ASM({
+			var canvas = document.getElementById('canvas');
+			if (canvas) canvas.style.cursor = 'default';
+		});
+	} else {
+		// Hide hardware cursor
+		EM_ASM({
+			var canvas = document.getElementById('canvas');
+			if (canvas) canvas.style.cursor = 'none';
+		});
+	}
+#endif
 }
 
 void WebCursorManager::lock() {

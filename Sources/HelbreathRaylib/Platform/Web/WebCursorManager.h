@@ -3,7 +3,7 @@
 
 /**
  * Web implementation of cursor management.
- * Uses raylib's cursor functions for show/hide.
+ * Cursor visibility controlled via Emscripten DOM manipulation.
  * Lock/unlock are no-ops (pointer lock removed for point-and-click gameplay).
  */
 class WebCursorManager : public ICursorManager {
@@ -21,4 +21,6 @@ public:
 private:
 	bool _isVisible;
 	bool _isLocked;  // Always false on web
+
+	void _updateCursorStyle();
 };

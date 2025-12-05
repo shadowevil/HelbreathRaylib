@@ -81,6 +81,28 @@ void Game::on_update()
 		timer.update(Application::get_delta_time());
 	}
 
+	// Update cursor visibility based on mouse position (web platform only)
+	// Hide hardware cursor when mouse is inside game area, show when outside
+	if (_platform && _platform->getPlatformType() == PlatformType::Web) {
+		auto& cursor = _platform->getCursorManager();
+
+		// Get raw window mouse position
+		auto [rawMouseX, rawMouseY] = raylib::GetMousePosition();
+
+		// Get the upscaled game area bounds
+		auto [offsetX, offsetY, renderW, renderH] = rlx::GetUpscaledTargetArea(constant::BASE_WIDTH, constant::BASE_HEIGHT);
+
+		// Check if mouse is within the upscaled game area
+		bool insideGameArea = (rawMouseX >= offsetX && rawMouseX < offsetX + renderW &&
+		                       rawMouseY >= offsetY && rawMouseY < offsetY + renderH);
+
+		if (insideGameArea && cursor.isVisible()) {
+			cursor.hide();
+		} else if (!insideGameArea && !cursor.isVisible()) {
+			cursor.show();
+		}
+	}
+
 	scene_manager->update();
 }
 
