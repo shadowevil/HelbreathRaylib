@@ -217,9 +217,32 @@
                     }
                 }, true);
                 
-                // Additional keydown blocking at window level
+                // Additional keydown blocking at window level (capture phase)
                 window.addEventListener('keydown', function(e) {
-                    if (isGameActive && (e.ctrlKey || e.metaKey)) {
+                    if (isGameActive) {
+                        // Specifically block Ctrl+T and Ctrl+N which are very protected
+                        if ((e.ctrlKey || e.metaKey) && 
+                            (e.key === 't' || e.key === 'T' || 
+                             e.key === 'n' || e.key === 'N' ||
+                             e.key === 'w' || e.key === 'W')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+                            return false;
+                        }
+                        // Block all other Ctrl combinations
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+                            return false;
+                        }
+                    }
+                }, true);
+                
+                // Ultra-aggressive blocking on canvas itself
+                canvas.addEventListener('keydown', function(e) {
+                    if (e.ctrlKey || e.metaKey) {
                         e.preventDefault();
                         e.stopPropagation();
                         e.stopImmediatePropagation();
