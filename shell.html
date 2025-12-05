@@ -152,18 +152,67 @@
                     }
                 }, false);
                 
-                // Handle pointer lock changes
+                // Track pointer lock state
+                var isGameActive = false;
+                
                 document.addEventListener('pointerlockchange', function() {
-                    if (document.pointerLockElement === canvas) {
+                    isGameActive = (document.pointerLockElement === canvas);
+                    if (isGameActive) {
                         console.log('Pointer locked - press ESC to unlock');
                     }
                 }, false);
+                
+                // Prevent ALL clicks outside canvas when game is active
+                document.addEventListener('mousedown', function(e) {
+                    if (isGameActive && e.target !== canvas) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        return false;
+                    }
+                }, true);
+                
+                document.addEventListener('mouseup', function(e) {
+                    if (isGameActive && e.target !== canvas) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        return false;
+                    }
+                }, true);
+                
+                document.addEventListener('click', function(e) {
+                    if (isGameActive && e.target !== canvas) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        return false;
+                    }
+                }, true);
                 
                 // Prevent context menu on right-click
                 canvas.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
                     return false;
                 }, false);
+                
+                // Prevent browser shortcuts when game is active (except ESC to exit lock)
+                document.addEventListener('keydown', function(e) {
+                    if (isGameActive) {
+                        // Allow ESC to exit pointer lock
+                        if (e.key === 'Escape' || e.keyCode === 27) {
+                            return true;
+                        }
+                        // Prevent browser shortcuts like F5 refresh, Ctrl+W close, etc
+                        if (e.key === 'F5' || 
+                            (e.ctrlKey && (e.key === 'w' || e.key === 'W')) ||
+                            (e.ctrlKey && (e.key === 't' || e.key === 'T')) ||
+                            (e.ctrlKey && (e.key === 'n' || e.key === 'N'))) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                }, true);
                 
                 return canvas;
             })(),
