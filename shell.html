@@ -142,15 +142,6 @@
                     e.preventDefault();
                 }, false);
                 
-                // Request pointer lock on canvas click
-                canvas.addEventListener('click', function() {
-                    if (!document.pointerLockElement) {
-                        canvas.requestPointerLock = canvas.requestPointerLock ||
-                                                    canvas.mozRequestPointerLock ||
-                                                    canvas.webkitRequestPointerLock;
-                        canvas.requestPointerLock();
-                    }
-                }, false);
                 
                 // For point-and-click games, just track if canvas has focus
                 var isGameActive = false;
