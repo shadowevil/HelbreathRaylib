@@ -10,10 +10,11 @@
 
 void Game::on_attach()
 {
+	// Hide cursor on desktop, use CSS cursor:none on web
 #ifndef __EMSCRIPTEN__
 	HideCursor();
-#endif
 	rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
+#endif
 
 	scene_manager = std::make_unique<SceneManager>();
 
@@ -93,16 +94,16 @@ void Game::on_event(Event& event)
 	Dispatcher.dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {
 #ifndef __EMSCRIPTEN__
 		HideCursor();
-#endif
 		rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
+#endif
 		return false;
 		});
 
 	Dispatcher.dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {
 #ifndef __EMSCRIPTEN__
 		ShowCursor();
-#endif
 		rlx::UnlockCursor();
+#endif
 		return false;
 		});
 
