@@ -12,8 +12,8 @@ void Game::on_attach()
 {
 #ifndef __EMSCRIPTEN__
 	HideCursor();
-	rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
 #endif
+	rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
 
 	scene_manager = std::make_unique<SceneManager>();
 
@@ -93,16 +93,16 @@ void Game::on_event(Event& event)
 	Dispatcher.dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {
 #ifndef __EMSCRIPTEN__
 		HideCursor();
-		rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
 #endif
+		rlx::LockCursor(constant::BASE_WIDTH, constant::BASE_HEIGHT);
 		return false;
 		});
 
 	Dispatcher.dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {
 #ifndef __EMSCRIPTEN__
 		ShowCursor();
-		rlx::UnlockCursor();
 #endif
+		rlx::UnlockCursor();
 		return false;
 		});
 

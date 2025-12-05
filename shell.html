@@ -141,6 +141,20 @@
                     alert('WebGL context lost. You will need to reload the page.');
                     e.preventDefault();
                 }, false);
+                
+                // Handle pointer lock state changes
+                document.addEventListener('pointerlockchange', function() {
+                    if (document.pointerLockElement === canvas) {
+                        console.log('Pointer locked to game canvas');
+                    } else {
+                        console.log('Pointer lock released');
+                    }
+                }, false);
+                
+                document.addEventListener('pointerlockerror', function() {
+                    console.error('Pointer lock failed');
+                }, false);
+                
                 return canvas;
             })(),
             setStatus: function(text) {
