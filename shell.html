@@ -188,32 +188,25 @@
                     return false;
                 }, false);
                 
-                // Prevent browser shortcuts when mouse is over game
+                // Block ALL browser shortcuts and function keys when mouse is over game
                 document.addEventListener('keydown', function(e) {
                     if (isGameActive) {
-                        // Prevent common browser shortcuts
-                        if (e.key === 'F5' ||  // Refresh
-                            e.key === 'F11' || // Fullscreen
-                            (e.ctrlKey && e.key === 'w') ||  // Close tab
-                            (e.ctrlKey && e.key === 'W') ||
-                            (e.ctrlKey && e.key === 't') ||  // New tab
-                            (e.ctrlKey && e.key === 'T') ||
-                            (e.ctrlKey && e.key === 'n') ||  // New window
-                            (e.ctrlKey && e.key === 'N') ||
-                            (e.ctrlKey && e.key === 'f') ||  // Find
-                            (e.ctrlKey && e.key === 'F') ||
-                            (e.ctrlKey && e.key === 'h') ||  // History
-                            (e.ctrlKey && e.key === 'H') ||
-                            (e.ctrlKey && e.key === 'g') ||  // Find next
-                            (e.ctrlKey && e.key === 'G') ||
-                            (e.ctrlKey && e.key === 'p') ||  // Print
-                            (e.ctrlKey && e.key === 'P') ||
-                            (e.ctrlKey && e.key === 's') ||  // Save
-                            (e.ctrlKey && e.key === 'S') ||
-                            (e.ctrlKey && e.key === 'o') ||  // Open
-                            (e.ctrlKey && e.key === 'O') ||
-                            (e.ctrlKey && e.key === 'u') ||  // View source
-                            (e.ctrlKey && e.key === 'U')) {
+                        // Block ALL function keys (F1-F12)
+                        if (e.key.startsWith('F') && e.key.length <= 3) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return false;
+                        }
+                        
+                        // Block ALL Ctrl combinations (except Ctrl+C/V/X for clipboard in text fields)
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return false;
+                        }
+                        
+                        // Block Alt combinations (except Alt+Tab which browser won't let us block)
+                        if (e.altKey && e.key !== 'Tab') {
                             e.preventDefault();
                             e.stopPropagation();
                             return false;
