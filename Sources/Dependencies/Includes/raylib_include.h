@@ -34,7 +34,6 @@ extern "C" {
 }
 #ifdef __EMSCRIPTEN__
     #include "web_include/raymath.h"
-    #include <emscripten.h>
 #else
     #include "raymath.h"
 #endif
@@ -936,28 +935,16 @@ namespace rlx {
 		clipRect.bottom = clipRect.top + static_cast<LONG>(renderH);
 
 		ClipCursor(&clipRect);
-#elif defined(__EMSCRIPTEN__)
-		// Use Pointer Lock API for web
-		EM_ASM({
-			var canvas = Module['canvas'];
-			if (canvas && canvas.requestPointerLock) {
-				canvas.requestPointerLock();
-			}
-		});
 #endif
+		// Note: Pointer Lock API disabled for Emscripten
+		// Point-and-click games need normal mouse position tracking
 	}
 
 	inline void UnlockCursor() {
 #ifdef _WIN32
 		ClipCursor(nullptr);
-#elif defined(__EMSCRIPTEN__)
-		// Exit pointer lock on web
-		EM_ASM({
-			if (document.exitPointerLock) {
-				document.exitPointerLock();
-			}
-		});
 #endif
+		// Note: Pointer Lock API disabled for Emscripten
 	}
 
 	inline bool HasElapsed(double timer, double interval)
