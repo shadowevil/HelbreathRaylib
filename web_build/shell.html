@@ -5,20 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Helbreath Raylib</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            background-color: #000;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0d0d1a 50%, #000 100%);
             overflow: hidden;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
             width: 100vw;
             height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: 'Cinzel', serif;
+        }
+
+        #logo-container {
+            position: relative;
+            z-index: 50;
+            padding: 15px 0 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #logo-container img {
+            height: 60px;
+            width: auto;
+            filter: drop-shadow(0 0 20px rgba(200, 180, 140, 0.5));
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 15px rgba(200, 180, 140, 0.4)); }
+            100% { filter: drop-shadow(0 0 30px rgba(200, 180, 140, 0.7)); }
+        }
+
+        #game-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 10px 20px 20px 20px;
+            position: relative;
+        }
+
+        #canvas-area {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 100%;
+        }
+
+        .banner {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 70%;
+            max-height: 500px;
+            width: auto;
+            z-index: 10;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.6));
+            animation: bannerFloat 4s ease-in-out infinite;
+        }
+
+        .banner-left {
+            left: -10px;
+            transform: translateY(-50%) translateX(-100%);
+            animation-delay: 0s;
+        }
+
+        .banner-right {
+            right: -10px;
+            transform: translateY(-50%) translateX(100%);
+            animation-delay: 2s;
+        }
+
+        @keyframes bannerFloat {
+            0%, 100% { transform: translateY(-50%) translateX(-100%); }
+            50% { transform: translateY(-52%) translateX(-100%); }
+        }
+
+        .banner-right {
+            animation-name: bannerFloatRight;
+        }
+
+        @keyframes bannerFloatRight {
+            0%, 100% { transform: translateY(-50%) translateX(100%); }
+            50% { transform: translateY(-52%) translateX(100%); }
+        }
+
+        #background-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            max-width: 400px;
+            height: auto;
+            opacity: 0.08;
+            z-index: 1;
+            pointer-events: none;
+            filter: grayscale(100%) brightness(1.5);
         }
 
         #canvas-container {
+            position: relative;
+            z-index: 5;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,7 +128,7 @@
         }
 
         canvas.emscripten {
-            border: 0;
+            border: 2px solid rgba(139, 115, 85, 0.4);
             background-color: black;
             display: block;
             image-rendering: pixelated;
@@ -40,19 +141,25 @@
             pointer-events: auto;
             cursor: default;
             outline: none;
+            box-shadow: 
+                0 0 40px rgba(0, 0, 0, 0.8),
+                inset 0 0 100px rgba(0, 0, 0, 0.3);
         }
 
         #status {
             position: absolute;
-            top: 20px;
+            top: 100px;
             left: 50%;
             transform: translateX(-50%);
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px 20px;
-            border-radius: 5px;
+            color: #c8b48c;
+            background-color: rgba(20, 20, 35, 0.9);
+            padding: 12px 25px;
+            border-radius: 3px;
             font-size: 14px;
             z-index: 100;
+            border: 1px solid rgba(139, 115, 85, 0.4);
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
         }
 
         #progress-container {
@@ -68,33 +175,74 @@
         #progress {
             width: 100%;
             height: 30px;
-            background-color: #333;
-            border-radius: 5px;
+            background-color: rgba(30, 30, 50, 0.9);
+            border-radius: 3px;
             overflow: hidden;
+            border: 1px solid rgba(139, 115, 85, 0.4);
         }
 
         #progress-bar {
             width: 0%;
             height: 100%;
-            background-color: #4CAF50;
+            background: linear-gradient(90deg, #8b7355 0%, #c8b48c 50%, #8b7355 100%);
             transition: width 0.3s;
         }
 
         #progress-text {
-            color: white;
+            color: #c8b48c;
             text-align: center;
-            margin-top: 10px;
-            font-size: 14px;
+            margin-top: 12px;
+            font-size: 13px;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
         }
 
         .hidden {
             display: none !important;
         }
+
+        /* Decorative corner elements */
+        #canvas-area::before,
+        #canvas-area::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: rgba(139, 115, 85, 0.3);
+            border-style: solid;
+            z-index: 6;
+        }
+
+        #canvas-area::before {
+            top: 0;
+            left: 0;
+            border-width: 2px 0 0 2px;
+        }
+
+        #canvas-area::after {
+            bottom: 0;
+            right: 0;
+            border-width: 0 2px 2px 0;
+        }
     </style>
 </head>
 <body>
-    <div id="canvas-container">
-        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="0" width="1024" height="768"></canvas>
+    <div id="logo-container">
+        <img src="Assets/Helbreath Logo.png" alt="Helbreath Logo">
+    </div>
+
+    <div id="game-wrapper">
+        <div id="canvas-area">
+            <img src="Assets/Aresden Flag.png" alt="Aresden" class="banner banner-left">
+
+            <img src="Assets/Helbreath Icon.png" alt="" id="background-icon">
+
+            <div id="canvas-container">
+                <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="0" width="640" height="480"></canvas>
+            </div>
+
+            <img src="Assets/Elvine Flag.png" alt="Elvine" class="banner banner-right">
+        </div>
     </div>
 
     <div id="status">Downloading...</div>
@@ -128,7 +276,6 @@
             canvas: (function() {
                 var canvas = document.getElementById('canvas');
 
-                // Focus canvas immediately and on any user interaction
                 canvas.focus();
                 document.addEventListener('click', function() {
                     canvas.focus();
@@ -142,8 +289,6 @@
                     e.preventDefault();
                 }, false);
                 
-                
-                // For point-and-click games, just track if canvas has focus
                 var isGameActive = false;
 
                 canvas.addEventListener('mouseenter', function() {
@@ -154,7 +299,6 @@
                     isGameActive = false;
                 }, false);
                 
-                // Prevent ALL clicks outside canvas when game is active
                 document.addEventListener('mousedown', function(e) {
                     if (isGameActive && e.target !== canvas) {
                         e.preventDefault();
@@ -182,16 +326,13 @@
                     }
                 }, true);
                 
-                // Prevent context menu on right-click
                 canvas.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
                     return false;
                 }, false);
                 
-                // Block ALL browser shortcuts and function keys when mouse is over game
                 document.addEventListener('keydown', function(e) {
                     if (isGameActive) {
-                        // Block ALL function keys (F1-F12)
                         if (e.key.startsWith('F') && e.key.length <= 3) {
                             e.preventDefault();
                             e.stopPropagation();
@@ -199,7 +340,6 @@
                             return false;
                         }
                         
-                        // Block ALL Ctrl combinations
                         if (e.ctrlKey || e.metaKey) {
                             e.preventDefault();
                             e.stopPropagation();
@@ -207,7 +347,6 @@
                             return false;
                         }
                         
-                        // Block Alt combinations (except Alt+Tab which browser won't let us block)
                         if (e.altKey && e.key !== 'Tab') {
                             e.preventDefault();
                             e.stopPropagation();
@@ -217,10 +356,8 @@
                     }
                 }, true);
                 
-                // Additional keydown blocking at window level (capture phase)
                 window.addEventListener('keydown', function(e) {
                     if (isGameActive) {
-                        // Specifically block Ctrl+T and Ctrl+N which are very protected
                         if ((e.ctrlKey || e.metaKey) && 
                             (e.key === 't' || e.key === 'T' || 
                              e.key === 'n' || e.key === 'N' ||
@@ -230,7 +367,6 @@
                             e.stopImmediatePropagation();
                             return false;
                         }
-                        // Block all other Ctrl combinations
                         if (e.ctrlKey || e.metaKey) {
                             e.preventDefault();
                             e.stopPropagation();
@@ -240,7 +376,6 @@
                     }
                 }, true);
                 
-                // Ultra-aggressive blocking on canvas itself
                 canvas.addEventListener('keydown', function(e) {
                     if (e.ctrlKey || e.metaKey) {
                         e.preventDefault();
@@ -250,7 +385,6 @@
                     }
                 }, true);
                 
-                // Block beforeunload when game is active to prevent Ctrl+W
                 window.addEventListener('beforeunload', function(e) {
                     if (isGameActive) {
                         e.preventDefault();
@@ -291,13 +425,11 @@
             }
         };
 
-        // Add data file loading progress and error handling
         Module.dataFileDownloads = {};
         Module.expectedDataFileDownloads = 0;
         
         Module.setStatus('Downloading...');
 
-        // Better error handling for loading failures
         window.onerror = function(event, source, lineno, colno, error) {
             console.error('Error:', event, 'at', source, lineno + ':' + colno);
             Module.setStatus('Exception thrown, see JavaScript console');
@@ -307,7 +439,6 @@
             };
         };
         
-        // Handle fetch/download errors with retry logic
         Module.locateFile = function(path, prefix) {
             var url = prefix + path;
             if (path.endsWith('.data')) {
@@ -316,12 +447,11 @@
             return url;
         };
         
-        // Add fetch with timeout and retry
         var originalFetch = window.fetch;
         window.fetchAttempts = {};
         window.fetch = function(url, options) {
             var maxRetries = 3;
-            var timeout = 120000; // 2 minutes per attempt
+            var timeout = 120000;
             
             if (!window.fetchAttempts[url]) {
                 window.fetchAttempts[url] = 0;
@@ -348,7 +478,6 @@
             });
         };
 
-        // Hide loading UI when game starts
         Module.postRun.push(function() {
             setTimeout(function() {
                 statusElement.classList.add('hidden');

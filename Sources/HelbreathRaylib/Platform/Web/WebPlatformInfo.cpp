@@ -14,7 +14,7 @@ PlatformCapabilities WebPlatformInfo::getCapabilities() const {
 	caps.supportsPointerLock = false;  // Disabled for point-and-click gameplay
 	caps.supportsFullscreen = true;  // Browser fullscreen API available
 	caps.maxTextureSize = 4096;  // Conservative WebGL limit
-	caps.defaultWindowWidth = 1024;
-	caps.defaultWindowHeight = 768;
+	caps.defaultWindowWidth = 640;
+	caps.defaultWindowHeight = 480;
 	return caps;
 }

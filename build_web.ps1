@@ -79,8 +79,23 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Return to root directory
+# Return to root directory first
 cd $PSScriptRoot
+
+# Copy web assets to build directory
+Write-BuildLog "Copying web assets..." -ForegroundColor Yellow
+$assetsSource = Join-Path $PSScriptRoot "web_build\Assets"
+$assetsDest = Join-Path $PSScriptRoot "$outputDir\Assets"
+
+if (Test-Path $assetsSource) {
+    if (Test-Path $assetsDest) {
+        Remove-Item $assetsDest -Recurse -Force
+    }
+    Copy-Item -Path $assetsSource -Destination $assetsDest -Recurse -Force
+    Write-BuildLog "Assets copied successfully" -ForegroundColor Green
+} else {
+    Write-BuildLog "Warning: Assets directory not found at $assetsSource" -ForegroundColor Yellow
+}
 
 Write-Host ""
 Write-BuildLog "========================================" -ForegroundColor Cyan

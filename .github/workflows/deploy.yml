@@ -79,6 +79,10 @@ jobs:
         cp Build/Web/Release/helbreath_web.js public/
         cp Build/Web/Release/helbreath_web.wasm public/
         cp Build/Web/Release/helbreath_web.data public/
+        # Copy web assets
+        if [ -d "web_build/Assets" ]; then
+          cp -r web_build/Assets public/
+        fi
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
