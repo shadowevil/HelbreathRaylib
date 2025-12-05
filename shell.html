@@ -195,13 +195,15 @@
                         if (e.key.startsWith('F') && e.key.length <= 3) {
                             e.preventDefault();
                             e.stopPropagation();
+                            e.stopImmediatePropagation();
                             return false;
                         }
                         
-                        // Block ALL Ctrl combinations (except Ctrl+C/V/X for clipboard in text fields)
+                        // Block ALL Ctrl combinations
                         if (e.ctrlKey || e.metaKey) {
                             e.preventDefault();
                             e.stopPropagation();
+                            e.stopImmediatePropagation();
                             return false;
                         }
                         
@@ -209,10 +211,30 @@
                         if (e.altKey && e.key !== 'Tab') {
                             e.preventDefault();
                             e.stopPropagation();
+                            e.stopImmediatePropagation();
                             return false;
                         }
                     }
                 }, true);
+                
+                // Additional keydown blocking at window level
+                window.addEventListener('keydown', function(e) {
+                    if (isGameActive && (e.ctrlKey || e.metaKey)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        return false;
+                    }
+                }, true);
+                
+                // Block beforeunload when game is active to prevent Ctrl+W
+                window.addEventListener('beforeunload', function(e) {
+                    if (isGameActive) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                        return '';
+                    }
+                });
                 
                 return canvas;
             })(),
