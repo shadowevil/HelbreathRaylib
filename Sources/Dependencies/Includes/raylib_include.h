@@ -905,6 +905,11 @@ namespace rlx {
 		auto [mouseX, mouseY] = GetMousePosition();
 		float scaledX = (mouseX - offsetX) / scale;
 		float scaledY = (mouseY - offsetY) / scale;
+
+		// Clamp to valid game area (0 to base_x/base_y)
+		scaledX = std::max(0.0f, std::min(scaledX, (float)base_x));
+		scaledY = std::max(0.0f, std::min(scaledY, (float)base_y));
+
 		return Vector2{ scaledX, scaledY };
 	}
 
