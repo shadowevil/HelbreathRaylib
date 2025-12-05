@@ -127,15 +127,22 @@
             },
             canvas: (function() {
                 var canvas = document.getElementById('canvas');
-                
+
+                // Ensure canvas can receive focus
+                canvas.setAttribute('tabindex', '0');
+
                 // Focus canvas immediately and on any user interaction
                 canvas.focus();
-                document.addEventListener('click', function() {
+
+                // Aggressive focus management
+                var focusCanvas = function() {
                     canvas.focus();
-                }, false);
-                document.addEventListener('touchstart', function() {
-                    canvas.focus();
-                }, false);
+                };
+
+                document.addEventListener('click', focusCanvas, false);
+                document.addEventListener('touchstart', focusCanvas, false);
+                document.addEventListener('mousedown', focusCanvas, false);
+                canvas.addEventListener('mouseenter', focusCanvas, false);
                 
                 canvas.addEventListener("webglcontextlost", function(e) {
                     alert('WebGL context lost. You will need to reload the page.');
@@ -145,13 +152,24 @@
                 
                 // For point-and-click games, just track if canvas has focus
                 var isGameActive = false;
-                
+
                 canvas.addEventListener('mouseenter', function() {
                     isGameActive = true;
+                    console.log('[Input] Mouse entered canvas - isGameActive = true');
                 }, false);
-                
+
                 canvas.addEventListener('mouseleave', function() {
                     isGameActive = false;
+                    console.log('[Input] Mouse left canvas - isGameActive = false');
+                }, false);
+
+                // Debug: Log mouse clicks on canvas
+                canvas.addEventListener('mousedown', function(e) {
+                    console.log('[Input] Canvas mousedown:', e.button, 'at', e.clientX, e.clientY);
+                }, false);
+
+                canvas.addEventListener('click', function(e) {
+                    console.log('[Input] Canvas click:', e.button, 'at', e.clientX, e.clientY);
                 }, false);
                 
                 // Prevent ALL clicks outside canvas when game is active

@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Platform/PlatformFactory.h"
+#include "Platform/IInputTranslator.h"
 #include <stdio.h>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -364,6 +365,11 @@ void Application::_main_loop_iteration()
 
     // Poll and dispatch window events
     _window->poll_events();
+
+    // Process platform-specific input (e.g., block browser shortcuts on web)
+    if (_platform) {
+        _platform->getInputTranslator().processInput();
+    }
 
     // Calculate delta time
     _delta_time = _window->get_delta_time();
