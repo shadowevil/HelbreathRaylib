@@ -142,17 +142,27 @@
                     e.preventDefault();
                 }, false);
                 
-                // Handle pointer lock state changes
-                document.addEventListener('pointerlockchange', function() {
-                    if (document.pointerLockElement === canvas) {
-                        console.log('Pointer locked to game canvas');
-                    } else {
-                        console.log('Pointer lock released');
+                // Request pointer lock on canvas click
+                canvas.addEventListener('click', function() {
+                    if (\!document.pointerLockElement) {
+                        canvas.requestPointerLock = canvas.requestPointerLock ||
+                                                    canvas.mozRequestPointerLock ||
+                                                    canvas.webkitRequestPointerLock;
+                        canvas.requestPointerLock();
                     }
                 }, false);
                 
-                document.addEventListener('pointerlockerror', function() {
-                    console.error('Pointer lock failed');
+                // Handle pointer lock changes
+                document.addEventListener('pointerlockchange', function() {
+                    if (document.pointerLockElement === canvas) {
+                        console.log('Pointer locked - press ESC to unlock');
+                    }
+                }, false);
+                
+                // Prevent context menu on right-click
+                canvas.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    return false;
                 }, false);
                 
                 return canvas;
