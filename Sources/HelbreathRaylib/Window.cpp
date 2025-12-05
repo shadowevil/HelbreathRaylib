@@ -31,7 +31,10 @@ Window::Window(const WindowSpec& spec)
         return;
     }
 
+    // Don't set FPS limit on Emscripten - let it run at monitor refresh rate
+#ifndef __EMSCRIPTEN__
     SetTargetFPS(_target_fps);
+#endif
 
     // Initialize render target for upscaling if enabled
     if (HasFlag(_flags, WindowFlags::Upscaled))
