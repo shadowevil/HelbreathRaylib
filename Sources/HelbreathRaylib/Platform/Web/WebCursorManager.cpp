@@ -6,17 +6,19 @@ WebCursorManager::WebCursorManager()
 }
 
 void WebCursorManager::hide() {
-	if (_isVisible) {
-		raylib::HideCursor();
-		_isVisible = false;
-	}
+	// Show or hide cursor via css in web platform
+	//if (_isVisible) {
+	//	raylib::HideCursor();
+	//	_isVisible = false;
+	//}
 }
 
 void WebCursorManager::show() {
-	if (!_isVisible) {
-		raylib::ShowCursor();
-		_isVisible = true;
-	}
+	// Show or hide cursor via css in web platform
+	//if (!_isVisible) {
+	//	raylib::ShowCursor();
+	//	_isVisible = true;
+	//}
 }
 
 void WebCursorManager::lock() {
