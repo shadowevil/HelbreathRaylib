@@ -144,7 +144,7 @@
                 
                 // Request pointer lock on canvas click
                 canvas.addEventListener('click', function() {
-                    if (\!document.pointerLockElement) {
+                    if (!document.pointerLockElement) {
                         canvas.requestPointerLock = canvas.requestPointerLock ||
                                                     canvas.mozRequestPointerLock ||
                                                     canvas.webkitRequestPointerLock;
