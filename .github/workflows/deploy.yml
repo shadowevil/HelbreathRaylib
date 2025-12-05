@@ -61,23 +61,24 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cd web_build
-        emcmake cmake . -G Ninja \
+        mkdir -p Build/Web/Release
+        cd Build/Web/Release
+        emcmake cmake "${GITHUB_WORKSPACE}/web_build" -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
           -DRAYLIB_PATH="${GITHUB_WORKSPACE}/raylib/build_web/raylib"
 
     - name: Build
       run: |
-        cd web_build
+        cd Build/Web/Release
         cmake --build .
 
     - name: Prepare deployment
       run: |
         mkdir -p public
-        cp web_build/helbreath_web.html public/index.html
-        cp web_build/helbreath_web.js public/
-        cp web_build/helbreath_web.wasm public/
-        cp web_build/helbreath_web.data public/
+        cp Build/Web/Release/helbreath_web.html public/index.html
+        cp Build/Web/Release/helbreath_web.js public/
+        cp Build/Web/Release/helbreath_web.wasm public/
+        cp Build/Web/Release/helbreath_web.data public/
 
     - name: Setup Pages
       uses: actions/configure-pages@v4

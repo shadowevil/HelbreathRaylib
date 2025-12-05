@@ -57,7 +57,6 @@ if(EMSCRIPTEN)
         "--shell-file" "${CMAKE_SOURCE_DIR}/shell.html"
         "-sLZ4=1"
         "-sEMULATE_FUNCTION_POINTER_CASTS=1"
-        "-sDEMANGLE_SUPPORT=1"
         "$<$<CONFIG:Release>:-O3;-sASSERTIONS=1>"
         "$<$<CONFIG:Debug>:-O0;-g;-sASSERTIONS=2;-sSAFE_HEAP=1>"
     )
