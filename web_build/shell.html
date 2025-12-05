@@ -61,14 +61,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 75%;
+            width: 100%;
             height: 100%;
         }
 
         .banner {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 0;
             height: 70%;
             max-height: 500px;
             width: auto;
@@ -78,20 +77,20 @@
         }
 
         .banner-left {
-            left: -10px;
-            transform: translateY(-50%) translateX(-100%);
+            left: 0;
+            transform: translateX(-100%);
             animation-delay: 0s;
         }
 
         .banner-right {
-            right: -10px;
-            transform: translateY(-50%) translateX(100%);
+            right: 0;
+            transform: translateX(100%);
             animation-delay: 2s;
         }
 
         @keyframes bannerFloat {
-            0%, 100% { transform: translateY(-50%) translateX(-100%); }
-            50% { transform: translateY(-52%) translateX(-100%); }
+            0%, 100% { transform: translateX(-100%) translateY(0); }
+            50% { transform: translateX(-100%) translateY(2px); }
         }
 
         .banner-right {
@@ -99,8 +98,8 @@
         }
 
         @keyframes bannerFloatRight {
-            0%, 100% { transform: translateY(-50%) translateX(100%); }
-            50% { transform: translateY(-52%) translateX(100%); }
+            0%, 100% { transform: translateX(100%) translateY(0); }
+            50% { transform: translateX(100%) translateY(2px); }
         }
 
         #background-icon {
@@ -120,11 +119,11 @@
         #canvas-container {
             position: relative;
             z-index: 5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
+            display: inline-block;
+            /* Container size controlled by JavaScript, max 960x720 */
+            max-width: 960px;
+            max-height: 720px;
+            overflow: hidden;
         }
 
         canvas.emscripten {
@@ -133,15 +132,11 @@
             display: block;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
+            /* Size controlled by JavaScript */
             pointer-events: auto;
             cursor: default;
             outline: none;
-            box-shadow: 
+            box-shadow:
                 0 0 40px rgba(0, 0, 0, 0.8),
                 inset 0 0 100px rgba(0, 0, 0, 0.3);
         }
@@ -259,6 +254,92 @@
         var progressContainer = document.getElementById('progress-container');
         var progressBar = document.getElementById('progress-bar');
         var progressText = document.getElementById('progress-text');
+
+        // Canvas scaling logic - force 640x480 and scale with CSS
+        function resizeCanvas() {
+            var container = document.getElementById('canvas-container');
+            var canvas = document.getElementById('canvas');
+            var gameWrapper = document.getElementById('game-wrapper');
+
+            if (!container || !canvas || !gameWrapper) return;
+
+            // FORCE canvas internal resolution to 640x480 (fight Emscripten)
+            canvas.width = 640;
+            canvas.height = 480;
+
+            // Get available space (accounting for padding and banners)
+            var availableWidth = gameWrapper.clientWidth - 40;
+            var availableHeight = gameWrapper.clientHeight - 20;
+
+            // Native canvas resolution (4:3 aspect ratio)
+            var baseWidth = 640;
+            var baseHeight = 480;
+            var aspectRatio = baseWidth / baseHeight;
+
+            // Maximum dimensions (1.5x scale)
+            var maxWidth = 960;
+            var maxHeight = 720;
+
+            // Calculate what width/height would be based on available space
+            var widthBasedHeight = availableWidth / aspectRatio;
+            var heightBasedWidth = availableHeight * aspectRatio;
+
+            var finalWidth, finalHeight;
+
+            // Determine which dimension is the limiting factor
+            if (availableWidth / aspectRatio <= availableHeight) {
+                // Width is the limiting factor
+                finalWidth = Math.min(availableWidth, maxWidth);
+                finalHeight = finalWidth / aspectRatio;
+            } else {
+                // Height is the limiting factor
+                finalHeight = Math.min(availableHeight, maxHeight);
+                finalWidth = finalHeight * aspectRatio;
+            }
+
+            // Round to integers
+            finalWidth = Math.floor(finalWidth);
+            finalHeight = Math.floor(finalHeight);
+
+            // Debug: log what we're setting
+            console.log('Canvas internal: ' + canvas.width + 'x' + canvas.height);
+            console.log('Canvas CSS: ' + finalWidth + 'x' + finalHeight);
+
+            // Apply size directly to canvas via CSS
+            canvas.style.width = finalWidth + 'px';
+            canvas.style.height = finalHeight + 'px';
+
+            // Container wraps canvas tightly
+            container.style.width = finalWidth + 'px';
+            container.style.height = finalHeight + 'px';
+
+            // Canvas area knows the size
+            var canvasArea = document.getElementById('canvas-area');
+            if (canvasArea) {
+                canvasArea.style.width = finalWidth + 'px';
+                canvasArea.style.height = finalHeight + 'px';
+            }
+        }
+
+        // Monitor canvas dimensions and force them back to 640x480
+        setInterval(function() {
+            var canvas = document.getElementById('canvas');
+            if (canvas && (canvas.width !== 640 || canvas.height !== 480)) {
+                console.log('Emscripten changed canvas to: ' + canvas.width + 'x' + canvas.height + ' - forcing back to 640x480');
+                canvas.width = 640;
+                canvas.height = 480;
+            }
+        }, 100);
+
+        // Resize on load and window resize
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initial resize - call immediately
+        resizeCanvas();
+
+        // Also call after a short delay to ensure canvas is ready
+        setTimeout(resizeCanvas, 100);
 
         var Module = {
             preRun: [],
@@ -482,6 +563,8 @@
             setTimeout(function() {
                 statusElement.classList.add('hidden');
                 progressContainer.classList.add('hidden');
+                // Resize canvas after Emscripten is fully initialized
+                resizeCanvas();
             }, 1000);
         });
     </script>

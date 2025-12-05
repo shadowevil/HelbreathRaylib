@@ -18,15 +18,7 @@ int main() {
 	Spec.Title = "Helbreath Raylib";
 	Spec.Width = caps.defaultWindowWidth;
 	Spec.Height = caps.defaultWindowHeight;
-
-	// On web, disable resizable flag to prevent Emscripten from auto-resizing the canvas
-	// We'll handle scaling via CSS in the shell.html instead
-	WindowFlags flags = WindowFlags::MSAA_4X | WindowFlags::Upscaled;
-
-	if (platform->getPlatformType() != PlatformType::Web)
-		flags = flags | WindowFlags::Resizable;
-
-	Spec.Flags = flags;
+	Spec.Flags = WindowFlags::Resizable /*| WindowFlags::VSync*/ | WindowFlags::MSAA_4X | WindowFlags::Upscaled;
 	Spec.TargetFPS = 0;
 
 	if (!Application::create_app_window(Spec, std::move(platform)))

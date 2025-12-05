@@ -27,7 +27,10 @@
       "Bash(git commit:*)",
       "Bash(dir:*)",
       "Bash(git mv:*)",
-      "Bash(powershell.exe -ExecutionPolicy Bypass -File build_web.ps1 -Configuration Release)"
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File build_web.ps1 -Configuration Release)",
+      "WebSearch",
+      "WebFetch(domain:floooh.github.io)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []
