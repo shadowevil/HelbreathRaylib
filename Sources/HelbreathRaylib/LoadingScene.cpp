@@ -1,33 +1,9 @@
 #include "Scenes.h"
 #include <algorithm>
 #include "ItemMetadata.h"
-#include <filesystem>
-#include <iostream>
 
 void LoadingScene::on_initialize()
 {
-	// Debug: List files in root directory
-	printf("=== Listing root directory ===\n");
-	try {
-		for (const auto& entry : std::filesystem::directory_iterator("/")) {
-			printf("  %s\n", entry.path().string().c_str());
-		}
-	} catch (const std::exception& e) {
-		printf("Error listing root: %s\n", e.what());
-	}
-
-	// Debug: List files in SPRITES directory
-	printf("=== Listing SPRITES directory ===\n");
-	try {
-		for (const auto& entry : std::filesystem::directory_iterator("/SPRITES")) {
-			printf("  %s\n", entry.path().string().c_str());
-		}
-	} catch (const std::exception& e) {
-		printf("Error listing SPRITES: %s\n", e.what());
-	}
-
-	printf("=== Attempting to open: %s ===\n", (constant::SPRITE_PATH / "scenes.pak").string().c_str());
-
 	CSpriteLoader::open_pak(constant::SPRITE_PATH / "scenes.pak", [&](CSpriteLoader& Loader) {
 		sprites[SPRID_LOADINGSCREEN] = Loader.get_sprite(SPR_LOADINGSCREEN::PAK_INDEX);
 		});
