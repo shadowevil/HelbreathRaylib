@@ -173,14 +173,61 @@
             }
         };
 
+        // Add data file loading progress and error handling
+        Module.dataFileDownloads = {};
+        Module.expectedDataFileDownloads = 0;
+        
         Module.setStatus('Downloading...');
 
-        window.onerror = function(event) {
+        // Better error handling for loading failures
+        window.onerror = function(event, source, lineno, colno, error) {
+            console.error('Error:', event, 'at', source, lineno + ':' + colno);
             Module.setStatus('Exception thrown, see JavaScript console');
             statusElement.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
             Module.setStatus = function(text) {
                 if (text) console.error('[post-exception status] ' + text);
             };
+        };
+        
+        // Handle fetch/download errors with retry logic
+        Module.locateFile = function(path, prefix) {
+            var url = prefix + path;
+            if (path.endsWith('.data')) {
+                console.log('Loading data file:', url, '(~462MB, may take time)');
+            }
+            return url;
+        };
+        
+        // Add fetch with timeout and retry
+        var originalFetch = window.fetch;
+        window.fetchAttempts = {};
+        window.fetch = function(url, options) {
+            var maxRetries = 3;
+            var timeout = 120000; // 2 minutes per attempt
+            
+            if (!window.fetchAttempts[url]) {
+                window.fetchAttempts[url] = 0;
+            }
+            
+            return Promise.race([
+                originalFetch(url, options),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Download timeout')), timeout)
+                )
+            ]).catch(function(err) {
+                window.fetchAttempts[url]++;
+                console.error('Fetch failed for', url, '(attempt', window.fetchAttempts[url], '/', maxRetries + '):', err);
+                
+                if (window.fetchAttempts[url] <= maxRetries) {
+                    console.log('Retrying download...');
+                    Module.setStatus('Retrying download (attempt ' + window.fetchAttempts[url] + ')...');
+                    return window.fetch(url, options);
+                } else {
+                    Module.setStatus('Download failed after ' + maxRetries + ' attempts. Please refresh the page.');
+                    statusElement.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+                    throw err;
+                }
+            });
         };
 
         // Hide loading UI when game starts
