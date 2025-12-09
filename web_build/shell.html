@@ -169,6 +169,7 @@
             max-width: 960px;
             max-height: 720px;
             overflow: hidden;
+            cursor: none; /* Hide cursor for entire scaled game area */
         }
 
         /* Center canvas when in fullscreen */
@@ -194,7 +195,7 @@
             image-rendering: -webkit-optimize-contrast;
             /* Size controlled by JavaScript */
             pointer-events: auto;
-            cursor: default;
+            cursor: none; /* Hide cursor on canvas */
             outline: none;
             box-shadow:
                 0 0 40px rgba(0, 0, 0, 0.8),
