@@ -13,7 +13,7 @@ void ExitGameScene::on_uninitialize()
 void ExitGameScene::on_update()
 {
 	// Static timer to track elapsed time
-	static double ExitTimer = GetTime();
+	static double ExitTimer = raylib::GetTime();
 
 	// Exit after 10 seconds
 	if(rlx::HasElapsed(ExitTimer, 10.0))
@@ -22,7 +22,7 @@ void ExitGameScene::on_update()
 	}
 
 	// Exit on mouse click or ESC after 3 seconds
-	if (rlx::HasElapsed(ExitTimer, 3.0) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_ESCAPE)))
+	if (rlx::HasElapsed(ExitTimer, 3.0) && (raylib::IsMouseButtonPressed(raylib::MOUSE_BUTTON_LEFT) || raylib::IsKeyPressed(raylib::KEY_ESCAPE)))
 	{
 		Application::exit();
 	}

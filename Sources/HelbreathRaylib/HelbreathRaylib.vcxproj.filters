@@ -46,6 +46,9 @@
     <Filter Include="Platform\Web">
       <UniqueIdentifier>{fd81d862-eb36-45e1-81e4-b1b802ed3566}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\UI">
+      <UniqueIdentifier>{b5f6e8a1-9c3d-4f7e-a2d1-8e9f0c1b2a3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -152,6 +155,12 @@
     <ClInclude Include="FontIDs.h">
       <Filter>constants</Filter>
     </ClInclude>
+    <ClInclude Include="MusicIDs.h">
+      <Filter>constants</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundIDs.h">
+      <Filter>constants</Filter>
+    </ClInclude>
     <ClInclude Include="ExitGameScene.h">
       <Filter>game\scenes</Filter>
     </ClInclude>
@@ -168,6 +177,15 @@
       <Filter>game\entities</Filter>
     </ClInclude>
     <ClInclude Include="entities.h">
+      <Filter>game\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityGUID.h">
+      <Filter>game\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityManager.h">
+      <Filter>game\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticEntityManager.h">
       <Filter>game\entities</Filter>
     </ClInclude>
     <ClInclude Include="CMap.h">
@@ -275,5 +293,40 @@
     <ClInclude Include="Platform\Web\WebTimerService.h">
       <Filter>Platform\Web</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Control.h">
+      <Filter>Core\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Button.h">
+      <Filter>Core\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\InputBox.h">
+      <Filter>Core\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Label.h">
+      <Filter>Core\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ScissorStack.h">
+      <Filter>Core\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ToggleButton.h">
+      <Filter>Core\UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="UI\Control.cpp">
+      <Filter>Core\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Button.cpp">
+      <Filter>Core\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\InputBox.cpp">
+      <Filter>Core\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Label.cpp">
+      <Filter>Core\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ToggleButton.cpp">
+      <Filter>Core\UI</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

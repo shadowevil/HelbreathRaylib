@@ -21,32 +21,32 @@ public:
 	}
 
 	~CSprite() {
-		UnloadTexture(_texture);
+		raylib::UnloadTexture(_texture);
 	}
 
 	void preload() {
         //if (!this || !_file_path.size())  // or a dedicated 'is valid' flag
         //    return;
-		_last_used_time = GetTime();
-		if (IsTextureValid(_texture))
+		_last_used_time = raylib::GetTime();
+		if (raylib::IsTextureValid(_texture))
 			return;
 
 		const auto& SpriteObj = PAKLib::get_sprite_fast(_file_path, _sprite_index);
-		Image Image_ = LoadImageFromMemory(constant::SPRITE_IMAGE_TYPE.c_str(), SpriteObj.image_data.data(), static_cast<int>(SpriteObj.image_data.size()));
-		_texture = LoadTextureFromImage(Image_);
-		SetTextureFilter(_texture, TEXTURE_FILTER_POINT);
-		UnloadImage(Image_);
+		raylib::Image Image_ = raylib::LoadImageFromMemory(constant::SPRITE_IMAGE_TYPE.c_str(), SpriteObj.image_data.data(), static_cast<int>(SpriteObj.image_data.size()));
+		_texture = raylib::LoadTextureFromImage(Image_);
+		raylib::SetTextureFilter(_texture, raylib::TEXTURE_FILTER_POINT);
+		raylib::UnloadImage(Image_);
 	}
 
 	void unload_if_unused(double current_time, double timeout_seconds) {
-		if (IsTextureValid(_texture) && (current_time - _last_used_time) >= timeout_seconds) {
-			UnloadTexture(_texture);
+		if (raylib::IsTextureValid(_texture) && (current_time - _last_used_time) >= timeout_seconds) {
+			raylib::UnloadTexture(_texture);
 			_texture = {};
 		}
 	}
 
 	void draw(int x, int y, size_t frame);
-    void draw(int x, int y, size_t frame, Color tint);
+    void draw(int x, int y, size_t frame, raylib::Color tint);
 
     PAKLib::sprite_rect get_frame_rectangle(size_t frame) const {
         size_t FrameCount = _sprite_rectangles.size();
@@ -64,7 +64,7 @@ protected:
 	std::vector<PAKLib::sprite_rect> _sprite_rectangles{};
 	std::string _file_path{};
 	size_t _sprite_index{};
-	Texture2D _texture{};
+	raylib::Texture2D _texture{};
 };
 
 class CSpriteLoader {

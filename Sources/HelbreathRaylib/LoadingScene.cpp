@@ -1,6 +1,7 @@
 #include "Scenes.h"
 #include <algorithm>
 #include "ItemMetadata.h"
+#include "SoundPlayer.h"
 
 void LoadingScene::on_initialize()
 {
@@ -19,6 +20,7 @@ void LoadingScene::on_update()
 	switch (_loading_step) {
 	case 0: _load_scenes(); break;
 	case 1: _load_interface(); break;
+	case 2: _load_sounds(); break;
 	case 15: _load_male_game_models(); break;
 	case 35: _load_female_game_models(); break;
 	case 50: _load_items(); break;
@@ -26,7 +28,14 @@ void LoadingScene::on_update()
 	}
 
 	if (_loading_step == 100)
-		scene_manager.set_scene<TestScene>();
+	{
+		sound_player.play_music_shuffle({
+			Music::MENU_MUSIC_1, Music::MENU_MUSIC_2,
+			Music::MENU_MUSIC_3, Music::MENU_MUSIC_4,
+			Music::MENU_MUSIC_5
+			});
+		scene_manager.set_scene<MainMenuScene>();
+	}
 	else
 		_loading_step = (uint8_t)std::min(_loading_step + 1, 100);
 }
@@ -349,4 +358,93 @@ void LoadingScene::_load_register_maps()
 	CMapLoader::register_map_file(MapID::wrhus_2f, constant::MAPDATA_PATH / "wrhus_2f.mtd");
 	CMapLoader::register_map_file(MapID::wzdtwr_1, constant::MAPDATA_PATH / "wzdtwr_1.mtd");
 	CMapLoader::register_map_file(MapID::wzdtwr_2, constant::MAPDATA_PATH / "wzdtwr_2.mtd");
+}
+
+void LoadingScene::_load_sounds()
+{
+	// Define the valid ranges for each sound type based on the enums
+	const int MAX_EFFECT_ID = 53;         // Sound::EffectID goes from 1-53
+	const int MAX_CHARACTER_ID = 24;      // Sound::CharacterSoundID goes from 1-24
+	const int MAX_MONSTER_ID = 156;       // Sound::MonsterSoundID goes from 1-156
+
+	// Load sound effects from SOUND_PATH
+	if (std::filesystem::exists(constant::SOUND_PATH)) {
+		for (const auto& entry : std::filesystem::directory_iterator(constant::SOUND_PATH)) {
+			if (!entry.is_regular_file()) continue;
+
+			auto path = entry.path();
+			auto filename = path.stem().string(); // filename without extension
+
+			// Parse the filename format: "X###" where X is prefix (E/C/M) and ### is ID
+			if (filename.length() < 2) continue;
+
+			// Get prefix (case-insensitive)
+			char prefix = std::toupper(filename[0]);
+
+			// Extract the ID number from the filename (everything after the prefix)
+			std::string idStr = filename.substr(1);
+			int id = 0;
+			try {
+				id = std::stoi(idStr);
+			} catch (...) {
+				continue; // Skip invalid filenames
+			}
+
+			// Load the sound based on prefix into separate lists
+			if (prefix == 'E') {
+				// Effect sounds (EffectID)
+				if (id < 1 || id > MAX_EFFECT_ID) {
+					printf("Warning: Sound file '%s' has ID %d which is outside the valid range (1-%d) for EffectID\n",
+						filename.c_str(), id, MAX_EFFECT_ID);
+					continue;
+				}
+				printf("Loading effect sound ID %d from file '%s'\n", id, filename.c_str());
+				sound_player.load_effect(id, path);
+			}
+			else if (prefix == 'C') {
+				// Character sounds (CharacterSoundID)
+				if (id < 1 || id > MAX_CHARACTER_ID) {
+					printf("Warning: Sound file '%s' has ID %d which is outside the valid range (1-%d) for CharacterSoundID\n",
+						filename.c_str(), id, MAX_CHARACTER_ID);
+					continue;
+				}
+				printf("Loading character sound ID %d from file '%s'\n", id, filename.c_str());
+				sound_player.load_character_sound(id, path);
+			}
+			else if (prefix == 'M') {
+				// Monster sounds (MonsterSoundID)
+				if (id < 1 || id > MAX_MONSTER_ID) {
+					printf("Warning: Sound file '%s' has ID %d which is outside the valid range (1-%d) for MonsterSoundID\n",
+						filename.c_str(), id, MAX_MONSTER_ID);
+					continue;
+				}
+				printf("Loading monster sound ID %d from file '%s'\n", id, filename.c_str());
+				sound_player.load_monster_sound(id, path);
+			}
+		}
+	}
+
+	// Load music from MUSIC_PATH
+	if (std::filesystem::exists(constant::MUSIC_PATH)) {
+		for (const auto& entry : std::filesystem::directory_iterator(constant::MUSIC_PATH)) {
+			if (!entry.is_regular_file()) continue;
+
+			auto path = entry.path();
+			auto extension = path.extension().string();
+
+			// Only load MP3 files
+			if (extension != ".mp3" && extension != ".MP3") continue;
+
+			auto filename = path.stem().string(); // filename without extension
+
+			// Look up the TrackID from the filename
+			auto it = Music::FilenameToTrackID.find(filename);
+			if (it != Music::FilenameToTrackID.end()) {
+				printf("Loading music TrackID %d from file '%s'\n", static_cast<int>(it->second), filename.c_str());
+				sound_player.load_music(it->second, path);
+			} else {
+				printf("Warning: Music file '%s.mp3' does not have a corresponding TrackID enum\n", filename.c_str());
+			}
+		}
+	}
 }

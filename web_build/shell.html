@@ -9,6 +9,11 @@
 
         * {
             box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -23,6 +28,7 @@
             width: 100vw;
             height: 100vh;
             font-family: 'Cinzel', serif;
+            touch-action: none;
         }
 
         #logo-container {
@@ -39,6 +45,24 @@
             width: auto;
             filter: drop-shadow(0 0 20px rgba(200, 180, 140, 0.5));
             animation: logoGlow 3s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            #logo-container {
+                padding: 10px 0 5px 0;
+            }
+
+            #logo-container img {
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #logo-container img {
+                height: 30px;
+            }
         }
 
         @keyframes logoGlow {
@@ -54,6 +78,19 @@
             width: 100%;
             padding: 10px 20px 20px 20px;
             position: relative;
+        }
+
+        /* Mobile responsive padding */
+        @media (max-width: 768px) {
+            #game-wrapper {
+                padding: 5px 10px 10px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #game-wrapper {
+                padding: 5px 5px 5px 5px;
+            }
         }
 
         #canvas-area {
@@ -74,6 +111,14 @@
             z-index: 10;
             filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.6));
             animation: bannerFloat 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* Hide banners on mobile for cleaner look */
+        @media (max-width: 768px) {
+            .banner {
+                display: none;
+            }
         }
 
         .banner-left {
@@ -143,8 +188,10 @@
             border: 2px solid rgba(139, 115, 85, 0.4);
             background-color: black;
             display: block;
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
+            /* Optimal rendering for upscaled content with text */
+            image-rendering: auto;
+            image-rendering: high-quality;
+            image-rendering: -webkit-optimize-contrast;
             /* Size controlled by JavaScript */
             pointer-events: auto;
             cursor: default;
@@ -153,6 +200,14 @@
                 0 0 40px rgba(0, 0, 0, 0.8),
                 inset 0 0 100px rgba(0, 0, 0, 0.3);
             margin: 0 auto; /* Center horizontally when in block display */
+            touch-action: none;
+        }
+
+        /* Thinner border on mobile */
+        @media (max-width: 768px) {
+            canvas.emscripten {
+                border-width: 1px;
+            }
         }
 
         /* Additional centering for canvas in fullscreen */
@@ -177,6 +232,25 @@
             border: 1px solid rgba(139, 115, 85, 0.4);
             font-family: 'Cinzel', serif;
             letter-spacing: 1px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        /* Mobile responsive status */
+        @media (max-width: 768px) {
+            #status {
+                top: 60px;
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #status {
+                top: 50px;
+                font-size: 11px;
+                padding: 8px 15px;
+            }
         }
 
         #progress-container {
@@ -187,6 +261,20 @@
             width: 60%;
             max-width: 500px;
             z-index: 100;
+            padding: 0 10px;
+        }
+
+        /* Mobile responsive progress bar */
+        @media (max-width: 768px) {
+            #progress-container {
+                width: 80%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #progress-container {
+                width: 90%;
+            }
         }
 
         #progress {
@@ -214,6 +302,21 @@
             letter-spacing: 1px;
         }
 
+        /* Mobile responsive progress text */
+        @media (max-width: 768px) {
+            #progress-text {
+                font-size: 12px;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #progress-text {
+                font-size: 11px;
+                margin-top: 8px;
+            }
+        }
+
         .hidden {
             display: none !important;
         }
@@ -228,6 +331,7 @@
             border-color: rgba(139, 115, 85, 0.3);
             border-style: solid;
             z-index: 6;
+            pointer-events: none;
         }
 
         #canvas-area::before {
@@ -240,6 +344,83 @@
             bottom: 0;
             right: 0;
             border-width: 0 2px 2px 0;
+        }
+
+        /* Hide decorative corners on mobile */
+        @media (max-width: 768px) {
+            #canvas-area::before,
+            #canvas-area::after {
+                display: none;
+            }
+        }
+
+        /* Fullscreen button */
+        #fullscreen-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(20, 20, 35, 0.95);
+            border: 2px solid rgba(139, 115, 85, 0.6);
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        #fullscreen-btn:hover {
+            background: rgba(30, 30, 45, 0.95);
+            border-color: rgba(200, 180, 140, 0.8);
+            transform: scale(1.05);
+        }
+
+        #fullscreen-btn:active {
+            transform: scale(0.95);
+        }
+
+        #fullscreen-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #c8b48c;
+        }
+
+        /* Show fullscreen button on mobile and tablet (including iPad Pro) */
+        @media (max-width: 1366px) {
+            #fullscreen-btn {
+                display: flex;
+            }
+        }
+
+        /* Also detect touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            #fullscreen-btn {
+                display: flex;
+            }
+        }
+
+        /* Adjust button position on small mobile */
+        @media (max-width: 480px) {
+            #fullscreen-btn {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+
+            #fullscreen-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        /* Hide button when in fullscreen */
+        body.fullscreen-active #fullscreen-btn {
+            display: none;
         }
     </style>
 </head>
@@ -271,7 +452,89 @@
         <div id="progress-text">Loading assets...</div>
     </div>
 
+    <!-- Fullscreen button for mobile -->
+    <button id="fullscreen-btn" aria-label="Toggle Fullscreen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <!-- Fullscreen icon -->
+            <path class="expand-icon" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            <!-- Exit fullscreen icon (hidden by default) -->
+            <path class="compress-icon" style="display:none;" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+        </svg>
+    </button>
+
     <script type='text/javascript'>
+        // Suppress ScriptProcessorNode deprecation warning
+        (function() {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                const message = args.join(' ');
+                if (message.includes('ScriptProcessorNode') || message.includes('AudioWorkletNode')) {
+                    return; // Suppress this specific warning
+                }
+                originalWarn.apply(console, args);
+            };
+        })();
+
+        // Keep audio context alive during screen recording
+        (function() {
+            let audioContext = null;
+
+            // Find and monitor the audio context
+            const findAudioContext = () => {
+                if (window.miniaudio && window.miniaudio.devices) {
+                    for (let device of window.miniaudio.devices) {
+                        if (device.webaudio) {
+                            audioContext = device.webaudio;
+                            console.log('Audio context found and monitored');
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+
+            // Keep trying to find the audio context
+            const contextCheckInterval = setInterval(() => {
+                if (findAudioContext()) {
+                    clearInterval(contextCheckInterval);
+                    startMonitoring();
+                }
+            }, 1000);
+
+            const startMonitoring = () => {
+                // Resume audio context when it gets suspended
+                const resumeAudio = () => {
+                    if (audioContext && audioContext.state === 'suspended') {
+                        console.log('Resuming suspended audio context...');
+                        audioContext.resume().then(() => {
+                            console.log('Audio context resumed successfully');
+                        }).catch(err => {
+                            console.error('Failed to resume audio:', err);
+                        });
+                    }
+                };
+
+                // Check audio state periodically (important for screen recording)
+                setInterval(resumeAudio, 100);
+
+                // Resume on user interaction
+                document.addEventListener('click', resumeAudio);
+                document.addEventListener('keydown', resumeAudio);
+
+                // Resume when window regains focus (for screen recording)
+                window.addEventListener('focus', resumeAudio);
+
+                // Resume on visibility change
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) {
+                        resumeAudio();
+                    }
+                });
+
+                console.log('Audio monitoring started - will keep audio alive during screen recording');
+            };
+        })();
+
         var statusElement = document.getElementById('status');
         var progressContainer = document.getElementById('progress-container');
         var progressBar = document.getElementById('progress-bar');
@@ -281,12 +544,14 @@
         function toggleCanvasFullscreen() {
             var canvasContainer = document.getElementById('canvas-container');
 
-            if (!document.fullscreenElement) {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
                 // Enter fullscreen
                 if (canvasContainer.requestFullscreen) {
                     canvasContainer.requestFullscreen();
                 } else if (canvasContainer.webkitRequestFullscreen) {
                     canvasContainer.webkitRequestFullscreen();
+                } else if (canvasContainer.mozRequestFullScreen) {
+                    canvasContainer.mozRequestFullScreen();
                 } else if (canvasContainer.msRequestFullscreen) {
                     canvasContainer.msRequestFullscreen();
                 }
@@ -296,16 +561,57 @@
                     document.exitFullscreen();
                 } else if (document.webkitExitFullscreen) {
                     document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
                 } else if (document.msExitFullscreen) {
                     document.msExitFullscreen();
                 }
             }
         }
 
-        // Listen for fullscreen changes to adjust canvas size
-        document.addEventListener('fullscreenchange', resizeCanvas);
-        document.addEventListener('webkitfullscreenchange', resizeCanvas);
-        document.addEventListener('msfullscreenchange', resizeCanvas);
+        // Update fullscreen button icon
+        function updateFullscreenButton() {
+            var isFullscreen = document.fullscreenElement || document.webkitFullscreenElement ||
+                             document.mozFullScreenElement || document.msFullscreenElement;
+            var expandIcon = document.querySelector('.expand-icon');
+            var compressIcon = document.querySelector('.compress-icon');
+
+            if (isFullscreen) {
+                document.body.classList.add('fullscreen-active');
+                if (expandIcon) expandIcon.style.display = 'none';
+                if (compressIcon) compressIcon.style.display = 'block';
+            } else {
+                document.body.classList.remove('fullscreen-active');
+                if (expandIcon) expandIcon.style.display = 'block';
+                if (compressIcon) compressIcon.style.display = 'none';
+            }
+        }
+
+        // Setup fullscreen button
+        document.addEventListener('DOMContentLoaded', function() {
+            var fullscreenBtn = document.getElementById('fullscreen-btn');
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', toggleCanvasFullscreen);
+            }
+        });
+
+        // Listen for fullscreen changes to adjust canvas size and button
+        document.addEventListener('fullscreenchange', function() {
+            updateFullscreenButton();
+            resizeCanvas();
+        });
+        document.addEventListener('webkitfullscreenchange', function() {
+            updateFullscreenButton();
+            resizeCanvas();
+        });
+        document.addEventListener('mozfullscreenchange', function() {
+            updateFullscreenButton();
+            resizeCanvas();
+        });
+        document.addEventListener('msfullscreenchange', function() {
+            updateFullscreenButton();
+            resizeCanvas();
+        });
 
         // Canvas scaling logic - force 640x480 and scale with CSS
         function resizeCanvas() {

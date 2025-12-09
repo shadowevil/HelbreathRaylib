@@ -23,9 +23,23 @@ enum class TextAlign : uint8_t {
 
 enum class FontStyle : uint8_t {
     Regular = 0,
-    Bold = 1,
-    Italic = 2
+    Bold    = 1 << 0,
+    Italic  = 1 << 1,
+    Shadow  = 1 << 2
 };
+
+// Bitwise operators for FontStyle
+inline FontStyle operator|(FontStyle a, FontStyle b) {
+    return static_cast<FontStyle>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
+}
+
+inline FontStyle operator&(FontStyle a, FontStyle b) {
+    return static_cast<FontStyle>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b));
+}
+
+inline bool HasFontStyle(FontStyle value, FontStyle flag) {
+    return (static_cast<uint8_t>(value) & static_cast<uint8_t>(flag)) != 0;
+}
 
 inline TextAlign operator|(HorizontalAlign a, VerticalAlign b) {
     return static_cast<TextAlign>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
@@ -78,9 +92,24 @@ struct FontPaths {
     std::string italic;
 };
 
+struct TextEffects {
+    // Outline
+    raylib::Color outline_color = raylib::BLACK;
+    float outline_thickness = 1.0f;
+
+    // Shadow
+    raylib::Color shadow_color = raylib::Color{0, 0, 0, 128};
+    float shadow_offset_x = 2.0f;
+    float shadow_offset_y = 2.0f;
+
+    // Underline
+    raylib::Color underline_color = raylib::WHITE;
+    float underline_thickness = 1.0f;
+};
+
 class FontSystem {
 private:
-    std::unordered_map<FontKey, Font, FontKeyHash> _loaded_fonts;
+    std::unordered_map<FontKey, raylib::Font, FontKeyHash> _loaded_fonts;
     std::unordered_map<uint8_t, FontPaths> _font_paths;
 
     static FontSystem& _instance() {
@@ -88,7 +117,7 @@ private:
         return Manager;
     }
 
-    Font& _get_font_internal(uint8_t index, int font_size, FontStyle style) {
+    raylib::Font& _get_font_internal(uint8_t index, int font_size, FontStyle style) {
         FontKey Key = { index, font_size, style };
 
         auto It = _loaded_fonts.find(Key);
@@ -98,7 +127,7 @@ private:
 
         auto PathIt = _font_paths.find(index);
         if (PathIt == _font_paths.end()) {
-            static Font DefaultFont = GetFontDefault();
+            static raylib::Font DefaultFont = raylib::GetFontDefault();
             return DefaultFont;
         }
 
@@ -116,12 +145,19 @@ private:
         }
 
         if (Path.empty()) {
-            static Font DefaultFont = GetFontDefault();
+            static raylib::Font DefaultFont = raylib::GetFontDefault();
             return DefaultFont;
         }
 
-        Font Font_ = LoadFontEx(Path.c_str(), font_size * 8, nullptr, 0);
-        SetTextureFilter(Font_.texture, TEXTURE_FILTER_POINT);
+#ifdef __EMSCRIPTEN__
+        // Web: Render fonts at higher resolution for better quality with bilinear filtering
+        raylib::Font Font_ = raylib::LoadFontEx(Path.c_str(), font_size * 16, nullptr, 0);
+        raylib::SetTextureFilter(Font_.texture, raylib::TEXTURE_FILTER_BILINEAR);
+#else
+        // Desktop: Standard resolution with point filtering
+        raylib::Font Font_ = raylib::LoadFontEx(Path.c_str(), font_size * 8, nullptr, 0);
+        raylib::SetTextureFilter(Font_.texture, raylib::TEXTURE_FILTER_POINT);
+#endif
         _loaded_fonts[Key] = Font_;
 
         return _loaded_fonts[Key];
@@ -130,7 +166,7 @@ private:
     FontSystem() = default;
     ~FontSystem() {
         for (auto& Pair : _loaded_fonts) {
-            UnloadFont(Pair.second);
+            raylib::UnloadFont(Pair.second);
         }
     }
 
@@ -139,15 +175,15 @@ public:
     FontSystem& operator=(const FontSystem&) = delete;
 
     static void register_font(uint8_t index, const char* regular_path, const char* bold_path = nullptr, const char* italic_path = nullptr) {
-        if (!regular_path || !FileExists(regular_path)) {
+        if (!regular_path || !raylib::FileExists(regular_path)) {
             throw std::runtime_error("Regular font path does not exist: " + std::string(regular_path ? regular_path : "null"));
         }
 
-        if (bold_path && !FileExists(bold_path)) {
+        if (bold_path && !raylib::FileExists(bold_path)) {
             throw std::runtime_error("Bold font path does not exist: " + std::string(bold_path));
         }
 
-        if (italic_path && !FileExists(italic_path)) {
+        if (italic_path && !raylib::FileExists(italic_path)) {
             throw std::runtime_error("Italic font path does not exist: " + std::string(italic_path));
         }
 
@@ -158,23 +194,27 @@ public:
         _instance()._font_paths[index] = Paths;
     }
 
-    static Font& get_font(uint8_t index, int font_size, FontStyle style = FontStyle::Regular) {
+    static raylib::Font& get_font(uint8_t index, int font_size, FontStyle style = FontStyle::Regular) {
         return _instance()._get_font_internal(index, font_size, style);
     }
 
     static void unload_all() {
         auto& Inst = _instance();
         for (auto& Pair : Inst._loaded_fonts) {
-            UnloadFont(Pair.second);
+            raylib::UnloadFont(Pair.second);
         }
         Inst._loaded_fonts.clear();
     }
 
-    static Vector2 get_aligned_position(Font& font, const char* text, raylib::Rectangle rec, float font_size, float spacing, TextAlign align);
-    static void draw_text(uint8_t font_index, int font_size, const char* text, float x, float y, Color color, FontStyle style = FontStyle::Regular);
-    static void draw_text(uint8_t font_index, int font_size, const char* text, float x, float y, float spacing, Color color, FontStyle style = FontStyle::Regular);
-    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, raylib::Rectangle rec, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
-    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, float x, float y, float width, float height, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
-    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, raylib::Rectangle rec, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
-    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, float x, float y, float width, float height, float spacing, Color color, TextAlign align, FontStyle style = FontStyle::Regular);
+    static raylib::Vector2 get_aligned_position(raylib::Font& font, const char* text, raylib::Rectangle rec, float font_size, float spacing, TextAlign align);
+
+    // Basic text drawing
+    static void draw_text(uint8_t font_index, int font_size, const char* text, float x, float y, raylib::Color color, FontStyle style = FontStyle::Regular, const TextEffects* effects = nullptr);
+    static void draw_text(uint8_t font_index, int font_size, const char* text, float x, float y, float spacing, raylib::Color color, FontStyle style = FontStyle::Regular, const TextEffects* effects = nullptr);
+
+    // Aligned text drawing
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, raylib::Rectangle rec, raylib::Color color, TextAlign align, FontStyle style = FontStyle::Regular, const TextEffects* effects = nullptr);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, float x, float y, float width, float height, raylib::Color color, TextAlign align, FontStyle style = FontStyle::Regular, const TextEffects* effects = nullptr);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, raylib::Rectangle rec, float spacing, raylib::Color color, TextAlign align, FontStyle style = FontStyle::Regular, const TextEffects* effects = nullptr);
+    static void draw_text_aligned(uint8_t font_index, int font_size, const char* text, float x, float y, float width, float height, float spacing, raylib::Color color, TextAlign align, FontStyle style = FontStyle::Regular, const TextEffects* effects = nullptr);
 };

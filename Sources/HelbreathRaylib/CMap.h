@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include "entity.h"
+#include "EntityManager.h"
 
 #pragma pack(push, 1)
 struct MTDHeader {
@@ -35,9 +36,9 @@ struct CTile {
     bool is_teleport{};
 };
 
-inline std::pair<int, int> get_world_tile_mouse_position(Camera2D camera)
+inline std::pair<int, int> get_world_tile_mouse_position(raylib::Camera2D camera)
 {
-    Vector2 MposWorld = GetScreenToWorld2D(rlx::get_mouse_position(), camera);
+    raylib::Vector2 MposWorld = GetScreenToWorld2D(rlx::get_mouse_position(), camera);
     const int Tx = (int)floorf((MposWorld.x + constant::TILE_HALF) / constant::TILE_SIZE);
     const int Ty = (int)floorf((MposWorld.y + constant::TILE_HALF) / constant::TILE_SIZE);
     return { Tx, Ty };
@@ -77,13 +78,17 @@ public:
     int height() const { return _map_size_y; }
     int tile_size() const { return _tile_size; }
 
-    void for_each_tile_region(Camera2D camera, int x_range, int y_range, const std::vector<std::unique_ptr<Entity>>&,
+    void for_each_tile_region(raylib::Camera2D camera, int x_range, int y_range, const EntityManager&,
         const std::function<void(int16_t, int16_t, int32_t, int32_t, CTile&, Entity*)>& fn);
 
     const std::string& get_map_identifier() const { return _map_identifier; }
     const std::string& get_map_name() const { return _map_name; }
 
     std::unique_ptr<std::unordered_set<uint64_t>> reserved_tiles = std::make_unique<std::unordered_set<uint64_t>>();
+
+    // Each map owns its own EntityManager for entities on this map
+    EntityManager& get_entity_manager() { return _entity_manager; }
+    const EntityManager& get_entity_manager() const { return _entity_manager; }
 
 private:
     int16_t _map_size_x{};
@@ -92,6 +97,7 @@ private:
     std::vector<std::vector<CTile>> _tile;
     std::string _map_identifier{};
     std::string _map_name{};
+    EntityManager _entity_manager{}; // Each map has its own entity manager
 };
 
 

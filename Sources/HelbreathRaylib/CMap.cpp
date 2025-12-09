@@ -1,7 +1,8 @@
 #include "CMap.h"
 #include "entity.h"
+#include "EntityManager.h"
 
-void CMapData::for_each_tile_region(Camera2D camera, int x_range, int y_range, const std::vector<std::unique_ptr<Entity>>& entities,
+void CMapData::for_each_tile_region(raylib::Camera2D camera, int x_range, int y_range, const EntityManager& entity_manager,
     const std::function<void(int16_t, int16_t, int32_t, int32_t, CTile&, Entity*)>& fn)
 {
     const int ScreenTilesX = (int)((constant::BASE_WIDTH * camera.zoom) / constant::TILE_SIZE) + x_range;
@@ -35,13 +36,13 @@ void CMapData::for_each_tile_region(Camera2D camera, int x_range, int y_range, c
             if (!in_bounds(x, y))
                 continue;
 
-            auto It = std::find_if(entities.begin(), entities.end(),
+            auto It = std::find_if(entity_manager.begin(), entity_manager.end(),
                 [x, y](const std::unique_ptr<Entity>& e) {
                     auto Pos = e->get_position();
                     return Pos.get_tile_x() == x && Pos.get_tile_y() == y;
 				});
 
-			Entity* EntityPtr = (It != entities.end()) ? It->get() : nullptr;
+			Entity* EntityPtr = (It != entity_manager.end()) ? It->get() : nullptr;
 
             fn(x, y, PX, PY, _tile[x][y], EntityPtr);
         }

@@ -29,13 +29,13 @@ void CSprite::draw(int x, int y, size_t frame)
 			static_cast<float>(Rect.width),
 			static_cast<float>(Rect.height)
 		},
-		Vector2{ 0.0f, 0.0f },
+		raylib::Vector2{ 0.0f, 0.0f },
 		0.0f,
-		WHITE
+		raylib::WHITE
 	);
 }
 
-void CSprite::draw(int x, int y, size_t frame, Color tint)
+void CSprite::draw(int x, int y, size_t frame, raylib::Color tint)
 {
 	//if (!this)  // or a dedicated 'is valid' flag
 	//	return;
@@ -50,7 +50,7 @@ void CSprite::draw(int x, int y, size_t frame, Color tint)
 
 	auto& Rect = _sprite_rectangles[frame];
 
-	DrawTexturePro(
+	raylib::DrawTexturePro(
 		_texture,
 		raylib::Rectangle{
 			static_cast<float>(Rect.x),
@@ -64,7 +64,7 @@ void CSprite::draw(int x, int y, size_t frame, Color tint)
 			static_cast<float>(Rect.width),
 			static_cast<float>(Rect.height)
 		},
-		Vector2{ 0.0f, 0.0f },
+		raylib::Vector2{ 0.0f, 0.0f },
 		0.0f,
 		tint
 	);

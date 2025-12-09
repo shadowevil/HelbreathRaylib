@@ -6,104 +6,10 @@
 #include <fstream>
 #include <sstream>
 
-namespace internal_PAK {
-#if defined(_WIN32)
-#include <windows.h>
-#elif defined(__APPLE__)
-#include <mach-o/dyld.h>
-#include <limits.h>
-#include <unistd.h>
-#elif defined(__linux__)
-#include <unistd.h>
-#include <limits.h>
-#endif
-
-	inline std::string get_executable_path() {
-#if defined(_WIN32)
-		char path[PLATFORM_MAX_PATH];
-		DWORD len = GetModuleFileNameA(nullptr, path, PLATFORM_MAX_PATH);
-		if (len == 0 || len == PLATFORM_MAX_PATH)
-			throw std::runtime_error("Failed to get executable path");
-		return std::string(path);
-
-#elif defined(__APPLE__)
-		char path[PLATFORM_MAX_PATH];
-		uint32_t size = sizeof(path);
-		if (_NSGetExecutablePath(path, &size) != 0)
-			throw std::runtime_error("Failed to get executable path");
-		char resolved[PLATFORM_MAX_PATH];
-		if (realpath(path, resolved) == nullptr)
-			throw std::runtime_error("Failed to resolve executable path");
-		return std::string(resolved);
-
-#elif defined(__linux__)
-		char path[PLATFORM_MAX_PATH];
-		ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
-		if (len == -1)
-			throw std::runtime_error("Failed to get executable path");
-		path[len] = '\0';
-		return std::string(path);
-
-#elif defined(__EMSCRIPTEN__)
-		return "";
-
-#else
-#error Unsupported platform
-#endif
-	}
-
-	inline std::string get_executable_dir() {
-		std::string exe = get_executable_path();
-#if defined(_WIN32)
-		const char sep = '\\';
-#else
-		const char sep = '/';
-#endif
-		size_t pos = exe.find_last_of(sep);
-		return (pos != std::string::npos) ? exe.substr(0, pos) : exe;
-	}
-
-#if defined(_WIN32)
-	constexpr char PATH_SEP = '\\';
-	constexpr char ALT_SEP = '/';
-#else
-	constexpr char PATH_SEP = '/';
-	constexpr char ALT_SEP = '\\';
-#endif
-
-	inline std::string sanitize_path(std::string path) {
-		for (auto& ch : path) {
-			if (ch == ALT_SEP)
-				ch = PATH_SEP;
-		}
-		return path;
-	}
-
-	template<typename T>
-	inline void append_path_part(std::string& result, const T& part) {
-		std::string sanitized = sanitize_path(part);
-		if (result.empty()) {
-			result = sanitized;
-			return;
-		}
-		if (result.back() != PATH_SEP)
-			result += PATH_SEP;
-		result += sanitized;
-	}
-
-	template<typename... Args>
-	inline std::string path_combine(const Args&... args) {
-		static_assert(sizeof...(args) > 0, "path_combine requires at least one argument");
-
-		// Runtime check fallback for C++14
-		std::string result;
-		int dummy[] = { 0, (append_path_part(result, std::string(args)), 0)... };
-		(void)dummy;
-		return result;
-	}
-}
-
 namespace PAKLib {
+	// Only pack POD structs that are read directly from binary files
+	// DO NOT pack structs containing std::string, std::vector, or other complex types
+	// as they require proper alignment (critical for WebAssembly with -sSAFE_HEAP=1)
 #pragma pack(push, 1)
 	struct sprite_rect {
 		uint16_t x;
@@ -128,19 +34,26 @@ namespace PAKLib {
 		uint8_t padding[80]{ 0 };
 	};
 
-	struct sprite {
+	struct sprite_entry {
+		uint32_t offset{ 0 };
+		uint32_t size{ 0 };
+	};
+
+	constexpr size_t SPRITE_HEADER_SKIP = sizeof(sprite_header);
+	constexpr size_t RECT_COUNT_SIZE = sizeof(uint32_t);
+	constexpr size_t PADDING_SIZE = sizeof(uint32_t);
+#pragma pack(pop)
+
+	// Structs with std::vector and std::string must use normal alignment
+	// alignas ensures proper alignment for WebAssembly (-sSAFE_HEAP=1)
+	struct alignas(8) sprite {
 	public:
 		sprite_header header{};
 		std::vector<sprite_rect> sprite_rectangles{};
 		std::vector<uint8_t> image_data; // Raw image data (e.g., PNG, JPEG)
 	};
 
-	struct sprite_entry {
-		uint32_t offset{ 0 };
-		uint32_t size{ 0 };
-	};
-
-	struct pak {
+	struct alignas(8) pak {
 	public:
 		std::string pak_file_path{};
 		file_header header{};
@@ -148,11 +61,6 @@ namespace PAKLib {
 		std::vector<sprite_entry> sprite_entries;
 		std::vector<sprite> sprites{};
 	};
-
-	constexpr size_t SPRITE_HEADER_SKIP = sizeof(sprite_header);
-	constexpr size_t RECT_COUNT_SIZE = sizeof(uint32_t);
-	constexpr size_t PADDING_SIZE = sizeof(uint32_t);
-#pragma pack(pop)
 
 	inline static pak loadpak(const std::string& filepath) {
 		auto pak_file = pak{};
@@ -580,7 +488,7 @@ namespace PAKLib {
 			pak_file.sprites[i] = sprite_obj;
 		}
 
-		pak_file.pak_file_path = internal_PAK::path_combine(internal_PAK::get_executable_dir(), filepath);
+		pak_file.pak_file_path = filepath;
 		return pak_file;
 	}
 
@@ -633,7 +541,7 @@ namespace PAKLib {
 			pak_file.sprites[i] = sprite_obj;
 		}
 
-		pak_file.pak_file_path = internal_PAK::path_combine(internal_PAK::get_executable_dir(), filepath);
+		pak_file.pak_file_path = filepath;
 		return pak_file;
 	}
 

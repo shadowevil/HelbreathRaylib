@@ -2,6 +2,8 @@
 #include "SpriteIDs.h"
 #include "MapIDs.h"
 #include "FontIDs.h"
+#include "MusicIDs.h"
+#include "SoundIDs.h"
 #include "global_constants.h"
 #include "Colors.h"
 #include "ItemIDs.h"

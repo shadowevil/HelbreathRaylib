@@ -11,6 +11,7 @@ Scene::Scene()
 	scene_manager(*game.scene_manager.get()),
 	map_tiles(game.map_tiles),
 	item_metadata(game.item_metadata),
-	entities(game.entities)
+	static_entity_manager(*game.static_entity_manager.get()),
+	sound_player(*game.sound_player.get())
 {
 }

@@ -3,7 +3,8 @@
 
 class LoadingScene : public Scene {
 public:
-	using Scene::Scene;
+	SCENE_TYPE(LoadingScene)
+
 	void on_initialize() override;
 	void on_uninitialize() override;
 	void on_update() override;
@@ -19,4 +20,5 @@ private:
 	void _load_female_game_models();
 	void _load_items();
 	void _load_register_maps();
+	void _load_sounds();
 };

@@ -8,6 +8,8 @@
 #include "Platform/IPlatformServices.h"
 #include "Platform/ITimerService.h"
 #include <atomic>
+#include "Scenes.h"
+#include "EntityManager.h"
 
 class Game : public ApplicationLayer {
 public:
@@ -23,9 +25,11 @@ public:
 	CSpriteCollection map_tiles{};
 	std::vector<ItemMetadataEntry> item_metadata{};
 	std::unique_ptr<SceneManager> scene_manager{ nullptr };
+	std::unique_ptr<SoundPlayer> sound_player{ nullptr };
 
-	// Replace with entity manager later
-	std::vector<std::unique_ptr<Entity>> entities{};
+	// Note: EntityManager is now owned by each CMapData instance
+	// Access via: map_data->get_entity_manager()
+	std::unique_ptr<StaticEntityManager> static_entity_manager{ nullptr };
 
 	// Platform services (accessed via Application)
 	IPlatformServices* _platform{ nullptr };

@@ -6,7 +6,7 @@
 #include "Platform/IPlatformInfo.h"
 
 int main() {
-	SetTraceLogLevel(LOG_ERROR);
+	raylib::SetTraceLogLevel(raylib::LOG_ERROR);
 
 	// Create platform using factory
 	auto platform = PlatformFactory::create();
@@ -23,10 +23,10 @@ int main() {
 	// We'll handle scaling via CSS in the shell.html instead
 	WindowFlags flags = WindowFlags::MSAA_4X | WindowFlags::Upscaled;
 
-	if (platform->getPlatformType() != PlatformType::Web)
-		flags = flags | WindowFlags::Resizable;
+	//if (platform->getPlatformType() != PlatformType::Web)
+	//	flags = flags | WindowFlags::Resizable;
 
-	Spec.Flags = flags;
+	Spec.Flags = flags | WindowFlags::VSync;
 	Spec.TargetFPS = 0;
 
 	if (!Application::create_app_window(Spec, std::move(platform)))
@@ -36,3 +36,9 @@ int main() {
 
 	Application::run();
 }
+
+#ifdef _WIN32
+int APIENTRY WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
+	return main();
+}
+#endif

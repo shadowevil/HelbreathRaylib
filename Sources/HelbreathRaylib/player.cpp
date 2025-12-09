@@ -12,27 +12,27 @@ Player::Player(const PlayerAppearance& appear)
 
 void Player::on_update()
 {
-    current_animation.update(GetTime());
+    current_animation.update(raylib::GetTime());
 
     if (_attached_camera)
     {
         // Click movement handling
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        if (raylib::IsMouseButtonDown(raylib::MOUSE_BUTTON_LEFT))
         {
             GamePosition Target = get_tile_world_mouse_position(*_attached_camera);
-            bool Run = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+            bool Run = raylib::IsKeyDown(raylib::KEY_LEFT_SHIFT) || raylib::IsKeyDown(raylib::KEY_RIGHT_SHIFT);
             move_to(Target, Run);
         }
 
 		// Toggle combat/peace stance
-        if (IsKeyPressed(KEY_TAB))
+        if (raylib::IsKeyPressed(raylib::KEY_TAB))
         {
             _current_stance = (_current_stance == PEACE ? COMBAT : PEACE);
             set_animation(current_animation_type, _current_weapon_type);
         }
 
 		// Running / Walking handling
-        if(IsKeyDown(KEY_LEFT_SHIFT))
+        if(raylib::IsKeyDown(raylib::KEY_LEFT_SHIFT))
         {
             if (current_animation_type != RUN && is_moving())
             {
@@ -51,7 +51,7 @@ void Player::on_update()
 
 		// Stop movement if right mouse button is down.
         // If we're not moving, change direction to face mouse.
-        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
+        if (raylib::IsMouseButtonDown(raylib::MOUSE_BUTTON_RIGHT))
         {
             if(!is_moving()) {
                 current_direction = get_direction_to_point(position, get_tile_world_mouse_position(*_attached_camera));
@@ -63,22 +63,22 @@ void Player::on_update()
 
 #ifdef _DEBUG
 		// Debug animations with ALT + 1-6
-        if (IsKeyDown(KEY_LEFT_ALT))
+        if (raylib::IsKeyDown(raylib::KEY_LEFT_ALT))
         {
-            if (IsKeyPressed(KEY_ONE))
+            if (raylib::IsKeyPressed(raylib::KEY_ONE))
                 set_animation(ATTACK, HAND);
-            else if (IsKeyPressed(KEY_TWO) && _current_stance == COMBAT)
+            else if (raylib::IsKeyPressed(raylib::KEY_TWO) && _current_stance == COMBAT)
                 set_animation(ATTACK, BOW);
-            else if (IsKeyPressed(KEY_THREE) && _current_stance == COMBAT)
+            else if (raylib::IsKeyPressed(raylib::KEY_THREE) && _current_stance == COMBAT)
                 set_animation(ATTACK, CAST);
-            else if (IsKeyPressed(KEY_FOUR))
+            else if (raylib::IsKeyPressed(raylib::KEY_FOUR))
                 set_animation(PICKUP, HAND);
-            else if (IsKeyPressed(KEY_FIVE))
+            else if (raylib::IsKeyPressed(raylib::KEY_FIVE))
                 set_animation(TAKEDAMAGE, HAND);
-            else if (IsKeyPressed(KEY_SIX))
+            else if (raylib::IsKeyPressed(raylib::KEY_SIX))
                 set_animation(DYING, HAND);
 
-            if (IsKeyPressed(KEY_G))
+            if (raylib::IsKeyPressed(raylib::KEY_G))
             {
                 if (appearance.gender == GENDER_MALE)
                     appearance.gender = GENDER_FEMALE;
@@ -106,7 +106,7 @@ void Player::on_render() const
         ->draw(position.get_pixel_x(), position.get_pixel_y(), current_animation.current_frame + (current_direction * current_animation.max_frame), UnderwearColorFromIndex(appearance.underwear_color_index));
 
     appearance.equipment.foreach([&](auto& slot, int idx) {
-        _draw_model_item(slot.get_id(), WHITE);
+        _draw_model_item(slot.get_id(), raylib::WHITE);
         });
 }
 
@@ -159,7 +159,7 @@ void Player::set_animation(AnimationType new_type, WeaponUsed new_weapon)
     current_animation.reset();
 }
 
-void Player::_draw_model_item(int16_t item_id, Color item_color, bool is_shadow) const
+void Player::_draw_model_item(int16_t item_id, raylib::Color item_color, bool is_shadow) const
 {
     if (item_id == -1)
         return;

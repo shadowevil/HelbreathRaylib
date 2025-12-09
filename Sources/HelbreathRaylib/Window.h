@@ -124,7 +124,7 @@ private:
     bool _last_focused;
 
     // Render target for upscaling
-    RenderTexture2D _render_target;
+    raylib::RenderTexture2D _render_target;
     int _game_width;
     int _game_height;
 

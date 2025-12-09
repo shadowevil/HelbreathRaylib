@@ -2,8 +2,8 @@
 #include <cstdint>
 #include "windows_wrapper.h"
 
-// Note: This file assumes raylib.h has already been included
-// The Color type is defined in raylib.h and used here
+// Note: This file assumes raylib.h has already been included via raylib_include.h
+// The Color type is properly defined in the raylib namespace via raylib_include.h
 
 namespace rlx {
 #ifndef __EMSCRIPTEN__
@@ -17,7 +17,7 @@ namespace rlx {
 		constexpr operator uint8_t() const { return rgb8; }
 		constexpr operator uint16_t() const { return rgb16; }
 		constexpr operator uint32_t() const { return rgb32; }
-		constexpr operator Color() const {
+		constexpr operator raylib::Color() const {
 			return { (unsigned char)(rgb32 & 0xFF), (unsigned char)((rgb32 >> 8) & 0xFF), (unsigned char)((rgb32 >> 16) & 0xFF), 255 };
 		}
 #ifdef _WIN32
@@ -48,7 +48,7 @@ namespace rlx {
 		constexpr operator uint16_t() const { return rgba16; }
 		constexpr operator uint32_t() const { return rgba32; }
 
-		constexpr operator Color() const {
+		constexpr operator raylib::Color() const {
 			return {
 				(unsigned char)GetR(),
 				(unsigned char)GetG(),
@@ -105,7 +105,7 @@ namespace rlx {
 		constexpr operator uint8_t() const { return rgb8; }
 		constexpr operator uint16_t() const { return rgb16; }
 		constexpr operator uint32_t() const { return rgb32; }
-		constexpr operator Color() const {
+		constexpr operator raylib::Color() const {
 			return { (unsigned char)(rgb32 & 0xFF), (unsigned char)((rgb32 >> 8) & 0xFF), (unsigned char)((rgb32 >> 16) & 0xFF), 255 };
 		}
 #ifdef _WIN32
@@ -137,7 +137,7 @@ namespace rlx {
 		constexpr operator uint16_t() const { return rgba16; }
 		constexpr operator uint32_t() const { return rgba32; }
 
-		constexpr operator Color() const {
+		constexpr operator raylib::Color() const {
 			return {
 				(unsigned char)GetR(),
 				(unsigned char)GetG(),

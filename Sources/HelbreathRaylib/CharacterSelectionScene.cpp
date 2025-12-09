@@ -27,7 +27,10 @@ void CharacterSelectionScene::on_update()
 {
 	if (_character_list.empty())
 	{
-		scene_manager.set_scene<CreateCharacterScene>();
+		if(scene_manager.previous_scene_is<CreateCharacterScene>())
+			scene_manager.set_scene<MainMenuScene>();
+		else
+			scene_manager.set_scene<CreateCharacterScene>();
 		return;
 	}
 }

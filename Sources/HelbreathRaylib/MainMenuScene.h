@@ -1,22 +1,18 @@
 #pragma once
-#include <vector>
-
 #include "Scene.h"
+#include "UI/Button.h"
+#include <memory>
+#include <vector>
 
 class MainMenuScene : public Scene {
 public:
-	using Scene::Scene;
+	SCENE_TYPE(MainMenuScene)
+
 	void on_initialize() override;
 	void on_uninitialize() override;
 	void on_update() override;
 	void on_render() override;
 
 private:
-	enum MainMenuButton {
-		LOGIN,
-		NEW_ACCOUNT,
-		EXIT,
-		COUNT
-	};
-	std::vector<rlx::Rectangle<int16_t>> _main_menu_button_rects{};
+	std::vector<std::unique_ptr<UI::Control>> m_controls{};
 };

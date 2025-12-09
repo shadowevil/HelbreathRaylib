@@ -35,11 +35,11 @@ void MainGameScene::on_render()
 {
 	if(!_map_data)
 		return;
-	rlPushMatrix();	// Pop upscale matrix
-	BeginMode2D(_camera);	// Push camera matrix
+	raylib::rlPushMatrix();	// Pop upscale matrix
+	raylib::BeginMode2D(_camera);	// Push camera matrix
 	{
 		// Map
-		_map_data->for_each_tile_region(_camera, 18, 18, entities, [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner) {
+		_map_data->for_each_tile_region(_camera, 18, 18, get_entity_manager(), [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner) {
 			auto TileSpr = map_tiles[Tile.tile_sprite];
 
 			TileSpr->draw(PX, PY, Tile.tile_sprite_frame);
@@ -59,15 +59,15 @@ void MainGameScene::on_render()
 		// Objects
 		_draw_objects_with_shadow();
 	}
-	EndMode2D();
-	rlPopMatrix();	// Push upscale matrix
+	raylib::EndMode2D();
+	raylib::rlPopMatrix();	// Push upscale matrix
 }
 
 void MainGameScene::_draw_objects_with_shadow()
 {
 	std::vector<DrawEntry> List;
 	List.reserve(512);
-	_map_data->for_each_tile_region(_camera, 32, 32, entities, [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner)
+	_map_data->for_each_tile_region(_camera, 32, 32, get_entity_manager(), [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner)
 		{
 			if (Tile.object_sprite != 0)
 			{
@@ -118,7 +118,7 @@ void MainGameScene::_draw_all(const std::vector<DrawEntry>& list)
 	//LightTime += GetFrameTime() * 0.5f;
 	float LightX = sinf(LightTime) * 1.5f;
 	float LightY = 0.75f;
-	const Vector2 LightDir = { LightX, LightY };
+	const raylib::Vector2 LightDir = { LightX, LightY };
 
 	// Calculate opacity based on light angle
 	// Fade out when LightX approaches extremes (-1.5 to 1.5)
@@ -131,7 +131,7 @@ void MainGameScene::_draw_all(const std::vector<DrawEntry>& list)
 	}
 
 	uint8_t ShadowAlpha = uint8_t(128 * Opacity);
-	Color ShadowTint = { 0, 0, 0, ShadowAlpha };
+	raylib::Color ShadowTint = { 0, 0, 0, ShadowAlpha };
 
 	for (auto& E : list)
 	{
@@ -150,7 +150,7 @@ void MainGameScene::_draw_all(const std::vector<DrawEntry>& list)
 				Frame = 0;
 			auto Rect = Spr->get_frame_rectangle(Frame);
 
-			rlPushMatrix();
+			raylib::rlPushMatrix();
 
 			float BaseX, BaseY;
 
@@ -171,7 +171,7 @@ void MainGameScene::_draw_all(const std::vector<DrawEntry>& list)
 				BaseY = RenderedBottom;
 			}
 
-			rlTranslatef(BaseX, BaseY, 0.0f);
+			raylib::rlTranslatef(BaseX, BaseY, 0.0f);
 
 			float SkewMatrix[16] = {
 				1.0f, 0.0f, 0.0f, 0.0f,
@@ -179,13 +179,13 @@ void MainGameScene::_draw_all(const std::vector<DrawEntry>& list)
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 			};
-			rlMultMatrixf(SkewMatrix);
+			raylib::rlMultMatrixf(SkewMatrix);
 
-			rlTranslatef(-BaseX, -BaseY, 0.0f);
+			raylib::rlTranslatef(-BaseX, -BaseY, 0.0f);
 
 			Spr->draw(E.pX, E.pY, E.tile->object_sprite_frame, ShadowTint);
 
-			rlPopMatrix();
+			raylib::rlPopMatrix();
 		}
 		break;
 		case DrawEntry::Object:
@@ -229,12 +229,12 @@ void MainGameScene::_draw_all(const std::vector<DrawEntry>& list)
 			int PX = Pp.get_pixel_x();
 			int PY = Pp.get_pixel_y();
 
-			rlPushMatrix();
+			raylib::rlPushMatrix();
 
 			float BaseX = (float)PX;
 			float BaseY = (float)PY;
 
-			rlTranslatef(BaseX, BaseY, 0.0f);
+			raylib::rlTranslatef(BaseX, BaseY, 0.0f);
 
 			float SkewMatrix[16] = {
 				1.0f, 0.0f, 0.0f, 0.0f,
@@ -242,13 +242,13 @@ void MainGameScene::_draw_all(const std::vector<DrawEntry>& list)
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 			};
-			rlMultMatrixf(SkewMatrix);
+			raylib::rlMultMatrixf(SkewMatrix);
 
-			rlTranslatef(-BaseX, -BaseY, 0.0f);
+			raylib::rlTranslatef(-BaseX, -BaseY, 0.0f);
 
 			E.entity->on_render_shadow();
 
-			rlPopMatrix();
+			raylib::rlPopMatrix();
 		}
 		break;
 		case DrawEntry::Entity:

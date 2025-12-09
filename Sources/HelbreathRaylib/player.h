@@ -121,7 +121,7 @@ public:
 	void set_animation(AnimationType new_type, WeaponUsed new_weapon) override;
 
 protected:
-	void _draw_model_item(int16_t item_id, Color item_color, bool is_shadow = false) const;
+	void _draw_model_item(int16_t item_id, raylib::Color item_color, bool is_shadow = false) const;
 
 	PlayerAppearance appearance{};
 

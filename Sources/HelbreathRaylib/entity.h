@@ -8,6 +8,7 @@
 #include "Sprite.h"
 #include <unordered_set>
 #include "Application.h"
+#include "EntityGUID.h"
 
 enum Dir : uint8_t {
     NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST, DIRECTION_COUNT
@@ -29,12 +30,63 @@ class Game;
 class CMapData;
 struct ItemMetadataEntry;
 
+// Helper types for distinguishing between tile and pixel coordinates
+struct TileCoord {
+    uint16_t value;
+    explicit constexpr TileCoord(uint16_t v) : value(v) {}
+};
+
+struct PixelCoord {
+    uint32_t value;
+    explicit constexpr PixelCoord(uint32_t v) : value(v) {}
+};
+
+// User-defined literals for convenient coordinate specification
+namespace position_literals {
+    constexpr TileCoord operator""_t(unsigned long long v) {
+        return TileCoord(static_cast<uint16_t>(v));
+    }
+
+    constexpr PixelCoord operator""_p(unsigned long long v) {
+        return PixelCoord(static_cast<uint32_t>(v));
+    }
+}
+
 struct GamePosition {
 public:
     GamePosition() = default;
+
+    // Original constructor - assumes tile coordinates
     GamePosition(uint16_t t_x, uint16_t t_y)
         : tile_x(t_x), tile_y(t_y),
-        pixel_x(t_x* constant::TILE_SIZE), pixel_y(t_y* constant::TILE_SIZE) {
+        pixel_x(t_x * constant::TILE_SIZE), pixel_y(t_y * constant::TILE_SIZE) {
+    }
+
+    // Tile-based constructor using TileCoord
+    GamePosition(TileCoord t_x, TileCoord t_y)
+        : tile_x(t_x.value), tile_y(t_y.value),
+        pixel_x(t_x.value * constant::TILE_SIZE), pixel_y(t_y.value * constant::TILE_SIZE) {
+    }
+
+    // Pixel-based constructor using PixelCoord
+    GamePosition(PixelCoord p_x, PixelCoord p_y)
+        : tile_x(static_cast<uint16_t>(p_x.value / constant::TILE_SIZE)),
+          tile_y(static_cast<uint16_t>(p_y.value / constant::TILE_SIZE)),
+          pixel_x(p_x.value), pixel_y(p_y.value) {
+    }
+
+    // Mixed constructor - tile X, pixel Y
+    GamePosition(TileCoord t_x, PixelCoord p_y)
+        : tile_x(t_x.value),
+          tile_y(static_cast<uint16_t>(p_y.value / constant::TILE_SIZE)),
+          pixel_x(t_x.value * constant::TILE_SIZE), pixel_y(p_y.value) {
+    }
+
+    // Mixed constructor - pixel X, tile Y
+    GamePosition(PixelCoord p_x, TileCoord t_y)
+        : tile_x(static_cast<uint16_t>(p_x.value / constant::TILE_SIZE)),
+          tile_y(t_y.value),
+          pixel_x(p_x.value), pixel_y(t_y.value * constant::TILE_SIZE) {
     }
 
     uint16_t get_tile_x() const { return tile_x; }
@@ -62,9 +114,9 @@ protected:
     uint32_t pixel_y = 0;
 };
 
-inline GamePosition get_tile_world_mouse_position(Camera2D camera)
+inline GamePosition get_tile_world_mouse_position(raylib::Camera2D camera)
 {
-    Vector2 mposWorld = GetScreenToWorld2D(rlx::get_mouse_position(), camera);
+    raylib::Vector2 mposWorld = GetScreenToWorld2D(rlx::get_mouse_position(), camera);
     int tx = (int)floorf((mposWorld.x + constant::TILE_HALF) / constant::TILE_SIZE);
     int ty = (int)floorf((mposWorld.y + constant::TILE_HALF) / constant::TILE_SIZE);
     tx = std::max(0, tx);
@@ -144,7 +196,7 @@ public:
         return position;
     }
 
-    void attach_camera(Camera2D& camera)
+    void attach_camera(raylib::Camera2D& camera)
     {
         _attached_camera = &camera;
     }
@@ -155,6 +207,7 @@ public:
     }
 
     void set_active_map(CMapData* map);
+    std::string get_active_map_identifier() const;
 
     void move_to(const GamePosition& target, bool run = false);
     GamePosition find_valid_target(const GamePosition& target);
@@ -165,12 +218,18 @@ public:
 
     Dir get_current_direction() const { return current_direction; }
     void set_direction(Dir direction) { current_direction = direction; }
+	AnimationType get_current_animation_type() const { return current_animation_type; }
+
+    // Get the entity's unique GUID
+    EntityGUID get_guid() const { return _guid; }
 
 protected:
     Game& _game;
     CSpriteCollection& _model_sprites;
 	std::vector<ItemMetadataEntry>& _item_metadata;
-    std::vector<std::unique_ptr<Entity>>& _entities;
+
+    // Unique identifier for this entity
+    EntityGUID _guid;
 
     Animation current_animation{};
     Dir current_direction = NORTH;
@@ -178,7 +237,7 @@ protected:
 
     GamePosition position{};
 
-    Camera2D* _attached_camera = nullptr;
+    raylib::Camera2D* _attached_camera = nullptr;
 
     // Movement system
     bool _is_moving = false;

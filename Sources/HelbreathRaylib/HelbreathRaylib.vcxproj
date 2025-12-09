@@ -199,6 +199,11 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="UI\Button.cpp" />
+    <ClCompile Include="UI\Control.cpp" />
+    <ClCompile Include="UI\InputBox.cpp" />
+    <ClCompile Include="UI\Label.cpp" />
+    <ClCompile Include="UI\ToggleButton.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -211,10 +216,15 @@
     <ClInclude Include="CreateCharacterScene.h" />
     <ClInclude Include="entities.h" />
     <ClInclude Include="entity.h" />
+    <ClInclude Include="EntityGUID.h" />
+    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="StaticEntityManager.h" />
     <ClInclude Include="ExitGameScene.h" />
     <ClInclude Include="FontIDs.h" />
     <ClInclude Include="FontSystem.h" />
+    <ClInclude Include="MusicIDs.h" />
+    <ClInclude Include="SoundIDs.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameEvents.h" />
     <ClInclude Include="global_constants.h" />
@@ -248,6 +258,12 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteIDs.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="UI\Button.h" />
+    <ClInclude Include="UI\Control.h" />
+    <ClInclude Include="UI\InputBox.h" />
+    <ClInclude Include="UI\Label.h" />
+    <ClInclude Include="UI\ScissorStack.h" />
+    <ClInclude Include="UI\ToggleButton.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowEvents.h" />
   </ItemGroup>

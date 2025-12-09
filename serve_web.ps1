@@ -106,9 +106,10 @@ try {
         if ($localPath -eq "/") { $localPath = "/helbreath_web.html" }
         $filePath = Join-Path $webBuildPath $localPath.TrimStart('/')
 
-        # Set CORS headers for SharedArrayBuffer (if needed in future)
+        # Set CORS headers for SharedArrayBuffer and AudioWorklet
         $response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin")
         $response.Headers.Add("Cross-Origin-Embedder-Policy", "require-corp")
+        $response.Headers.Add("Cross-Origin-Resource-Policy", "cross-origin")
         $response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate")
 
         if (Test-Path $filePath) {

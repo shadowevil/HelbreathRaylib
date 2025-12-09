@@ -3,9 +3,7 @@
 #include <cstdint>
 #include "windows_wrapper.h"
 
-namespace raylib {
-	using Rectangle = ::Rectangle;
-}
+// Note: Rectangle and Vector2 types are properly defined in the raylib namespace via raylib_include.h
 
 namespace rlx {
 #ifndef __EMSCRIPTEN__
@@ -106,6 +104,28 @@ namespace rlx {
 			return (px >= static_cast<U>(x)) && (px < static_cast<U>(x + width)) &&
 				(py >= static_cast<U>(y)) && (py < static_cast<U>(y + height));
 		}
+
+		constexpr bool contains(const Rectangle<T>& other) const {
+			return (other.x >= x) && (other.right() <= right()) &&
+				(other.y >= y) && (other.bottom() <= bottom());
+		}
+
+		constexpr bool contains(const raylib::Rectangle& other) const {
+			return (static_cast<T>(other.x) >= x) && (static_cast<T>(other.x + other.width) <= right()) &&
+				(static_cast<T>(other.y) >= y) && (static_cast<T>(other.y + other.height) <= bottom());
+		}
+
+		constexpr bool contains(const raylib::Vector2& point) const {
+			return (static_cast<T>(point.x) >= x) && (static_cast<T>(point.x) < right()) &&
+				(static_cast<T>(point.y) >= y) && (static_cast<T>(point.y) < bottom());
+		}
+
+#ifdef _WIN32
+		constexpr bool contains(const windows::RECT& other) const {
+			return (static_cast<T>(other.left) >= x) && (static_cast<T>(other.right) <= right()) &&
+				(static_cast<T>(other.top) >= y) && (static_cast<T>(other.bottom) <= bottom());
+		}
+#endif
 
 		template<typename U>
 			requires std::is_integral_v<U> || std::is_floating_point_v<U>
@@ -306,6 +326,28 @@ namespace rlx {
 			return (px >= static_cast<U>(x)) && (px < static_cast<U>(x + width)) &&
 				(py >= static_cast<U>(y)) && (py < static_cast<U>(y + height));
 		}
+
+		constexpr bool contains(const Rectangle<T>& other) const {
+			return (other.x >= x) && (other.right() <= right()) &&
+				(other.y >= y) && (other.bottom() <= bottom());
+		}
+
+		constexpr bool contains(const raylib::Rectangle& other) const {
+			return (static_cast<T>(other.x) >= x) && (static_cast<T>(other.x + other.width) <= right()) &&
+				(static_cast<T>(other.y) >= y) && (static_cast<T>(other.y + other.height) <= bottom());
+		}
+
+		constexpr bool contains(const raylib::Vector2& point) const {
+			return (static_cast<T>(point.x) >= x) && (static_cast<T>(point.x) < right()) &&
+				(static_cast<T>(point.y) >= y) && (static_cast<T>(point.y) < bottom());
+		}
+
+#ifdef _WIN32
+		constexpr bool contains(const windows::RECT& other) const {
+			return (static_cast<T>(other.left) >= x) && (static_cast<T>(other.right) <= right()) &&
+				(static_cast<T>(other.top) >= y) && (static_cast<T>(other.bottom) <= bottom());
+		}
+#endif
 
 		template<typename U>
 			requires std::is_arithmetic_v<T>

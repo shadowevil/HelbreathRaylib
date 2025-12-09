@@ -23,9 +23,9 @@ Window::Window(const WindowSpec& spec)
     _apply_window_flags();
 
     // Create the window
-    InitWindow(_width, _height, _title.c_str());
+    raylib::InitWindow(_width, _height, _title.c_str());
 
-    if (!IsWindowReady())
+    if (!raylib::IsWindowReady())
     {
         // Window creation failed
         return;
@@ -33,15 +33,15 @@ Window::Window(const WindowSpec& spec)
 
     // Don't set FPS limit on Emscripten - let it run at monitor refresh rate
 #ifndef __EMSCRIPTEN__
-    SetTargetFPS(_target_fps);
+    raylib::SetTargetFPS(_target_fps);
 #endif
 
     // Initialize render target for upscaling if enabled
     if (HasFlag(_flags, WindowFlags::Upscaled))
     {
-        _render_target = LoadRenderTexture(_game_width, _game_height);
-        // Use bilinear filtering for smooth downscaling from high-res render target
-        SetTextureFilter(_render_target.texture, TEXTURE_FILTER_BILINEAR);
+        _render_target = raylib::LoadRenderTexture(_game_width, _game_height);
+        // Use bilinear filtering for smooth upscaling
+        SetTextureFilter(_render_target.texture, raylib::TEXTURE_FILTER_BILINEAR);
     }
 
     _is_initialized = true;
@@ -57,7 +57,7 @@ Window::~Window()
             UnloadRenderTexture(_render_target);
         }
 
-        CloseWindow();
+        raylib::CloseWindow();
         _is_initialized = false;
     }
 }
@@ -67,48 +67,48 @@ void Window::_apply_window_flags()
     // Apply flags that need to be set BEFORE InitWindow
     if (HasFlag(_flags, WindowFlags::VSync))
     {
-        SetConfigFlags(FLAG_VSYNC_HINT);
+        SetConfigFlags(raylib::FLAG_VSYNC_HINT);
     }
 
     if (HasFlag(_flags, WindowFlags::MSAA_4X))
     {
-        SetConfigFlags(FLAG_MSAA_4X_HINT);
+        SetConfigFlags(raylib::FLAG_MSAA_4X_HINT);
     }
 
     if (HasFlag(_flags, WindowFlags::Fullscreen))
     {
-        SetConfigFlags(FLAG_FULLSCREEN_MODE);
+        SetConfigFlags(raylib::FLAG_FULLSCREEN_MODE);
     }
 
     if (HasFlag(_flags, WindowFlags::Resizable))
     {
-        SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+        SetConfigFlags(raylib::FLAG_WINDOW_RESIZABLE);
     }
 
     if (HasFlag(_flags, WindowFlags::Borderless))
     {
-        SetConfigFlags(FLAG_WINDOW_UNDECORATED);
+        SetConfigFlags(raylib::FLAG_WINDOW_UNDECORATED);
     }
 
     if (HasFlag(_flags, WindowFlags::AlwaysOnTop))
     {
-        SetConfigFlags(FLAG_WINDOW_TOPMOST);
+        SetConfigFlags(raylib::FLAG_WINDOW_TOPMOST);
     }
 
     if (HasFlag(_flags, WindowFlags::Transparent))
     {
-        SetConfigFlags(FLAG_WINDOW_TRANSPARENT);
+        SetConfigFlags(raylib::FLAG_WINDOW_TRANSPARENT);
     }
 
     if (HasFlag(_flags, WindowFlags::HighDPI))
     {
-        SetConfigFlags(FLAG_WINDOW_HIGHDPI);
+        SetConfigFlags(raylib::FLAG_WINDOW_HIGHDPI);
     }
 }
 
 bool Window::is_open() const
 {
-    return _is_initialized && IsWindowReady();
+    return _is_initialized && raylib::IsWindowReady();
 }
 
 bool Window::should_close() const
@@ -118,18 +118,18 @@ bool Window::should_close() const
 
 float Window::get_delta_time() const
 {
-    return GetFrameTime();
+    return raylib::GetFrameTime();
 }
 
 float Window::get_fps() const
 {
-    return (float)::GetFPS();
+    return (float)raylib::GetFPS();
 }
 
 int Window::get_frame_count() const
 {
     // Raylib's GetFrameCount is a function, not a macro
-    return GetFrameTime() > 0 ? static_cast<int>(1.0f / GetFrameTime()) : 0;
+    return raylib::GetFrameTime() > 0 ? static_cast<int>(1.0f / raylib::GetFrameTime()) : 0;
 }
 
 void Window::begin_frame()
@@ -138,13 +138,13 @@ void Window::begin_frame()
     {
         // Use existing upscale rendering system from raylib_include.h
         rlx::BeginUpscaleRender(_render_target, static_cast<float>(constant::UPSCALE_FACTOR));
-        ClearBackground(BLACK);
+        raylib::ClearBackground(raylib::BLACK);
     }
     else
     {
         // Render directly to screen
-        BeginDrawing();
-        ClearBackground(BLACK);
+        raylib::BeginDrawing();
+        raylib::ClearBackground(raylib::BLACK);
     }
 }
 
@@ -174,11 +174,11 @@ void Window::end_frame()
         };
 
         // Use existing upscale rendering system from raylib_include.h with event callbacks
-        rlx::EndUpscaleRender(_render_target, BLACK, BeforeCallback, AfterCallback);
+        rlx::EndUpscaleRender(_render_target, raylib::BLACK, BeforeCallback, AfterCallback);
     }
     else
     {
-        EndDrawing();
+        raylib::EndDrawing();
     }
 
     // Update custom FPS counter (frame accurate)
@@ -199,7 +199,7 @@ void Window::close()
 {
     if (_is_initialized)
     {
-        CloseWindow();
+        raylib::CloseWindow();
         _is_initialized = false;
     }
 }
@@ -209,7 +209,7 @@ void Window::set_title(const std::string& title)
     _title = title;
     if (_is_initialized)
     {
-        SetWindowTitle(_title.c_str());
+        raylib::SetWindowTitle(_title.c_str());
     }
 }
 
@@ -219,7 +219,7 @@ void Window::set_size(int width, int height)
     _height = height;
     if (_is_initialized)
     {
-        SetWindowSize(_width, _height);
+        raylib::SetWindowSize(_width, _height);
     }
 }
 
@@ -227,10 +227,10 @@ void Window::toggle_fullscreen()
 {
     if (_is_initialized)
     {
-        ::ToggleFullscreen();
+        raylib::ToggleFullscreen();
 
         // Update flag state
-        if (IsWindowFullscreen())
+        if (raylib::IsWindowFullscreen())
         {
             _flags = _flags | WindowFlags::Fullscreen;
         }
@@ -249,8 +249,8 @@ void Window::poll_events()
         return;
 
     // Check for window resize
-    int CurrentWidth = GetScreenWidth();
-    int CurrentHeight = GetScreenHeight();
+    int CurrentWidth = raylib::GetScreenWidth();
+    int CurrentHeight = raylib::GetScreenHeight();
     if (CurrentWidth != _last_width || CurrentHeight != _last_height)
     {
         _last_width = CurrentWidth;
@@ -263,7 +263,7 @@ void Window::poll_events()
     }
 
     // Check for window focus changes
-    bool CurrentlyFocused = IsWindowFocused();
+    bool CurrentlyFocused = raylib::IsWindowFocused();
     if (CurrentlyFocused != _last_focused)
     {
         _last_focused = CurrentlyFocused;

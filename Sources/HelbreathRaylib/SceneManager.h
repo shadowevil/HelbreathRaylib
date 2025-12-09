@@ -20,7 +20,7 @@ public:
     struct TransitionConfig {
         float fade_out_duration = 0.5f;
         float fade_in_duration = 0.5f;
-        Color fade_color = BLACK;
+        raylib::Color fade_color = raylib::BLACK;
     };
 
     explicit SceneManager() = default;
@@ -54,7 +54,7 @@ public:
     }
 
     void update() {
-        float Dt = GetFrameTime();
+        float Dt = raylib::GetFrameTime();
 
         switch (_transition_state) {
         case TransitionState::FadeOut:
@@ -67,6 +67,7 @@ public:
 
         case TransitionState::Switching:
             if (_current_scene) {
+                _previous_scene_type = _current_scene->get_type_id();
                 _current_scene->on_uninitialize();
             }
             if (_overlay) {
@@ -117,6 +118,31 @@ public:
         return _transition_state != TransitionState::None;
     }
 
+    Scene::SceneTypeId get_previous_scene_type() const {
+        return _previous_scene_type;
+    }
+
+    Scene::SceneTypeId get_current_scene_type() const {
+        if (_current_scene) {
+            return _current_scene->get_type_id();
+        }
+        return nullptr;
+    }
+
+    template<typename T>
+    bool previous_scene_is() const {
+        static_assert(std::is_base_of_v<Scene, T>, "T must derive from Scene");
+        return _previous_scene_type == T::scene_type_id;
+    }
+
+    template<typename T>
+    bool current_scene_is() const {
+        static_assert(std::is_base_of_v<Scene, T>, "T must derive from Scene");
+        if (!_current_scene)
+            return false;
+        return _current_scene->get_type_id() == T::scene_type_id;
+    }
+
 private:
     void _render_transition() {
         float Alpha = 0.0f;
@@ -138,9 +164,9 @@ private:
             return;
         }
 
-        Color FadeColor = _config.fade_color;
+        raylib::Color FadeColor = _config.fade_color;
         FadeColor.a = static_cast<unsigned char>(Alpha * 255);
-        DrawRectangle(0, 0, constant::BASE_WIDTH, constant::BASE_HEIGHT, FadeColor);
+        raylib::DrawRectangle(0, 0, constant::BASE_WIDTH, constant::BASE_HEIGHT, FadeColor);
     }
 
     std::unique_ptr<Scene> _current_scene;
@@ -149,4 +175,5 @@ private:
     TransitionState _transition_state = TransitionState::None;
     TransitionConfig _config;
     float _transition_time = 0.0f;
+    Scene::SceneTypeId _previous_scene_type = nullptr;
 };

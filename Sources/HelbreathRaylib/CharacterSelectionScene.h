@@ -4,7 +4,8 @@
 
 class CharacterSelectionScene : public Scene {
 public:
-	using Scene::Scene;
+	SCENE_TYPE(CharacterSelectionScene)
+
 	void on_initialize() override;
 	void on_uninitialize() override;
 	void on_update() override;

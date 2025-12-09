@@ -34,7 +34,7 @@ void Game::on_attach()
 	scene_manager->set_transition_config({
 		SceneManager::FAST_FADE_DURATION,
 		SceneManager::FAST_FADE_DURATION,
-		BLACK // fadeColor
+		raylib::BLACK // fadeColor
 		});
 
 	FontSystem::register_font(FontFamily::Default,
@@ -60,6 +60,11 @@ void Game::on_attach()
 		PeriodicTimerEvent ev{};
 		Application::on_event(ev);
 	}, 1.0f);
+
+	static_entity_manager = std::make_unique<StaticEntityManager>();
+
+	// Initialize sound player
+	sound_player = std::make_unique<SoundPlayer>();
 }
 
 void Game::on_detach()
@@ -103,6 +108,11 @@ void Game::on_update()
 		}
 	}
 
+	// Update sound player
+	if (sound_player) {
+		sound_player->update();
+	}
+
 	scene_manager->update();
 }
 
@@ -121,7 +131,7 @@ void Game::on_render()
 			);
 		}
 	}
-	FontSystem::draw_text(FontFamily::Default, 15, std::to_string(Application::get_fps()).c_str(), 0, 0, WHITE, FontStyle::Regular);
+	FontSystem::draw_text(FontFamily::Default, 15, std::to_string(Application::get_fps()).c_str(), 0, 0, raylib::WHITE, FontStyle::Regular | FontStyle::Shadow);
 }
 
 void Game::on_event(Event& event)
@@ -150,7 +160,7 @@ void Game::on_event(Event& event)
 		if (hardware_cursor) {
 			// Draw mouse cursor using raw window coordinates
 			auto [offsetX, offsetY, renderW, renderH] = rlx::GetUpscaledTargetArea(constant::BASE_WIDTH, constant::BASE_HEIGHT);
-			auto [MouseX, MouseY] = GetMousePosition();
+			auto [MouseX, MouseY] = raylib::GetMousePosition();
 
 			// Clamp to the upscaled game area
 			float clampedX = std::max(offsetX, std::min(MouseX, offsetX + renderW));
@@ -169,7 +179,7 @@ void Game::on_event(Event& event)
 
 	Dispatcher.dispatch<PeriodicTimerEvent>([this](PeriodicTimerEvent& e) {
 		for (auto& Sprite : sprites) {
-			Sprite.second->unload_if_unused(GetTime(), 60.0f); // Unload sprites unused for 60 seconds
+			Sprite.second->unload_if_unused(raylib::GetTime(), 60.0f); // Unload sprites unused for 60 seconds
 		}
 		return false;
 		});

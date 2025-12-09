@@ -8,7 +8,6 @@ Entity::Entity()
 	: _game(Application::get_layer<Game>()),
 	_model_sprites(_game.model_sprites),
 	_item_metadata(_game.item_metadata),
-	_entities(_game.entities),
 	_active_map(nullptr)
 { }
 
@@ -32,6 +31,11 @@ void Entity::set_active_map(CMapData* map) {
 	_map_width = map->width();
 	_map_height = map->height();
 	_reserved_tiles = map->reserved_tiles.get();
+}
+
+std::string Entity::get_active_map_identifier() const
+{
+	return _active_map ? _active_map->get_map_identifier() : "unknown";
 }
 
 void Entity::move_to(const GamePosition& target, bool run)
@@ -159,11 +163,14 @@ bool Entity::is_tile_occupied(int tile_x, int tile_y) const
 	if (_reserved_tiles && _reserved_tiles->count(Key) > 0)
 		return true;
 
-	for (const auto& Entity : _entities)
-	{
-		if (Entity.get() == this) continue;
+	if (!_active_map)
+		return false;
 
-		const auto& EntityPos = Entity->get_position();
+	for (const auto& entity_ptr : _active_map->get_entity_manager())
+	{
+		if (entity_ptr.get() == this) continue;
+
+		const auto& EntityPos = entity_ptr->get_position();
 		if (EntityPos.get_tile_x() == tile_x && EntityPos.get_tile_y() == tile_y)
 			return true;
 	}
@@ -412,7 +419,7 @@ void Entity::_update_movement()
 	float SpeedMultiplier = _is_running ? 1.00f : 0.5f;
 	float EffectiveSpeed = _base_speed * _internal_speed_multiplier * SpeedMultiplier;
 
-	float DeltaProgress = (EffectiveSpeed * GetFrameTime()) / _current_step_distance;
+	float DeltaProgress = (EffectiveSpeed * raylib::GetFrameTime()) / _current_step_distance;
 	_move_progress += DeltaProgress;
 
 	if (_move_progress >= 1.0f)
@@ -520,20 +527,20 @@ void Entity::render_debug_movement()
 		int Px = Step.get_pixel_x();
 		int Py = Step.get_pixel_y();
 
-		Color TileColor = (I < _current_path_index)
-			? Color{ 100, 100, 100, 100 }
-		: Color{ 0, 255, 0, 100 };
+		raylib::Color TileColor = (I < _current_path_index)
+			? raylib::Color{ 100, 100, 100, 100 }
+		: raylib::Color{ 0, 255, 0, 100 };
 
-		DrawRectangle(Px - constant::TILE_HALF, Py - constant::TILE_HALF, constant::TILE_SIZE, constant::TILE_SIZE, TileColor);
+		raylib::DrawRectangle(Px - constant::TILE_HALF, Py - constant::TILE_HALF, constant::TILE_SIZE, constant::TILE_SIZE, TileColor);
 
 		if (I == _current_path_index)
 		{
-			DrawRectangleLinesEx(
+			raylib::DrawRectangleLinesEx(
 				raylib::Rectangle{ (float)Px - constant::TILE_HALF,
 				  (float)Py - constant::TILE_HALF,
 				  constant::TILE_SIZE,
 				  constant::TILE_SIZE },
-				1, YELLOW);
+				1, raylib::YELLOW);
 		}
 	}
 
@@ -542,11 +549,11 @@ void Entity::render_debug_movement()
 		int Fx = _final_target.get_pixel_x();
 		int Fy = _final_target.get_pixel_y();
 
-		DrawRectangleLinesEx(
+		raylib::DrawRectangleLinesEx(
 			raylib::Rectangle{ (float)Fx - constant::TILE_HALF,
 			  (float)Fy - constant::TILE_HALF,
 			  constant::TILE_SIZE,
 			  constant::TILE_SIZE },
-			1, RED);
+			1, raylib::RED);
 	}
 }

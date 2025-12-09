@@ -9,6 +9,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Collect all C/C++ source files in Sources/
 file(GLOB_RECURSE SRC "${CMAKE_SOURCE_DIR}/../Sources/HelbreathRaylib/*.cpp" "${CMAKE_SOURCE_DIR}/../Sources/HelbreathRaylib/*.c")
 
+# Exclude example files
+list(FILTER SRC EXCLUDE REGEX ".*_Example\\.cpp$")
+
 add_executable(helbreath_web ${SRC})
 
 # Your include dirs
@@ -58,7 +61,7 @@ if(EMSCRIPTEN)
         "-sLZ4=1"
         "-sEMULATE_FUNCTION_POINTER_CASTS=1"
         "$<$<CONFIG:Release>:-O3;-sASSERTIONS=1>"
-        "$<$<CONFIG:Debug>:-O0;-g;-sASSERTIONS=2;-sSAFE_HEAP=1>"
+        "$<$<CONFIG:Debug>:-O0;-g;-sASSERTIONS=2>"
     )
 
     # Output must be .html for Emscripten

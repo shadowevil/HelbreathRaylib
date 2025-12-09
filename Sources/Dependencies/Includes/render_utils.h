@@ -6,19 +6,19 @@
 #include "geometry_types.h"
 
 // Note: This file assumes raylib.h has already been included
-// All raylib types and functions are defined in raylib.h
+// All raylib types and functions are defined in raylib_internal namespace and wrapped in raylib namespace
 
 namespace rlx {
-	inline void BeginUpscaleRender(RenderTexture2D target, float scale = 1.0f)
+	inline void BeginUpscaleRender(raylib::RenderTexture2D target, float scale = 1.0f)
 	{
-		BeginTextureMode(target);
-		BeginMode2D(Camera2D{ .zoom = scale });
+		raylib::BeginTextureMode(target);
+		raylib::BeginMode2D(raylib::Camera2D{ .zoom = scale });
 	}
 
 	inline float GetScale(uint16_t base_x, uint16_t base_y)
 	{
-		float windowW = (float)GetScreenWidth();
-		float windowH = (float)GetScreenHeight();
+		float windowW = (float)raylib::GetScreenWidth();
+		float windowH = (float)raylib::GetScreenHeight();
 		float scale = std::min(windowW / base_x, windowH / base_y);
 		return scale;
 	}
@@ -28,33 +28,33 @@ namespace rlx {
 		float scale = GetScale(width, height);
 		float renderW = width * scale;
 		float renderH = height * scale;
-		float offsetX = (GetScreenWidth() - renderW) * 0.5f;
-		float offsetY = (GetScreenHeight() - renderH) * 0.5f;
+		float offsetX = (raylib::GetScreenWidth() - renderW) * 0.5f;
+		float offsetY = (raylib::GetScreenHeight() - renderH) * 0.5f;
 		return { offsetX, offsetY, renderW, renderH };
 	}
 
-	inline void EndUpscaleRender(RenderTexture2D target, Color background, std::function<void()> before = nullptr, std::function<void()> after = nullptr)
+	inline void EndUpscaleRender(raylib::RenderTexture2D target, raylib::Color background, std::function<void()> before = nullptr, std::function<void()> after = nullptr)
 	{
-		EndMode2D();
-		EndTextureMode();
+		raylib::EndMode2D();
+		raylib::EndTextureMode();
 		auto [offsetX, offsetY, renderW, renderH] = GetUpscaledTargetArea(target.texture.width, target.texture.height);
-		BeginDrawing();
-		ClearBackground(background);
+		raylib::BeginDrawing();
+		raylib::ClearBackground(background);
 		if (before)
 			before();
 
-		DrawTexturePro(
+		raylib::DrawTexturePro(
 			target.texture,
 			{ 0, 0, (float)target.texture.width, -(float)target.texture.height },
 			{ offsetX, offsetY, renderW, renderH },
 			{ 0, 0 },
 			0,
-			WHITE
+			raylib::WHITE
 		);
 
 		if (after)
 			after();
-		EndDrawing();
+		raylib::EndDrawing();
 	}
 
 	template<typename T>
@@ -70,15 +70,15 @@ namespace rlx {
 			static_cast<T>(rect.height * scale)
 		};
 
-		auto [mouseX, mouseY] = GetMousePosition();
+		auto [mouseX, mouseY] = raylib::GetMousePosition();
 		return scaled_rect.contains(mouseX, mouseY);
 	}
 
-	inline Vector2 GetScaledMousePosition(uint16_t base_x, uint16_t base_y)
+	inline raylib::Vector2 GetScaledMousePosition(uint16_t base_x, uint16_t base_y)
 	{
 		float scale = GetScale(base_x, base_y);
 		auto [offsetX, offsetY, renderW, renderH] = GetUpscaledTargetArea(base_x, base_y);
-		auto [mouseX, mouseY] = GetMousePosition();
+		auto [mouseX, mouseY] = raylib::GetMousePosition();
 		float scaledX = (mouseX - offsetX) / scale;
 		float scaledY = (mouseY - offsetY) / scale;
 
@@ -86,7 +86,7 @@ namespace rlx {
 		scaledX = std::max(0.0f, std::min(scaledX, (float)base_x));
 		scaledY = std::max(0.0f, std::min(scaledY, (float)base_y));
 
-		return Vector2{ scaledX, scaledY };
+		return raylib::Vector2{ scaledX, scaledY };
 	}
 
 	inline void LockCursor(int width, int height) {
@@ -125,6 +125,6 @@ namespace rlx {
 
 	inline bool HasElapsed(double timer, double interval)
 	{
-		return GetTime() - timer >= interval;
+		return raylib::GetTime() - timer >= interval;
 	}
 }

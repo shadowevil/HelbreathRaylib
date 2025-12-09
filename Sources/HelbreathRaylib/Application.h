@@ -170,7 +170,7 @@ namespace rlx {
         return rlx::RectangleContainsScaledMouse(rect, constant::BASE_WIDTH, constant::BASE_HEIGHT);
     }
 
-    inline Vector2 get_mouse_position() {
-        return rlx::GetScaledMousePosition(constant::BASE_WIDTH, constant::BASE_HEIGHT);
+    inline raylib::Vector2 get_mouse_position() {
+        return rlx::GetScaledMousePosition((uint16_t)constant::BASE_WIDTH, (uint16_t)constant::BASE_HEIGHT);
     }
 }

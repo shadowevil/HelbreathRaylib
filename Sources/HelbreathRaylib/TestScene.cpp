@@ -13,8 +13,10 @@ inline Player* other_player = nullptr;
 
 void TestScene::on_initialize()
 {
+	_map_data = CMapLoader::load_by_index(MapID::gshop_1);
+
 	// _player is the local client player
-	_player = dynamic_cast<Player*>(entities.emplace_back(std::make_unique<Player>(PlayerAppearance{
+	_player = &get_entity_manager().Add<Player>(PlayerAppearance{
 		.gender = GENDER_MALE,
 		.skin_color_index = 0,
 		.hair_style = HAIR_STYLE_0,
@@ -26,16 +28,14 @@ void TestScene::on_initialize()
 			Eq.feet.try_equip(ItemID::BOOTS, item_metadata);
 			return Eq;
 		}()
-		})).get());
-	other_player = dynamic_cast<Player*>(entities.emplace_back(std::make_unique<Player>(PlayerAppearance{
+		});
+	other_player = &get_entity_manager().Add<Player>(PlayerAppearance{
 		.gender = GENDER_FEMALE,
 		.skin_color_index = 1,
 		.hair_style = HAIR_STYLE_6,
 		.hair_color_index = 0,
 		.underwear_color_index = 1
-		})).get());
-
-	_map_data = CMapLoader::load_by_index(MapID::gshop_1);
+		});
 
 	_player->set_position({ 54, 39 });
 	_player->set_active_map(_map_data.get());
@@ -59,7 +59,7 @@ void TestScene::on_uninitialize()
 void TestScene::on_update()
 {
 	static double MoveTimer = 0.0;
-	if (GetTime() - MoveTimer >= 5.0 && !other_player->is_moving())
+	if (raylib::GetTime() - MoveTimer >= 5.0 && !other_player->is_moving())
 	{
 		if (other_player->get_position() == GamePosition{ 50, 39 })
 		{
@@ -69,20 +69,20 @@ void TestScene::on_update()
 			other_player->move_to({ 50, 39 });
 		}
 
-		MoveTimer = GetTime();
+		MoveTimer = raylib::GetTime();
 	}
 
-	for (auto& Entity : entities) {
+	for (auto& Entity : get_entity_manager()) {
 		Entity->update();
 	}
 
-	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE))
+	if (IsMouseButtonPressed(raylib::MOUSE_BUTTON_MIDDLE))
 	{
 		GamePosition TilePos = get_tile_world_mouse_position(_camera);
 		_player->set_position(TilePos);
 		_debug_text += " Tile X: " + std::to_string(TilePos.get_tile_x()) + "\n";
 		_debug_text += " Tile Y: " + std::to_string(TilePos.get_tile_y()) + "\n";
-		printf(_debug_text.c_str());
+		printf("%s", _debug_text.c_str());
 	//	auto Tile = _map_data->GetTile(TilePos.get_tile_x(), TilePos.get_tile_y());
 
 	//	// non-visual debug
@@ -103,11 +103,11 @@ void TestScene::on_update()
 
 void TestScene::on_render()
 {
-	rlPushMatrix();	// Pop upscale matrix
-	BeginMode2D(_camera);	// Push camera matrix
+	raylib::rlPushMatrix();	// Pop upscale matrix
+	raylib::BeginMode2D(_camera);	// Push camera matrix
 	{
 		// Map
-		_map_data->for_each_tile_region(_camera, 18, 18, entities, [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner) {
+		_map_data->for_each_tile_region(_camera, 18, 18, get_entity_manager(), [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner) {
 			auto TileSpr = map_tiles[Tile.tile_sprite];
 
 			TileSpr->draw(PX, PY, Tile.tile_sprite_frame);
@@ -129,15 +129,15 @@ void TestScene::on_render()
 		// Objects
 		_draw_objects_with_shadow();
 	}
-	EndMode2D();
-	rlPopMatrix();	// Push upscale matrix
+	raylib::EndMode2D();
+	raylib::rlPopMatrix();	// Push upscale matrix
 }
 
 void TestScene::_draw_objects_with_shadow()
 {
 	std::vector<DrawEntry> List;
 	List.reserve(512);
-	_map_data->for_each_tile_region(_camera, 32, 32, entities, [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner)
+	_map_data->for_each_tile_region(_camera, 32, 32, get_entity_manager(), [&](int16_t TileX, int16_t TileY, int PX, int PY, const CTile& Tile, Entity* TileOwner)
 		{
 			if (Tile.object_sprite != 0)
 			{
@@ -188,7 +188,7 @@ void TestScene::_draw_all(const std::vector<DrawEntry>& list)
 	//LightTime += GetFrameTime() * 0.5f;
 	float LightX = sinf(LightTime) * 1.5f;
 	float LightY = 0.75f;
-	const Vector2 LightDir = { LightX, LightY };
+	const raylib::Vector2 LightDir = { LightX, LightY };
 
 	// Calculate opacity based on light angle
 	// Fade out when LightX approaches extremes (-1.5 to 1.5)
@@ -201,7 +201,7 @@ void TestScene::_draw_all(const std::vector<DrawEntry>& list)
 	}
 
 	uint8_t ShadowAlpha = uint8_t(128 * Opacity);
-	Color ShadowTint = { 0, 0, 0, ShadowAlpha };
+	raylib::Color ShadowTint = { 0, 0, 0, ShadowAlpha };
 
 	for (auto& E : list)
 	{
@@ -220,7 +220,7 @@ void TestScene::_draw_all(const std::vector<DrawEntry>& list)
 				Frame = 0;
 			auto Rect = Spr->get_frame_rectangle(Frame);
 
-			rlPushMatrix();
+			raylib::rlPushMatrix();
 
 			float BaseX, BaseY;
 
@@ -241,7 +241,7 @@ void TestScene::_draw_all(const std::vector<DrawEntry>& list)
 				BaseY = RenderedBottom;
 			}
 
-			rlTranslatef(BaseX, BaseY, 0.0f);
+			raylib::rlTranslatef(BaseX, BaseY, 0.0f);
 
 			float SkewMatrix[16] = {
 				1.0f, 0.0f, 0.0f, 0.0f,
@@ -249,13 +249,13 @@ void TestScene::_draw_all(const std::vector<DrawEntry>& list)
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 			};
-			rlMultMatrixf(SkewMatrix);
+			raylib::rlMultMatrixf(SkewMatrix);
 
-			rlTranslatef(-BaseX, -BaseY, 0.0f);
+			raylib::rlTranslatef(-BaseX, -BaseY, 0.0f);
 
 			Spr->draw(E.pX, E.pY, E.tile->object_sprite_frame, ShadowTint);
 
-			rlPopMatrix();
+			raylib::rlPopMatrix();
 		}
 		break;
 		case DrawEntry::Object:
@@ -299,12 +299,12 @@ void TestScene::_draw_all(const std::vector<DrawEntry>& list)
 			int PX = Pp.get_pixel_x();
 			int PY = Pp.get_pixel_y();
 
-			rlPushMatrix();
+			raylib::rlPushMatrix();
 
 			float BaseX = (float)PX;
 			float BaseY = (float)PY;
 
-			rlTranslatef(BaseX, BaseY, 0.0f);
+			raylib::rlTranslatef(BaseX, BaseY, 0.0f);
 
 			float SkewMatrix[16] = {
 				1.0f, 0.0f, 0.0f, 0.0f,
@@ -312,13 +312,13 @@ void TestScene::_draw_all(const std::vector<DrawEntry>& list)
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 			};
-			rlMultMatrixf(SkewMatrix);
+			raylib::rlMultMatrixf(SkewMatrix);
 
-			rlTranslatef(-BaseX, -BaseY, 0.0f);
+			raylib::rlTranslatef(-BaseX, -BaseY, 0.0f);
 
 			E.entity->on_render_shadow();
 
-			rlPopMatrix();
+			raylib::rlPopMatrix();
 		}
 		break;
 		case DrawEntry::Entity:
