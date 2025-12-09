@@ -364,3 +364,6 @@ FodyWeavers.xsd
 # Build artifacts and logs
 build.log
 
+# Claude Code configuration
+.claude/
+
