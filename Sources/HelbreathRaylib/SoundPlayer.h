@@ -280,29 +280,29 @@ private:
 
 public:
     // Play effect sounds (E###.WAV files)
-    void play_effect(int id, float distance_mod = 1.0f, float pan = 0.0f) {
+    void play_effect(int id, float distance_mod = 1.0f, float pan = 0.5f) {
         _play_single_internal(_effects, id, distance_mod, pan);
     }
 
-    void play_effect_multi(int id, float distance_mod = 1.0f, float pan = 0.0f) {
+    void play_effect_multi(int id, float distance_mod = 1.0f, float pan = 0.5f) {
         _play_multi_internal(_effects, id, distance_mod, pan);
     }
 
     // Play character sounds (C###.WAV files)
-    void play_character_sound(int id, float distance_mod = 1.0f, float pan = 0.0f) {
+    void play_character_sound(int id, float distance_mod = 1.0f, float pan = 0.5f) {
         _play_single_internal(_character_sounds, id, distance_mod, pan);
     }
 
-    void play_character_sound_multi(int id, float distance_mod = 1.0f, float pan = 0.0f) {
+    void play_character_sound_multi(int id, float distance_mod = 1.0f, float pan = 0.5f) {
         _play_multi_internal(_character_sounds, id, distance_mod, pan);
     }
 
     // Play monster sounds (M###.WAV files)
-    void play_monster_sound(int id, float distance_mod = 1.0f, float pan = 0.0f) {
+    void play_monster_sound(int id, float distance_mod = 1.0f, float pan = 0.5f) {
         _play_single_internal(_monster_sounds, id, distance_mod, pan);
     }
 
-    void play_monster_sound_multi(int id, float distance_mod = 1.0f, float pan = 0.0f) {
+    void play_monster_sound_multi(int id, float distance_mod = 1.0f, float pan = 0.5f) {
         _play_multi_internal(_monster_sounds, id, distance_mod, pan);
     }
 
