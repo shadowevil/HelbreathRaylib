@@ -18,7 +18,7 @@ void MainMenuScene::on_initialize()
 	login_cfg.hover_frame = SPR_MAINMENUSCREEN::BUTTON_1;
 	login_button.SetSprite(login_cfg);
 	login_button.OnClick = [this](UI::Control*) {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		scene_manager.set_scene<CharacterSelectionScene>();
 	};
 
@@ -31,7 +31,7 @@ void MainMenuScene::on_initialize()
 	new_account_button.SetSprite(new_account_cfg);
 	new_account_button.OnClick = [this](UI::Control*) {
 		// TODO: New account logic
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 	};
 
 	// Exit button
@@ -41,8 +41,9 @@ void MainMenuScene::on_initialize()
 	exit_cfg.sprite_id = SPRID_MAINMENUSCREEN;
 	exit_cfg.hover_frame = SPR_MAINMENUSCREEN::BUTTON_3;
 	exit_button.SetSprite(exit_cfg);
-	exit_button.OnClick = [this](UI::Control*) {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+	exit_button.OnClick = [this](UI::Control *)
+	{
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		scene_manager.set_scene<ExitGameScene>();
 	};
 }

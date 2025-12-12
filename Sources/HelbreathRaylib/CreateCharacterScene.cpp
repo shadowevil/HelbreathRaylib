@@ -86,7 +86,7 @@ void CreateCharacterScene::on_initialize()
 						other_btn->SetToggled(false);
 					}
 				}
-				sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+				sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 				selected_class = static_cast<SelectedClass>(class_idx);
 			}
 			else {
@@ -133,7 +133,7 @@ void CreateCharacterScene::on_initialize()
 	create_button.SetText(make_text_config("Create"));
 	create_button.OnClick = [this](UI::Control*) {
 		// TODO: Create character logic
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		};
 	create_button.OnMouseHover = [this](UI::Control*) {
 		bottom_right_label->SetText("Create your character with the selected stat points and appearance values.");
@@ -148,7 +148,7 @@ void CreateCharacterScene::on_initialize()
 	cancel_button.SetText(make_text_config("Cancel"));
 	cancel_button.OnClick = [this](UI::Control*) {
 		// TODO: Cancel logic
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		scene_manager.set_scene<CharacterSelectionScene>();
 		};
 	cancel_button.OnMouseHover = [this](UI::Control*) {
@@ -167,13 +167,13 @@ void CreateCharacterScene::on_initialize()
 	// Gender
 	float current_y = 157.0f;
 	UI::Button& gender_decrease = make_arrow_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_LEFT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		appearance.gender = (appearance.gender == GENDER_MALE) ? GENDER_FEMALE : GENDER_MALE;
 		created_character.update_appearance(appearance);
 		});
 	UI::Button& gender_increase = make_arrow_button(236.0f + arrow_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_RIGHT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		appearance.gender = (appearance.gender == GENDER_MALE) ? GENDER_FEMALE : GENDER_MALE;
 		created_character.update_appearance(appearance);
@@ -192,7 +192,7 @@ void CreateCharacterScene::on_initialize()
 	// Skin Color
 	current_y += row_height;
 	UI::Button& skin_color_decrease = make_arrow_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_LEFT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		appearance.skin_color_index = (appearance.skin_color_index + SkinColorCount - 1) % SkinColorCount;
 		created_character.update_appearance(appearance);
@@ -202,7 +202,7 @@ void CreateCharacterScene::on_initialize()
 		top_left_label->SetText(previous_skin_color);
 		};
 	UI::Button& skin_color_increase = make_arrow_button(236.0f + arrow_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_RIGHT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		appearance.skin_color_index = (appearance.skin_color_index + 1) % SkinColorCount;
 		created_character.update_appearance(appearance);
@@ -219,7 +219,7 @@ void CreateCharacterScene::on_initialize()
 	// Underwear Color
 	current_y += row_height;
 	UI::Button& underwear_color_decrease = make_arrow_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_LEFT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		appearance.underwear_color_index = (appearance.underwear_color_index + UnderwearColorCount - 1) % UnderwearColorCount;
 		created_character.update_appearance(appearance);
@@ -230,7 +230,7 @@ void CreateCharacterScene::on_initialize()
 		};
 
 	UI::Button& underwear_color_increase = make_arrow_button(236.0f + arrow_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_RIGHT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		appearance.underwear_color_index = (appearance.underwear_color_index + 1) % UnderwearColorCount;
 		created_character.update_appearance(appearance);
@@ -247,7 +247,7 @@ void CreateCharacterScene::on_initialize()
 	// Hair Style
 	current_y += row_height;
 	UI::Button& hairstyle_decrease = make_arrow_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_LEFT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		int idx = (appearance.hair_style + 1);
 		idx = (idx - 1 + (HAIR_STYLE_COUNT + 1)) % (HAIR_STYLE_COUNT + 1);
@@ -260,7 +260,7 @@ void CreateCharacterScene::on_initialize()
 		};
 
 	UI::Button& hairstyle_increase = make_arrow_button(236.0f + arrow_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_RIGHT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		int idx = (appearance.hair_style + 1);
 		idx = (idx + 1) % (HAIR_STYLE_COUNT + 1);
@@ -279,7 +279,7 @@ void CreateCharacterScene::on_initialize()
 	// Hair Color
 	current_y += row_height;
 	UI::Button& haircolor_decrease = make_arrow_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_LEFT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		appearance.hair_color_index = (appearance.hair_color_index + HairColorCount - 1) % HairColorCount;
 		created_character.update_appearance(appearance);
@@ -290,7 +290,7 @@ void CreateCharacterScene::on_initialize()
 		};
 
 	UI::Button& haircolor_increase = make_arrow_button(236.0f + arrow_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_ARROW_RIGHT, [this]() {
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		auto appearance = created_character.get_appearance();
 		appearance.hair_color_index = (appearance.hair_color_index + 1) % HairColorCount;
 		created_character.update_appearance(appearance);
@@ -314,11 +314,11 @@ void CreateCharacterScene::on_initialize()
 	current_y = 276.0f;
 	UI::Button& stat_strength_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
 		/* TODO: Increase strength */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 	UI::Button& stat_strength_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
 		/* TODO: Decrease strength */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 
 	stat_strength_increase.OnMouseHover = [this](UI::Control*) {
@@ -335,11 +335,11 @@ void CreateCharacterScene::on_initialize()
 	current_y += stat_row_height;
 	UI::Button& stat_vitality_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
 		/* TODO: Increase vitality */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 	UI::Button& stat_vitality_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
 		/* TODO: Decrease vitality */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 
 	stat_vitality_increase.OnMouseHover = [this](UI::Control*) {
@@ -356,11 +356,11 @@ void CreateCharacterScene::on_initialize()
 	current_y += stat_row_height;
 	UI::Button& stat_dexterity_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
 		/* TODO: Increase dexterity */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 	UI::Button& stat_dexterity_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
 		/* TODO: Decrease dexterity */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 
 	stat_dexterity_increase.OnMouseHover = [this](UI::Control*) {
@@ -377,11 +377,11 @@ void CreateCharacterScene::on_initialize()
 	current_y += stat_row_height;
 	UI::Button& stat_intelligence_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
 		/* TODO: Increase intelligence */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 	UI::Button& stat_intelligence_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
 		/* TODO: Decrease intelligence */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 
 	stat_intelligence_increase.OnMouseHover = [this](UI::Control*) {
@@ -398,11 +398,11 @@ void CreateCharacterScene::on_initialize()
 	current_y += stat_row_height;
 	UI::Button& stat_magic_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
 		/* TODO: Increase magic */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 	UI::Button& stat_magic_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
 		/* TODO: Decrease magic */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND); 
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND); 
 		});
 
 	stat_magic_increase.OnMouseHover = [this](UI::Control*) {
@@ -419,11 +419,11 @@ void CreateCharacterScene::on_initialize()
 	current_y += stat_row_height;
 	UI::Button& stat_charisma_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
 		/* TODO: Increase charisma */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 	UI::Button& stat_charisma_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
 		/* TODO: Decrease charisma */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		sound_player.play_effect_multi(SoundID::BUTTON_SOUND);
 		});
 
 	stat_charisma_increase.OnMouseHover = [this](UI::Control*) {

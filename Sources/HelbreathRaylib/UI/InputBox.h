@@ -6,19 +6,22 @@
 #include <optional>
 #include <cstdint>
 
-namespace UI {
+namespace UI
+{
 
-	class InputBox : public Control {
+	class InputBox : public Control
+	{
 	public:
-		struct Config {
+		struct Config
+		{
 			// Visual
-			raylib::Color background_color = raylib::Color{ 30, 30, 30, 0 };
-			raylib::Color border_color = raylib::Color{ 100, 100, 100, 0 };
-			raylib::Color focused_border_color = raylib::Color{ 200, 200, 200, 0 };
+			raylib::Color background_color = raylib::Color{30, 30, 30, 0};
+			raylib::Color border_color = raylib::Color{100, 100, 100, 0};
+			raylib::Color focused_border_color = raylib::Color{200, 200, 200, 0};
 			raylib::Color text_color = raylib::WHITE;
-			raylib::Color placeholder_color = raylib::Color{ 200, 200, 200, 255 };
-			raylib::Color selection_color = raylib::Color{ 51, 153, 255, 128 };
-			raylib::Color cursor_color = raylib::Color{ 232, 232, 232, 255 };
+			raylib::Color placeholder_color = raylib::Color{200, 200, 200, 255};
+			raylib::Color selection_color = raylib::Color{51, 153, 255, 128};
+			raylib::Color cursor_color = raylib::Color{232, 232, 232, 255};
 
 			// Font
 			uint8_t font_index = 0;
@@ -47,16 +50,16 @@ namespace UI {
 
 		InputBox();
 		InputBox(float x, float y, float width, float height);
-		InputBox(const rlx::Rectangle<float>& bounds);
-		InputBox(const raylib::Rectangle& bounds);
+		InputBox(const rlx::Rectangle<float> &bounds);
+		InputBox(const raylib::Rectangle &bounds);
 		virtual ~InputBox();
 
 		// Configuration
-		void SetConfig(const Config& config);
-		const Config& GetConfig() const { return _config; }
+		void SetConfig(const Config &config);
+		const Config &GetConfig() const { return _config; }
 
 		// Text management
-		void SetText(const std::string& text);
+		void SetText(const std::string &text);
 		std::string GetText() const { return _text; }
 		void Clear();
 
@@ -65,7 +68,7 @@ namespace UI {
 		int16_t GetMaxLength() const { return _config.max_length; }
 
 		// Placeholder
-		void SetPlaceholder(const std::string& placeholder);
+		void SetPlaceholder(const std::string &placeholder);
 
 		// Password mode
 		void SetPasswordMode(bool enabled);
@@ -77,25 +80,31 @@ namespace UI {
 		bool IsFocused() const { return _is_focused; }
 
 		// Static accessor for active input box
-		static InputBox* GetActiveInputBox() { return _active_input_box; }
+		static InputBox *GetActiveInputBox() { return _active_input_box; }
 
 		// Override base methods
 		void Update() override;
 		void Render() override;
 
 		// Character filtering
-		void SetAllowedCharacters(const std::string& allowed_chars);
+		void SetAllowedCharacters(const std::string &allowed_chars);
 		void ClearAllowedCharacters();
 		bool IsCharacterAllowed(char c) const;
 
+		// Scroll management
+		float GetMaxScrollOffset() const;
+		void ScrollToStart();
+		void ScrollToEnd();
+		void ScrollToCursor();
+
 		// Events
-		std::function<void(InputBox*)> OnTextChanged;
-		std::function<void(InputBox*)> OnFocused;
-		std::function<void(InputBox*)> OnBlurred;
-		std::function<void(InputBox*)> OnEnterPressed;
-		std::function<void(InputBox*, int)> OnKeyDown;    // Called with key code
-		std::function<void(InputBox*, int)> OnKeyUp;      // Called with key code
-		std::function<void(InputBox*, char)> OnCharInput; // Called with character input
+		std::function<void(InputBox *)> OnTextChanged;
+		std::function<void(InputBox *)> OnFocused;
+		std::function<void(InputBox *)> OnBlurred;
+		std::function<void(InputBox *)> OnEnterPressed;
+		std::function<void(InputBox *, int)> OnKeyDown;	   // Called with key code
+		std::function<void(InputBox *, int)> OnKeyUp;	   // Called with key code
+		std::function<void(InputBox *, char)> OnCharInput; // Called with character input
 
 	private:
 		// Text and cursor
@@ -112,14 +121,14 @@ namespace UI {
 		float _scroll_offset = 0.0f; // Horizontal scroll for long text
 
 		// Static active input box tracker
-		static InputBox* _active_input_box;
+		static InputBox *_active_input_box;
 
 		// Character filtering
 		std::string _allowed_characters;
 		bool _has_character_filter = false;
 
 		// Key tracking for events
-		bool _key_states[512] = { false }; // Track key down states
+		bool _key_states[512] = {false}; // Track key down states
 
 		// Input handling
 		void HandleKeyboardInput();
@@ -129,7 +138,7 @@ namespace UI {
 		void HandleCopyPaste();
 
 		// Clipboard (cross-platform)
-		void CopyToClipboard(const std::string& text);
+		void CopyToClipboard(const std::string &text);
 		std::string GetFromClipboard();
 
 		// Selection helpers
@@ -151,7 +160,7 @@ namespace UI {
 		int GetCharacterAtPosition(float pixel_x) const;
 
 		// Text manipulation
-		void InsertText(const std::string& text);
+		void InsertText(const std::string &text);
 		void DeleteCharacterAtCursor();
 		void DeleteCharacterBeforeCursor();
 
@@ -160,12 +169,6 @@ namespace UI {
 		void UpdateScrollOffset();
 		void EnsureCursorVisible();
 		raylib::Rectangle GetTextBounds() const;
-
-		// Scroll management
-		float GetMaxScrollOffset() const;
-		void ScrollToStart();
-		void ScrollToEnd();
-		void ScrollToCursor();
 	};
 
 } // namespace UI

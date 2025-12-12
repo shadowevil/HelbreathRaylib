@@ -2,8 +2,10 @@
 #include <string>
 #include <unordered_map>
 
-namespace Music {
-	enum TrackID : int {
+namespace MusicID
+{
+	enum TrackID : int
+	{
 		ABADDON,
 		ARESDEN,
 		CAROL,
@@ -39,6 +41,5 @@ namespace Music {
 		{"menumusic3", MENU_MUSIC_3},
 		{"menumusic4", MENU_MUSIC_4},
 		{"menumusic5", MENU_MUSIC_5},
-		{"middleland", MIDDLELAND}
-	};
+		{"middleland", MIDDLELAND}};
 }

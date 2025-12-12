@@ -12,36 +12,36 @@ class Application
 {
 public:
     // Delete copy/move
-    Application(const Application&) = delete;
-    Application& operator=(const Application&) = delete;
-    Application(Application&&) = delete;
-    Application& operator=(Application&&) = delete;
+    Application(const Application &) = delete;
+    Application &operator=(const Application &) = delete;
+    Application(Application &&) = delete;
+    Application &operator=(Application &&) = delete;
 
     // Application lifecycle (static interface)
     static int run();
     static void exit(int exit_code = 0);
 
     // Window management (static interface)
-    static bool create_app_window(const WindowSpec& spec, std::unique_ptr<IPlatformServices> platform = nullptr);
+    static bool create_app_window(const WindowSpec &spec, std::unique_ptr<IPlatformServices> platform = nullptr);
     static void destroy_app_window();
     static void restart_app_window();
-    static Window* get_window();
+    static Window *get_window();
     static bool has_window();
 
     // Platform services access
-    static IPlatformServices* get_platform();
+    static IPlatformServices *get_platform();
 
     // Layer management (static template interface)
     // Usage: Application::push_layer<MyLayer>(constructor_args...);
-    template<typename T, typename... Args>
-    static T* push_layer(Args&&... args)
+    template <typename T, typename... Args>
+    static T *push_layer(Args &&...args)
     {
         static_assert(std::is_base_of<ApplicationLayer, T>::value,
-            "T must derive from ApplicationLayer");
+                      "T must derive from ApplicationLayer");
 
-        Application& Instance = _get();
+        Application &Instance = _get();
         auto Layer = std::make_unique<T>(std::forward<Args>(args)...);
-        T* LayerPtr = Layer.get();
+        T *LayerPtr = Layer.get();
 
         Layer->on_attach();
         printf("Layer attached: %s\n", Layer->get_name());
@@ -51,17 +51,18 @@ public:
     }
 
     // Remove layer by type
-    template<typename T>
+    template <typename T>
     static void remove_layer()
     {
         static_assert(std::is_base_of<ApplicationLayer, T>::value,
-            "T must derive from ApplicationLayer");
+                      "T must derive from ApplicationLayer");
 
-        Application& Instance = _get();
+        Application &Instance = _get();
         auto It = std::find_if(Instance._layers.begin(), Instance._layers.end(),
-            [](const std::unique_ptr<ApplicationLayer>& Ptr) {
-                return dynamic_cast<T*>(Ptr.get()) != nullptr;
-            });
+                               [](const std::unique_ptr<ApplicationLayer> &Ptr)
+                               {
+                                   return dynamic_cast<T *>(Ptr.get()) != nullptr;
+                               });
 
         if (It != Instance._layers.end())
         {
@@ -72,22 +73,22 @@ public:
     }
 
     // Remove layer by pointer
-    static void remove_layer(ApplicationLayer* layer);
+    static void remove_layer(ApplicationLayer *layer);
 
     // Remove top layer
     static void pop_layer();
 
     // Get layer by type
-    template<typename T>
-    static T* get_layer_ptr()
+    template <typename T>
+    static T *get_layer_ptr()
     {
         static_assert(std::is_base_of<ApplicationLayer, T>::value,
-            "T must derive from ApplicationLayer");
+                      "T must derive from ApplicationLayer");
 
-        Application& Instance = _get();
-        for (auto& Layer : Instance._layers)
+        Application &Instance = _get();
+        for (auto &Layer : Instance._layers)
         {
-            if (T* Casted = dynamic_cast<T*>(Layer.get()))
+            if (T *Casted = dynamic_cast<T *>(Layer.get()))
             {
                 return Casted;
             }
@@ -95,22 +96,22 @@ public:
         return nullptr;
     }
 
-    template<typename T>
-    static T& get_layer()
+    template <typename T>
+    static T &get_layer()
     {
         static_assert(std::is_base_of<ApplicationLayer, T>::value,
-            "T must derive from ApplicationLayer");
+                      "T must derive from ApplicationLayer");
 
-        T* Layer = get_layer_ptr<T>();
+        T *Layer = get_layer_ptr<T>();
         if (!Layer)
         {
             throw std::runtime_error("Layer of specified type not found");
         }
         return *Layer;
-	}
+    }
 
     // Event handling
-    static void on_event(Event& event);
+    static void on_event(Event &event);
 
     // Application state
     static bool is_running();
@@ -125,23 +126,23 @@ private:
     ~Application();
 
     // Singleton access (private)
-    static Application& _get();
+    static Application &_get();
 
     // Internal implementation methods
     int _run_internal();
     void _exit_internal(int exit_code);
-    bool _create_app_window_internal(const WindowSpec& spec, std::unique_ptr<IPlatformServices> platform);
+    bool _create_app_window_internal(const WindowSpec &spec, std::unique_ptr<IPlatformServices> platform);
     void _destroy_app_window_internal();
     void _restart_app_window_internal();
     void _pop_layer_internal();
-    void _remove_layer_internal(ApplicationLayer* layer);
-    void _on_event_internal(Event& event);
+    void _remove_layer_internal(ApplicationLayer *layer);
+    void _on_event_internal(Event &event);
     float _get_fps_internal() const;
     float _get_avg_fps_internal() const;
     float _frames_per_second_internal() const;
 
     void _main_loop();
-    void _main_loop_iteration(); // Single frame iteration for Emscripten
+    void _main_loop_iteration();             // Single frame iteration for Emscripten
     static void _emscripten_loop_callback(); // Static callback for emscripten_set_main_loop
     void _update_layers();
     void _render_layers();
@@ -164,13 +165,16 @@ private:
     WindowSpec _pending_window_spec;
 };
 
-namespace rlx {
-    template<typename T>
-    inline bool rectangle_contains_mouse(const rlx::Rectangle<T>& rect) {
+namespace rlx
+{
+    template <typename T>
+    inline bool rectangle_contains_mouse(const rlx::Rectangle<T> &rect)
+    {
         return rlx::RectangleContainsScaledMouse(rect, constant::BASE_WIDTH, constant::BASE_HEIGHT);
     }
 
-    inline raylib::Vector2 get_mouse_position() {
+    inline raylib::Vector2 get_mouse_position()
+    {
         return rlx::GetScaledMousePosition((uint16_t)constant::BASE_WIDTH, (uint16_t)constant::BASE_HEIGHT);
     }
 }

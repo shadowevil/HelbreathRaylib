@@ -29,11 +29,9 @@ void LoadingScene::on_update()
 
 	if (_loading_step == 100)
 	{
-		sound_player.play_music_shuffle({
-			Music::MENU_MUSIC_1, Music::MENU_MUSIC_2,
-			Music::MENU_MUSIC_3, Music::MENU_MUSIC_4,
-			Music::MENU_MUSIC_5
-			});
+		sound_player.play_music_shuffle({MusicID::MENU_MUSIC_1, MusicID::MENU_MUSIC_2,
+										 MusicID::MENU_MUSIC_3, MusicID::MENU_MUSIC_4,
+										 MusicID::MENU_MUSIC_5});
 		scene_manager.set_scene<MainMenuScene>();
 	}
 	else
@@ -438,11 +436,14 @@ void LoadingScene::_load_sounds()
 			auto filename = path.stem().string(); // filename without extension
 
 			// Look up the TrackID from the filename
-			auto it = Music::FilenameToTrackID.find(filename);
-			if (it != Music::FilenameToTrackID.end()) {
+			auto it = MusicID::FilenameToTrackID.find(filename);
+			if (it != MusicID::FilenameToTrackID.end())
+			{
 				printf("Loading music TrackID %d from file '%s'\n", static_cast<int>(it->second), filename.c_str());
 				sound_player.load_music(it->second, path);
-			} else {
+			}
+			else
+			{
 				printf("Warning: Music file '%s.mp3' does not have a corresponding TrackID enum\n", filename.c_str());
 			}
 		}
