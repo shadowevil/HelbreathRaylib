@@ -44,8 +44,12 @@ namespace UI {
 		// Mouse up event
 		if (!_is_pressed && _was_pressed && _is_mouse_over) {
 			// Click event (mouse up while still over control)
-			if (OnClick)
+			if (OnClick) {
 				OnClick(this);
+				// Return immediately - OnClick may have destroyed this control
+				// (e.g., dialog button closing the dialog)
+				return;
+			}
 
 			if (OnMouseUp)
 				OnMouseUp(this);

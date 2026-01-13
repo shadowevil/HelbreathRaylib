@@ -5,12 +5,13 @@
 #include "ExitGameScene.h"
 
 #include "TestScene.h"
-#ifndef TEST_SCENE_ENABLED
 #include "MainGameScene.h"
-#endif
 
 #include "CharacterSelectionScene.h"
 #include "CreateCharacterScene.h"
+
+// Overlay dialogs
+#include "Dialogs/Dialogs.h"
 
 // Other necessary includes
 #include "PAK.h"

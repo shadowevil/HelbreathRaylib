@@ -185,6 +185,8 @@
     <ClCompile Include="MainMenuScene.cpp" />
     <ClCompile Include="MapIDs.h" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="entity_dummy.cpp" />
+    <ClCompile Include="entity_slime.cpp" />
     <ClCompile Include="Platform\PlatformFactory.cpp" />
     <ClCompile Include="Platform\Desktop\DesktopCursorManager.cpp" />
     <ClCompile Include="Platform\Desktop\DesktopInputTranslator.cpp" />
@@ -205,6 +207,11 @@
     <ClCompile Include="UI\Label.cpp" />
     <ClCompile Include="UI\ToggleButton.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Dialogs\OverlayDialog.cpp" />
+    <ClCompile Include="Dialogs\MessageBoxDialog.cpp" />
+    <ClCompile Include="Dialogs\NoticementDialog.cpp" />
+    <ClCompile Include="Dialogs\DropItemDialog.cpp" />
+    <ClCompile Include="Dialogs\ChangePasswordDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -217,7 +224,9 @@
     <ClInclude Include="entities.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="EntityGUID.h" />
+    <ClInclude Include="EntityIDs.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="EntityStats.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="StaticEntityManager.h" />
     <ClInclude Include="ExitGameScene.h" />
@@ -235,6 +244,8 @@
     <ClInclude Include="MainGameScene.h" />
     <ClInclude Include="MainMenuScene.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="entity_dummy.h" />
+    <ClInclude Include="entity_slime.h" />
     <ClInclude Include="Platform\IPlatformServices.h" />
     <ClInclude Include="Platform\ICursorManager.h" />
     <ClInclude Include="Platform\IInputTranslator.h" />
@@ -266,6 +277,12 @@
     <ClInclude Include="UI\ToggleButton.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowEvents.h" />
+    <ClInclude Include="Dialogs\Dialogs.h" />
+    <ClInclude Include="Dialogs\OverlayDialog.h" />
+    <ClInclude Include="Dialogs\MessageBoxDialog.h" />
+    <ClInclude Include="Dialogs\NoticementDialog.h" />
+    <ClInclude Include="Dialogs\DropItemDialog.h" />
+    <ClInclude Include="Dialogs\ChangePasswordDialog.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

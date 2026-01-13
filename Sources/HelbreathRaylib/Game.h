@@ -23,6 +23,7 @@ public:
 	CSpriteCollection sprites{};
 	CSpriteCollection model_sprites{};
 	CSpriteCollection map_tiles{};
+	CSpriteCollection entity_sprites{};
 	std::vector<ItemMetadataEntry> item_metadata{};
 	std::unique_ptr<SceneManager> scene_manager{ nullptr };
 	std::unique_ptr<SoundPlayer> sound_player{ nullptr };

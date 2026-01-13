@@ -14,7 +14,7 @@ PlatformCapabilities DesktopPlatformInfo::getCapabilities() const {
 	caps.supportsPointerLock = true;
 	caps.supportsFullscreen = true;
 	caps.maxTextureSize = 8192;  // Typical modern GPU limit
-	caps.defaultWindowWidth = 800;
-	caps.defaultWindowHeight = 600;
+	caps.defaultWindowWidth = 1440;
+	caps.defaultWindowHeight = 1080;
 	return caps;
 }

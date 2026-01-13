@@ -60,13 +60,19 @@ namespace UI {
 		// Render text if configured
 		if (_text_config.has_value() && !_text_config->text.empty()) {
 			raylib::Color text_color = GetCurrentTextColor();
+
+			// Create adjusted bounds with offset applied
+			raylib::Rectangle text_bounds = _bounds;
+			text_bounds.x += _text_config->offset_x;
+			text_bounds.y += _text_config->offset_y;
+
 			FontSystem::draw_text_aligned(
 				_text_config->font_index,
 				_text_config->font_size,
 				_text_config->text.c_str(),
-				_bounds,
+				text_bounds,
 				text_color,
-				VerticalAlign::Middle | HorizontalAlign::Center,
+				_text_config->v_align | _text_config->h_align,
 				_text_config->font_style
 			);
 		}

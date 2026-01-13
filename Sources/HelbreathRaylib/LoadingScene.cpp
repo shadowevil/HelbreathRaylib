@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "ItemMetadata.h"
 #include "SoundPlayer.h"
+#include "EntityIDs.h"
 
 void LoadingScene::on_initialize()
 {
@@ -25,15 +26,16 @@ void LoadingScene::on_update()
 	case 35: _load_female_game_models(); break;
 	case 50: _load_items(); break;
 	case 80: _load_register_maps(); break;
+	case 85: _load_npcs(); break;
 	}
 
 	if (_loading_step == 100)
 	{
-		sound_player.play_music_shuffle({
-			Music::MENU_MUSIC_1, Music::MENU_MUSIC_2,
-			Music::MENU_MUSIC_3, Music::MENU_MUSIC_4,
-			Music::MENU_MUSIC_5
-			});
+		//sound_player.play_music_shuffle({
+		//	Music::MENU_MUSIC_1, Music::MENU_MUSIC_2,
+		//	Music::MENU_MUSIC_3, Music::MENU_MUSIC_4,
+		//	Music::MENU_MUSIC_5
+		//	});
 		scene_manager.set_scene<MainMenuScene>();
 	}
 	else
@@ -73,6 +75,13 @@ void LoadingScene::_load_interface()
 		sprites[SPRID_EQUIP_MODEL] = Loader.get_sprite(SPR_EQUIP::PAK_INDEX_MODEL);
 		sprites[SPRID_EQUIP_HAIRSTYLE] = Loader.get_sprite(SPR_EQUIP::PAK_INDEX_HAIRSTYLE);
 		sprites[SPRID_EQUIP_UNDERWEAR] = Loader.get_sprite(SPR_EQUIP::PAK_INDEX_UNDERWEAR);
+		});
+
+	// Load dialog sprites from game_dialog.pak
+	CSpriteLoader::open_pak(constant::SPRITE_PATH / "game_dialog.pak", [&](CSpriteLoader& Loader) {
+		sprites[SPRID_DIALOG_MESSAGEBOX] = Loader.get_sprite(SPR_DIALOG_MESSAGEBOX_INFO::PAK_INDEX);
+		sprites[SPRID_DIALOG_MISC] = Loader.get_sprite(SPR_DIALOG_MISC_INFO::PAK_INDEX);
+		sprites[SPRID_DIALOG_PASSWORD] = Loader.get_sprite(SPR_DIALOG_PASSWORD_INFO::PAK_INDEX);
 		});
 }
 
@@ -364,7 +373,7 @@ void LoadingScene::_load_sounds()
 {
 	// Define the valid ranges for each sound type based on the enums
 	const int MAX_EFFECT_ID = 53;         // Sound::EffectID goes from 1-53
-	const int MAX_CHARACTER_ID = 24;      // Sound::CharacterSoundID goes from 1-24
+	const int MAX_CHARACTER_ID = 28;      // Sound::CharacterSoundID goes from 1-28
 	const int MAX_MONSTER_ID = 156;       // Sound::MonsterSoundID goes from 1-156
 
 	// Load sound effects from SOUND_PATH
@@ -446,5 +455,29 @@ void LoadingScene::_load_sounds()
 				printf("Warning: Music file '%s.mp3' does not have a corresponding TrackID enum\n", filename.c_str());
 			}
 		}
+	}
+}
+
+void LoadingScene::_load_npcs()
+{
+	// Load all entity PAKs from the ENTITY_PAK_LIST
+	// Each entity gets SPRITES_PER_ENTITY (40) slots based on its EntityID
+	for (const auto& entry : ENTITY_PAK_LIST)
+	{
+		size_t base_index = EntitySpriteBase(entry.id);
+
+		CSpriteLoader::open_pak(constant::SPRITE_NPC_PATH / std::string(entry.pak_file), [&](CSpriteLoader& Loader, PAKLib::pak& Pak) {
+			size_t sprite_count = std::min(Pak.sprites.size(), SPRITES_PER_ENTITY);
+			for (size_t i = 0; i < sprite_count; ++i)
+			{
+				entity_sprites[base_index + i] = Loader.get_sprite(i);
+			}
+		});
+
+		printf("Loaded entity %d: %s (%zu sprites at index %zu)\n",
+			static_cast<int>(entry.id),
+			std::string(entry.pak_file).c_str(),
+			SPRITES_PER_ENTITY,
+			base_index);
 	}
 }

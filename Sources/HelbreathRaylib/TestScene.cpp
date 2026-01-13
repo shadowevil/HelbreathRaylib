@@ -28,14 +28,14 @@ void TestScene::on_initialize()
 			Eq.feet.try_equip(ItemID::BOOTS, item_metadata);
 			return Eq;
 		}()
-		});
+		}, PlayerEntityStats());
 	other_player = &get_entity_manager().Add<Player>(PlayerAppearance{
 		.gender = GENDER_FEMALE,
 		.skin_color_index = 1,
 		.hair_style = HAIR_STYLE_6,
 		.hair_color_index = 0,
 		.underwear_color_index = 1
-		});
+		}, PlayerEntityStats());
 
 	_player->set_position({ 54, 39 });
 	_player->set_active_map(_map_data.get());

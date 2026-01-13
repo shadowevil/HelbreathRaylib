@@ -34,8 +34,8 @@ struct SpriteItemIndices
 struct ItemMetadataEntry
 {
     std::string pak_file;
-    uint32_t id;
-    EquipType equip_type;
+    uint32_t id{};
+    EquipType equip_type = EquipType::None;
     std::optional<SpriteItemIndices> male;
     std::optional<SpriteItemIndices> female;
 };

@@ -16,6 +16,7 @@ struct Animation
     // State
     // ------------------------------------------------------------
     size_t current_frame = 0;
+    size_t previous_frame = 0;
     double last_frame_time = 0.0;
 
     // ------------------------------------------------------------
@@ -70,6 +71,15 @@ struct Animation
     void reset()
     {
         current_frame = (reverse && max_frame > 0) ? max_frame - 1 : 0;
+        previous_frame = current_frame;
+        last_frame_time = 0.0;
+    }
+
+    // Reset to a specific starting frame
+    void reset_to_frame(size_t frame)
+    {
+        current_frame = (frame < max_frame) ? frame : 0;
+        previous_frame = current_frame;
         last_frame_time = 0.0;
     }
 
@@ -78,6 +88,8 @@ struct Animation
     // ------------------------------------------------------------
     void update(double current_time)
     {
+        previous_frame = current_frame;
+
         if (empty) return;       // do nothing
         if (max_frame <= 1) return;
 
@@ -102,6 +114,18 @@ struct Animation
             else if (current_frame > 0)
                 current_frame--;
         }
+    }
+
+    // Check if the frame just changed to a specific frame
+    bool just_changed_to(size_t frame) const
+    {
+        return current_frame == frame && previous_frame != frame;
+    }
+
+    // Check if frame changed this update
+    bool frame_changed() const
+    {
+        return current_frame != previous_frame;
     }
 
     // ------------------------------------------------------------

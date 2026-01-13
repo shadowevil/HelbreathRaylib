@@ -149,19 +149,23 @@ namespace Sound {
 
 		FLYING_ARROW = 4,
 
-		UNUSED_5 = 5,
+		BLUNT_WEAPON_HIT = 5,
 
 		SHARP_WEAPON_HIT = 6,
 
+		WALK_LAND = 7,
 		MASTER_ELF = 7,
 
+		WALK_GLASS = 8,
+		PLAYER_WALK = 8,
 		BEHOLDER_MOVEMENT = 8,
 		DARK_ELF_MOVEMENT = 8,
 		TK_MOVEMENT = 8,
 
-		UNUSED_9 = 9,
+		RUN_LAND = 9,
 
-		UNUSED_10 = 10,
+		RUN_GLASS = 10,
+		PLAYER_RUN = 10,
 
 		UNUSED_11 = 11,
 
@@ -191,7 +195,12 @@ namespace Sound {
 
 		MALE_CRIT_ATTACK = 23,
 
-		FEMALE_CRIT_ATTACK = 24
+		FEMALE_CRIT_ATTACK = 24,
+
+		SWORD_SWING_MISS = 25,
+		HEAVY_SWORD_SWING_MISS = 26,
+		NORMAL_MISS = 27,
+		HEAVY_BLUNT_MISS = 28
 	};
 
 	enum MonsterSoundID : int {

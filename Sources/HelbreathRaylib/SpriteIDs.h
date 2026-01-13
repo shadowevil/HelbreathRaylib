@@ -17,7 +17,12 @@ enum SpriteID : size_t {
 	SPRID_EQUIP_UNDERWEAR			= 11,
 	SPRID_ITEM_ATLAS_EQUIP			= 12,
 	SPRID_ITEM_ATLAS_GROUND			= 13,
-	SPRID_ITEM_ATLAS_PACK			= 14
+	SPRID_ITEM_ATLAS_PACK			= 14,
+
+	// Dialog sprites from game_dialog.pak (each is a separate sprite within the pak)
+	SPRID_DIALOG_MESSAGEBOX			= 15,	// Sprite 1 in pak
+	SPRID_DIALOG_MISC				= 16,	// Sprite 2 in pak (drop item, noticement)
+	SPRID_DIALOG_PASSWORD			= 17	// Sprite 4 in pak
 };
 
 enum ModelID : size_t {
@@ -116,15 +121,18 @@ struct SPR_MOUSECURSOR {
 };
 
 struct SPR_BUTTONS {
-	static constexpr size_t PAK_INDEX					= 1;
-	static constexpr size_t SMALL_BUTTON				= 0;
-	static constexpr size_t SMALL_BUTTON_HOVER			= 4;
-	static constexpr size_t MEDIUM_BUTTON				= 1;
-	static constexpr size_t MEIDUM_BUTTON_HOVER			= 5;
-	static constexpr size_t LARGE_BUTTON				= 2;
-	static constexpr size_t LARGE_BUTTON_HOVER			= 6;
-	static constexpr size_t EXTRA_LARGE_BUTTON			= 3;
-	static constexpr size_t EXTRA_LARGE_BUTTON_HOVER	= 7;
+	static constexpr size_t PAK_INDEX						= 1;
+
+	static constexpr size_t SMALL_BUTTON					= 0;
+	static constexpr size_t SMALL_BUTTON_HOVER				= 4;
+	static constexpr size_t MEDIUM_BUTTON					= 1;
+	static constexpr size_t MEIDUM_BUTTON_HOVER				= 5;
+	static constexpr size_t LARGE_BUTTON					= 2;
+	static constexpr size_t LARGE_BUTTON_HOVER				= 6;
+	static constexpr size_t EXTRA_LARGE_BUTTON				= 3;
+	static constexpr size_t EXTRA_LARGE_BUTTON_HOVER		= 7;
+	static constexpr size_t EXTRA_LARGE_TALL_BUTTON			= 8;
+	static constexpr size_t EXTRA_LARGE_TALL_BUTTON_HOVER	= 9;
 };
 
 struct SPR_EQUIP {
@@ -146,4 +154,22 @@ struct SPR_GAME_ANIMATIONS {
 	static constexpr size_t PAK_INDEX_PICKUP			= 9;
 	static constexpr size_t PAK_INDEX_TAKEDAMAGE		= 10;
 	static constexpr size_t PAK_INDEX_DYING				= 11;
+};
+
+// Game dialogs from game_dialog.pak
+// PAK indices for loading from game_dialog.pak
+struct SPR_DIALOG_MESSAGEBOX_INFO {
+	static constexpr size_t PAK_INDEX		= 1;	// Sprite 1 in game_dialog.pak
+	static constexpr size_t BACKGROUND		= 2;	// Frame 2: 270x104 messagebox dialog
+};
+
+struct SPR_DIALOG_MISC_INFO {
+	static constexpr size_t PAK_INDEX		= 2;	// Sprite 2 in game_dialog.pak
+	static constexpr size_t DROPITEM		= 5;	// Frame 5: 215x87 drop item dialog
+	static constexpr size_t NOTICEMENT		= 6;	// Frame 6: 252x87 noticement dialog
+};
+
+struct SPR_DIALOG_PASSWORD_INFO {
+	static constexpr size_t PAK_INDEX		= 4;	// Sprite 4 in game_dialog.pak
+	static constexpr size_t BACKGROUND		= 0;	// Frame 0: 334x256 change password dialog
 };

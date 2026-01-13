@@ -1,0 +1,240 @@
+● I understand - WeaponUsed is for animation selection only (HAND, BOW, CAST). Let
+  me check the current state and revert it:
+                                                                                    ● Read(Sources\HelbreathRaylib\entity.h)
+  ⎿  Read 25 lines
+                                                                                    ● I see - let me revert WeaponUsed to the original:
+
+● Update(Sources\HelbreathRaylib\entity.h)
+  ⎿  Added 1 line, removed 5 lines
+      39  };
+      40
+      41  enum WeaponUsed : uint8_t {                                                     42 -    HAND,           // Unarmed/blunt weapon
+      43 -    SWORD,          // Standard sword                                           44 -    LARGE_SWORD,    // Two-handed/large sword
+      45 -    BOW,            // Bow/ranged
+      46 -    CAST            // Magic/spell
+      42 +    HAND, BOW, CAST
+      43  };
+      44
+      45  // Special attack result values (negative = special, positive = dam
+          age dealt)
+
+● Now I need to update player.cpp to remove references to SWORD and LARGE_SWORD. For   now, HAND will cover all melee weapons until item class/subclass is implemented:
+                                                                                    ● Update(Sources\HelbreathRaylib\player.cpp)
+  ⎿  Added 5 lines, removed 12 lines
+      220          }
+      221
+      222          // Play hit or miss sound at frame 5 (middle/end of 8-fram                  e animation) - only in combat stance
+      223 +        // TODO: Sound selection should be based on equipped item'                 +s class/subclass, not WeaponUsed
+      224          if (_attack_target && _current_stance == COMBAT && current
+           _animation.just_changed_to(5))
+      225          {
+      226              if (_attack_will_hit)
+      227              {
+      227 -                // Hit sounds
+      228 +                // Hit sounds - for now, HAND uses blunt hit sound
+      229 +                // Future: use item class/subclass for SHARP_WEAPO
+          +N_HIT etc.
+      230                  switch (_current_weapon_type)
+      231                  {
+      232                  case HAND:
+      233                      _game.sound_player->play_character_sound(Sound
+           ::CharacterSoundID::BLUNT_WEAPON_HIT);
+      234                      break;
+      233 -                case SWORD:
+      234 -                case LARGE_SWORD:
+      235 -                    _game.sound_player->play_character_sound(Sound
+          -::CharacterSoundID::SHARP_WEAPON_HIT);
+      236 -                    break;
+      235                  case BOW:
+      236                  case CAST:
+      237                      // Bow and cast don't have separate hit sounds
+     ...
+      240              }
+      241              else
+      242              {
+      245 -                // Miss sounds
+      243 +                // Miss sounds - for now, HAND uses normal miss
+      244 +                // Future: use item class/subclass for SWORD_SWING
+          +_MISS, HEAVY_SWORD_SWING_MISS etc.
+      245                  switch (_current_weapon_type)
+      246                  {
+      247                  case HAND:
+      248                      _game.sound_player->play_character_sound(Sound
+           ::CharacterSoundID::NORMAL_MISS);
+      249                      break;
+      251 -                case SWORD:
+      252 -                    _game.sound_player->play_character_sound(Sound
+          -::CharacterSoundID::SWORD_SWING_MISS);
+      253 -                    break;
+      254 -                case LARGE_SWORD:
+      255 -                    _game.sound_player->play_character_sound(Sound
+          -::CharacterSoundID::HEAVY_SWORD_SWING_MISS);
+      256 -                    break;
+      250                  case BOW:
+      251                  case CAST:
+      252                      // Bow and cast don't have separate miss sound
+           s
+
+● Now let me update the weapon swing sound section too:
+
+● Update(Sources\HelbreathRaylib\player.cpp)
+  ⎿  Added 1 line, removed 6 lines
+      298              _attack_will_hit = _stats.derived.roll_hit();                      299
+      300              // Play weapon swing/attack sound (only in combat stan                  ce, and only with weapon equipped)
+      301 +            // TODO: Melee swing sounds should be based on item cl                 +ass/subclass
+      302              if (_current_stance == COMBAT && _current_weapon_type
+           != HAND)
+      303              {
+      304                  switch (_current_weapon_type)
+      305                  {
+      305 -                case SWORD:
+      306 -                    _game.sound_player->play_character_sound(Sound
+          -::CharacterSoundID::SWORD_ATTACK);
+      307 -                    break;
+      308 -                case LARGE_SWORD:
+      309 -                    _game.sound_player->play_character_sound(Sound
+          -::CharacterSoundID::LARGE_SWORD_ATTACK);
+      310 -                    break;
+      306                  case BOW:
+      307                      _game.sound_player->play_character_sound(Sound
+           ::CharacterSoundID::BOW_ATTACK);
+      308                      break;
+
+● Let me build to verify:
+
+● Bash(powershell -Command "cd 'C:\Users\ShadowEvil\source\repos2\HelbreathRaylib';
+      & 'C:\Program Files\Microsoft Visual
+      Studio\2022\Community\MSBuild\Current\Bin\MSBu…)
+  ⎿  Running in the background (↓ to manage)                                        
+> You can actually implement a class and subclass enum and keep those                 available. Default would be NONE or HAND
+                                                                                    ● Read(~\AppData\Local\Temp\claude\C--Users-ShadowEvil-source-repos2-HelbreathRaylib      \tasks\b4a4da7.output)
+  ⎿  Read 51 lines                                                                  
+● There's a reference to SWORD and LARGE_SWORD in player.h. Let me find and fix it:
+
+● Read(Sources\HelbreathRaylib\player.h)
+  ⎿  Read 30 lines
+
+● Update(Sources\HelbreathRaylib\player.h)
+  ⎿  Error: EBUSY: resource busy or locked, open 'C:\Users\ShadowEvil\source\repos2\     elbreathRaylib\Sources\HelbreathRaylib\player.h'
+
+● Bash(powershell -Command "Start-Sleep -Seconds 2")
+  ⎿  (No content)
+
+● Update(Sources\HelbreathRaylib\player.h)
+  ⎿  Error: EBUSY: resource busy or locked, open 'C:\Users\ShadowEvil\source\repos2\     elbreathRaylib\Sources\HelbreathRaylib\player.h'
+
+● Bash(powershell -Command "Start-Sleep -Seconds 3")
+  ⎿  (No content)
+
+● Read(Sources\HelbreathRaylib\player.h)
+  ⎿  Read 15 lines
+
+● Update(Sources\HelbreathRaylib\player.h)
+  ⎿  Error: EBUSY: resource busy or locked, open 'C:\Users\ShadowEvil\source\repos2\     elbreathRaylib\Sources\HelbreathRaylib\player.h'
+
+● Bash(powershell -Command "Get-Process | Where-Object {$_.MainWindowTitle -like
+      '*player.h*' -or $_.ProcessName -like '*msbuild*' -or $_.ProcessName -like
+      '*cl*'} | S…)
+  ⎿ extglob.MainWindowTitle : The term 'extglob.MainWindowTitle' is not recogni
+    zed as the name of a cmdlet, function,
+    script file, or operable program. Check the spelling of the name, or if a p         … +3428 lines (ctrl+o to expand)                                                
+
+
+> WeaponUsed should not be used at all except in animation at this time.
+
+● Bash(powershell -Command "Start-Sleep -Seconds 5")
+  ⎿  (No content)
+
+● Update(Sources\HelbreathRaylib\player.h)
+  ⎿  Error: EBUSY: resource busy or locked, open 'C:\Users\ShadowEvil\source\repos2\     elbreathRaylib\Sources\HelbreathRaylib\player.h'
+
+● Bash(powershell -Command "(Get-Content 'C:\Users\ShadowEvil\source\repos2\Helbreat      hRaylib\Sources\HelbreathRaylib\player.h' -Raw) -replace 'case
+      HAND:\r?\n\s+case SW…)
+  ⎿  Error: Exit code 1
+     Set-Content : The process cannot access the file
+     'C:\Users\ShadowEvil\source\repos2\HelbreathRaylib\Sources\HelbreathRaylib\play     r.h' because it is being used by
+     another process.
+     At line:1 char:329
+     + ... NG_HAND;' | Set-Content 'C:\Users\ShadowEvil\source\repos2\HelbreathR ...     +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~             + CategoryInfo          : NotSpecified: (:) [Set-Content], IOException
+         + FullyQualifiedErrorId :                                                       System.IO.IOException,Microsoft.PowerShell.Commands.SetContentCommand
+
+● Bash(powershell -Command "Start-Sleep -Seconds 10; (Get-Content         timeout:
+      'C:\Users\ShadowEvil\source\repos2\HelbreathRaylib\Sources\Helbreat 30s
+      hRaylib\player.h' -Raw) -replace '…)
+  ⎿  Error: Exit code 1
+     Set-Content : The process cannot access the file
+     'C:\Users\ShadowEvil\source\repos2\HelbreathRaylib\Sources\HelbreathRaylib\play     r.h' because it is being used by
+     another process.
+     At line:1 char:354
+     + ... NG_HAND;' | Set-Content 'C:\Users\ShadowEvil\source\repos2\HelbreathR ...     +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~             + CategoryInfo          : NotSpecified: (:) [Set-Content], IOException
+         + FullyQualifiedErrorId :                                                       System.IO.IOException,Microsoft.PowerShell.Commands.SetContentCommand
+
+● The file seems to be locked by Visual Studio. Let me try a different approach:
+
+● Bash(powershell -Command "Copy-Item 'C:\Users\ShadowEvil\source\repos2\HelbreathRa      ylib\Sources\HelbreathRaylib\player.h'
+      'C:\Users\ShadowEvil\source\repos2\Helbreath…)
+  ⎿  #pragma once
+     #include "entity.h"
+     #include <array>
+     … +2 lines (ctrl+o to expand)
+
+● Bash(powershell -Command "$content = Get-Content 'C:\Users\ShadowEvil\source\repos      2\HelbreathRaylib\Sources\HelbreathRaylib\player.h.bak' -Raw; $content =
+      $content -…)
+  ⎿  Error: Exit code 1
+     At line:1 char:339
+     + ... e_index + SPR_GAME_ANIMATIONS::PAK_INDEX_ATTACKING_HAND;';  | Set-Con ...     +                                                                 ~
+     An empty pipe element is not allowed.
+         + CategoryInfo          : ParserError: (:) [],
+     ParentContainsErrorRecordException
+         + FullyQualifiedErrorId : EmptyPipeElement                                 
+● Bash(powershell -Command "$content = Get-Content 'C:\Users\ShadowEvil\source\repos      2\HelbreathRaylib\Sources\HelbreathRaylib\player.h.bak' -Raw; $content =
+      $content.R…)
+  ⎿  /usr/bin/bash: line 1: r: command not found
+     /usr/bin/bash: line 1: r: command not found
+     /usr/bin/bash: line 1: r: command not found
+     … +22 lines (ctrl+o to expand)
+
+● Let me try a simpler Python approach:
+
+● Bash(python -c "
+      import re…)
+  ⎿  Done
+
+● Bash(python -c "
+      with open(r'C:\\Users\\ShadowEvil\\source\\repos2\\HelbreathRaylib\\Sources\\H      elbreathRaylib\\player.h.new', 'r') as f:…)
+  ⎿ 431:         switch (weapon)
+    432:         {
+    433:         case HAND: return base_index + SPR_GAME_ANIMATIONS::PAK_INDEX_
+    … +10 lines (ctrl+o to expand)
+
+
+● Bash(python -c "
+      import shutil…)
+  ⎿  Attempt 1 failed: [WinError 32] The process cannot access the file because
+     it is being used by another process
+     Attempt 2 failed: [WinError 32] The process cannot access the file because
+     … +7 lines (ctrl+o to expand)
+
+● The file player.h is locked by another process (likely Visual Studio). Can you
+  close Visual Studio or the file briefly so I can apply the changes?
+
+  I have the corrected version ready at player.h.new which:
+  1. Fixes the animation switch to only use HAND, BOW, CAST
+  2. I also need to add ItemClass/ItemSubclass enums for sound selection            
+  Once the file is unlocked, I'll:                                                    1. Apply the animation fix
+  2. Add ItemClass and ItemSubclass enums to entity.h
+  3. Update player to track equipped weapon class/subclass
+  4. Use those for hit/miss sound selection
+
+✻ Worked for 6m 22s
+
+● Background command "Build project to verify WeaponUsed revert compiles" failed
+with exit code 137.
+
+● Update(Sources\HelbreathRaylib\player.h)
+  ⎿  Error: EBUSY: resource busy or locked, open 'C:\Users\ShadowEvil\source\repos2\     elbreathRaylib\Sources\HelbreathRaylib\player.h'
+
+● The file is still locked. Could you please close Visual Studio or any editor that
+  has player.h open? Once closed, I can apply all the changes:
+                                                                                      1. Fix the animation switch in player.h (remove SWORD/LARGE_SWORD references)
+  2. Add ItemClass and ItemSubclass enums to entity.h for sound selection             3. Update player.cpp to use class/subclass for hit/miss sounds

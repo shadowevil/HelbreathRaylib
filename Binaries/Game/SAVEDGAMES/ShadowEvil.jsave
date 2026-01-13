@@ -1,0 +1,80 @@
+{
+    "name": "ShadowEvil",
+    "player": {
+        "appearance": {
+            "equipment": {
+                "accessories": [
+                    {
+                        "id": -1,
+                        "type": 8
+                    },
+                    {
+                        "id": -1,
+                        "type": 8
+                    },
+                    {
+                        "id": -1,
+                        "type": 8
+                    }
+                ],
+                "back": {
+                    "id": -1,
+                    "type": 1
+                },
+                "chest": {
+                    "id": -1,
+                    "type": 3
+                },
+                "feet": {
+                    "id": -1,
+                    "type": 5
+                },
+                "head": {
+                    "id": -1,
+                    "type": 0
+                },
+                "legs": {
+                    "id": -1,
+                    "type": 4
+                },
+                "shield": {
+                    "id": -1,
+                    "type": 7
+                },
+                "shirt": {
+                    "id": -1,
+                    "type": 2
+                },
+                "weapon": {
+                    "id": -1,
+                    "type": 6
+                }
+            },
+            "gender": "male",
+            "hair_color_index": 1,
+            "hair_style": "style4",
+            "skin_color_index": 0,
+            "underwear_color_index": 9
+        },
+        "stats": {
+            "base": {
+                "charisma": 10,
+                "dexterity": 12,
+                "intelligence": 10,
+                "magic": 10,
+                "strength": 14,
+                "vitality": 14
+            },
+            "derived": {
+                "criticals": 0,
+                "ek_count": 0,
+                "experience": 0,
+                "health": 37,
+                "level": 1,
+                "mana": 27,
+                "stamina": 22,
+                "stat_points": 0
+            }
+        }
+    }
+}

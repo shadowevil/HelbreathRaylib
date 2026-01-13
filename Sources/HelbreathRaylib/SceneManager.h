@@ -41,16 +41,28 @@ public:
 
         if (!_current_scene) return;
 
+        // Clear any pending pop since we're pushing a new overlay
+        _pending_overlay_pop = false;
+
         auto Overlay = std::make_unique<T>(std::forward<Args>(args)...);
         Overlay->on_initialize();
         _overlay = std::move(Overlay);
     }
 
     void pop_overlay() {
-        if (_overlay) {
-            _overlay->on_initialize();
-            _overlay.reset();
-        }
+        // Don't destroy immediately - mark for deferred removal.
+        // This prevents use-after-free when a button callback destroys
+        // the dialog while we're still inside the update loop.
+        _pending_overlay_pop = true;
+    }
+
+    // Get the current overlay (if any) - useful for setting callbacks after push_overlay
+    Scene* get_current_overlay() {
+        return _overlay.get();
+    }
+
+    bool has_overlay() const {
+        return _overlay != nullptr;
     }
 
     void update() {
@@ -95,6 +107,12 @@ public:
             }
             if (_overlay) {
                 _overlay->on_update();
+            }
+            // Handle deferred overlay removal (after update loop completes safely)
+            if (_pending_overlay_pop && _overlay) {
+                _overlay->on_uninitialize();
+                _overlay.reset();
+                _pending_overlay_pop = false;
             }
             break;
         }
@@ -176,4 +194,5 @@ private:
     TransitionConfig _config;
     float _transition_time = 0.0f;
     Scene::SceneTypeId _previous_scene_type = nullptr;
+    bool _pending_overlay_pop = false;
 };

@@ -2,24 +2,8 @@
 #define TEST_SCENE_ENABLED
 #include "Scene.h"
 #include "entities.h"
-#include "CMap.h"
-#include <unordered_set>
+#include "GameSceneCommon.h"
 #include <stdexcept>
-
-class Entity;
-
-struct DrawEntry
-{
-	int sortY;
-	enum Type { ObjectShadow, Object, EntityShadow, Entity } type;
-	const CTile* tile;
-	const ::Entity* entity;
-	int pX, pY;
-};
-
-inline std::unordered_set<uint32_t> ShadowlessObjects = {
-	242, 243, 244
-};
 
 class TestScene : public Scene {
 public:

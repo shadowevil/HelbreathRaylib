@@ -26,7 +26,7 @@ int main() {
 	//if (platform->getPlatformType() != PlatformType::Web)
 	//	flags = flags | WindowFlags::Resizable;
 
-	Spec.Flags = flags | WindowFlags::VSync;
+	Spec.Flags = flags/* | WindowFlags::VSync*/;
 	Spec.TargetFPS = 0;
 
 	if (!Application::create_app_window(Spec, std::move(platform)))

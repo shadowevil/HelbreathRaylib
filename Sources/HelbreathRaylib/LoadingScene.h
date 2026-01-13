@@ -21,4 +21,5 @@ private:
 	void _load_items();
 	void _load_register_maps();
 	void _load_sounds();
+	void _load_npcs();
 };

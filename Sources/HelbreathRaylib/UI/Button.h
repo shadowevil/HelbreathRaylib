@@ -29,6 +29,8 @@ namespace UI {
 			raylib::Color disabled_color = raylib::DARKGRAY;
 			HorizontalAlign h_align = HorizontalAlign::Center;
 			VerticalAlign v_align = VerticalAlign::Middle;
+			float offset_x = 0.0f;  // Applied after alignment
+			float offset_y = 0.0f;  // Applied after alignment
 		};
 
 		Button(CSpriteCollection& sprites);

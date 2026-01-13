@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <cstddef>
+#include <cmath>
 #include <algorithm>
 #include <filesystem>
 #include <random>
@@ -164,6 +165,43 @@ public:
     bool is_music_muted() const { return _music_muted; }
     bool is_sound_muted() const { return _sound_muted; }
 
+    // Spatial sound parameters
+    struct SpatialParams {
+        float distance_mod = 1.0f;  // 1.0 = full volume, higher = quieter
+        float pan = 0.5f;           // 0.0 = left, 0.5 = center, 1.0 = right
+        bool audible = true;        // false if beyond hearing range
+    };
+
+    // Calculate spatial sound parameters based on source and listener tile positions
+    // max_hearing_distance: tiles beyond which sound is inaudible (default 12 tiles ~= visible area)
+    static SpatialParams calculate_spatial(int source_tile_x, int source_tile_y,
+                                           int listener_tile_x, int listener_tile_y,
+                                           int max_hearing_distance = 12) {
+        SpatialParams params;
+
+        int dx = source_tile_x - listener_tile_x;
+        int dy = source_tile_y - listener_tile_y;
+        float distance = std::sqrt(static_cast<float>(dx * dx + dy * dy));
+
+        // Check if beyond hearing range
+        if (distance > static_cast<float>(max_hearing_distance)) {
+            params.audible = false;
+            params.distance_mod = 999.0f;
+            return params;
+        }
+
+        // Distance modifier: 1.0 at distance 0, increases with distance
+        // Using gentle falloff: 1.0 + (distance / 4) so at 12 tiles = 4.0 (25% volume)
+        params.distance_mod = 1.0f + (distance / 4.0f);
+
+        // Pan: based on horizontal offset
+        // At max hearing distance left/right, pan should be 0.0 or 1.0
+        float pan_offset = static_cast<float>(dx) / static_cast<float>(max_hearing_distance);
+        params.pan = std::clamp(0.5f + (pan_offset * 0.5f), 0.0f, 1.0f);
+
+        return params;
+    }
+
     // Loaders
     void load_effect(int index, const std::filesystem::path& path, int voices = 4) {
         if (index < 0 || index >= static_cast<int>(_effects.size())) return;
@@ -290,7 +328,7 @@ public:
 
     // Play character sounds (C###.WAV files)
     void play_character_sound(int id, float distance_mod = 1.0f, float pan = 0.5f) {
-        _play_single_internal(_character_sounds, id, distance_mod, pan);
+        _play_multi_internal(_character_sounds, id, distance_mod, pan);
     }
 
     void play_character_sound_multi(int id, float distance_mod = 1.0f, float pan = 0.5f) {

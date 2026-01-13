@@ -42,6 +42,7 @@ protected:
 	SceneManager& scene_manager;
     CSpriteCollection& sprites;
 	CSpriteCollection& model_sprites;
+    CSpriteCollection& entity_sprites;
 	CSpriteCollection& map_tiles;
 	std::vector<ItemMetadataEntry>& item_metadata;
 	StaticEntityManager& static_entity_manager;

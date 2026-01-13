@@ -80,6 +80,34 @@ public:
         return true;
     }
 
+    // Remove all entities marked for removal (should_remove() == true)
+    // Returns count of entities removed
+    size_t RemoveMarkedEntities() {
+        size_t removed_count = 0;
+
+        // First, remove from map
+        for (auto it = _entity_map.begin(); it != _entity_map.end(); ) {
+            if (it->second && it->second->should_remove()) {
+                it = _entity_map.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+
+        // Then, remove from vector using erase-remove idiom
+        auto old_size = _entities.size();
+        _entities.erase(
+            std::remove_if(_entities.begin(), _entities.end(),
+                [](const std::unique_ptr<Entity>& entity) {
+                    return entity && entity->should_remove();
+                }),
+            _entities.end());
+
+        removed_count = old_size - _entities.size();
+        return removed_count;
+    }
+
     // Clear all entities
     void Clear() {
         _entities.clear();

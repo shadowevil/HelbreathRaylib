@@ -8,6 +8,7 @@ Scene::Scene()
 	: game(Application::get_layer<Game>()),
 	sprites(game.sprites),
 	model_sprites(game.model_sprites),
+	entity_sprites(game.entity_sprites),
 	scene_manager(*game.scene_manager.get()),
 	map_tiles(game.map_tiles),
 	item_metadata(game.item_metadata),

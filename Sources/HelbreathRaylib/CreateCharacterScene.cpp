@@ -1,4 +1,8 @@
 #include "Scenes.h"
+#include "json.hpp"
+#include <fstream>
+
+using json = nlohmann::json;
 
 void CreateCharacterScene::on_initialize()
 {
@@ -12,6 +16,8 @@ void CreateCharacterScene::on_initialize()
 
 	using namespace position_literals;
 	static_entity_manager.AddPlayer(&created_character, GamePosition(500_p, 168_p), std::nullopt, config);
+	created_stats = created_character.get_player_stats();
+	created_stats.set_initial_stat_points(STARTING_STAT_POINTS);
 
 	// Helper lambda to create text config
 	auto make_text_config = [](const std::string& text) {
@@ -127,18 +133,18 @@ void CreateCharacterScene::on_initialize()
 	}
 
 	// Create and Cancel buttons
-	UI::Button& create_button = static_cast<UI::Button&>(*m_controls.emplace_back(std::make_unique<UI::Button>(sprites)));
-	create_button.SetBounds(385.0f, 445.0f, static_cast<float>(small_btn_rect.width), static_cast<float>(small_btn_rect.height));
-	create_button.SetSprite(make_small_button_sprite_config());
-	create_button.SetText(make_text_config("Create"));
-	create_button.OnClick = [this](UI::Control*) {
-		// TODO: Create character logic
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+	create_button = dynamic_cast<UI::Button*>(m_controls.emplace_back(std::make_unique<UI::Button>(sprites)).get());
+	create_button->SetBounds(385.0f, 445.0f, static_cast<float>(small_btn_rect.width), static_cast<float>(small_btn_rect.height));
+	create_button->SetSprite(make_small_button_sprite_config());
+	create_button->SetText(make_text_config("Create"));
+	create_button->SetEnabled(false);
+	create_button->OnClick = [this](UI::Control*) {
+		create_character_click();
 		};
-	create_button.OnMouseHover = [this](UI::Control*) {
+	create_button->OnMouseHover = [this](UI::Control*) {
 		bottom_right_label->SetText("Create your character with the selected stat points and appearance values.");
 		};
-	create_button.OnMouseLeave = [this](UI::Control*) {
+	create_button->OnMouseLeave = [this](UI::Control*) {
 		bottom_right_label->SetText("Welcome to helbreath! You can create your character by selecting a class, which will allocate points for you. You may also manually set points as you wish.");
 		};
 
@@ -313,12 +319,10 @@ void CreateCharacterScene::on_initialize()
 	// Strength
 	current_y = 276.0f;
 	UI::Button& stat_strength_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
-		/* TODO: Increase strength */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_strength_label, StatType::STRENGTH, 1);
 		});
 	UI::Button& stat_strength_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
-		/* TODO: Decrease strength */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_strength_label, StatType::STRENGTH, -1);
 		});
 
 	stat_strength_increase.OnMouseHover = [this](UI::Control*) {
@@ -334,12 +338,10 @@ void CreateCharacterScene::on_initialize()
 	// Vitality
 	current_y += stat_row_height;
 	UI::Button& stat_vitality_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
-		/* TODO: Increase vitality */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_vitality_label, StatType::VITALITY, 1);
 		});
 	UI::Button& stat_vitality_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
-		/* TODO: Decrease vitality */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_vitality_label, StatType::VITALITY, -1);
 		});
 
 	stat_vitality_increase.OnMouseHover = [this](UI::Control*) {
@@ -355,12 +357,10 @@ void CreateCharacterScene::on_initialize()
 	// Dexterity
 	current_y += stat_row_height;
 	UI::Button& stat_dexterity_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
-		/* TODO: Increase dexterity */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_dexterity_label, StatType::DEXTERITY, 1);
 		});
 	UI::Button& stat_dexterity_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
-		/* TODO: Decrease dexterity */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_dexterity_label, StatType::DEXTERITY, -1);
 		});
 
 	stat_dexterity_increase.OnMouseHover = [this](UI::Control*) {
@@ -376,12 +376,10 @@ void CreateCharacterScene::on_initialize()
 	// Intelligence
 	current_y += stat_row_height;
 	UI::Button& stat_intelligence_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
-		/* TODO: Increase intelligence */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_intelligence_label, StatType::INTELLIGENCE, 1);
 		});
 	UI::Button& stat_intelligence_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
-		/* TODO: Decrease intelligence */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_intelligence_label, StatType::INTELLIGENCE, -1);
 		});
 
 	stat_intelligence_increase.OnMouseHover = [this](UI::Control*) {
@@ -397,12 +395,10 @@ void CreateCharacterScene::on_initialize()
 	// Magic
 	current_y += stat_row_height;
 	UI::Button& stat_magic_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
-		/* TODO: Increase magic */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_magic_label, StatType::MAGIC, 1);
 		});
 	UI::Button& stat_magic_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
-		/* TODO: Decrease magic */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND); 
+		update_stat_label(stat_magic_label, StatType::MAGIC, -1);
 		});
 
 	stat_magic_increase.OnMouseHover = [this](UI::Control*) {
@@ -418,12 +414,10 @@ void CreateCharacterScene::on_initialize()
 	// Charisma
 	current_y += stat_row_height;
 	UI::Button& stat_charisma_increase = make_stat_button(236.0f, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_PLUS, [this]() {
-		/* TODO: Increase charisma */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_charisma_label, StatType::CHARISMA, 1);
 		});
 	UI::Button& stat_charisma_decrease = make_stat_button(236.0f + stat_spacing, current_y, SPR_CREATECHARARCTERSCREEN::BUTTON_MINUS, [this]() {
-		/* TODO: Decrease charisma */
-		sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+		update_stat_label(stat_charisma_label, StatType::CHARISMA, -1);
 		});
 
 	stat_charisma_increase.OnMouseHover = [this](UI::Control*) {
@@ -538,30 +532,91 @@ void CreateCharacterScene::on_initialize()
 	field_label_config.text = "Strength: ";
 	label_strength.SetConfig(field_label_config);
 
+	// Strength stat value label
+	stat_strength_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	stat_strength_label->SetBounds(193.0f, 276.0f + 16.0f * 0.0f, 36.0f, 14.0f);
+	field_label_config.h_align = HorizontalAlign::Center;
+	field_label_config.text = std::to_string(created_stats.get_stat(StatType::STRENGTH));
+	stat_strength_label->SetConfig(field_label_config);
+	stat_strength_label->SetColor(rlx::RGB(64, 64, 64));
+	field_label_config.h_align = HorizontalAlign::Right;
+
 	UI::Label& label_vitality = static_cast<UI::Label&>(*m_controls.emplace_back(std::make_unique<UI::Label>()));
 	label_vitality.SetBounds(60.0f, 275.0f + 16.0f * 1, 130.0f, 14.0f);
 	field_label_config.text = "Vitality: ";
 	label_vitality.SetConfig(field_label_config);
+
+	// vitality stat value label
+	stat_vitality_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	stat_vitality_label->SetBounds(193.0f, 276.0f + 16.0f * 1.0f, 36.0f, 14.0f);
+	field_label_config.h_align = HorizontalAlign::Center;
+	field_label_config.text = std::to_string(created_stats.get_stat(StatType::VITALITY));
+	stat_vitality_label->SetConfig(field_label_config);
+	stat_vitality_label->SetColor(rlx::RGB(64, 64, 64));
+	field_label_config.h_align = HorizontalAlign::Right;
 
 	UI::Label& label_dexterity = static_cast<UI::Label&>(*m_controls.emplace_back(std::make_unique<UI::Label>()));
 	label_dexterity.SetBounds(60.0f, 275.0f + 16.0f * 2, 130.0f, 14.0f);
 	field_label_config.text = "Dexterity: ";
 	label_dexterity.SetConfig(field_label_config);
 
+	// dexterity stat value label
+	stat_dexterity_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	stat_dexterity_label->SetBounds(193.0f, 276.0f + 16.0f * 2.0f, 36.0f, 14.0f);
+	field_label_config.h_align = HorizontalAlign::Center;
+	field_label_config.text = std::to_string(created_stats.get_stat(StatType::DEXTERITY));
+	stat_dexterity_label->SetConfig(field_label_config);
+	stat_dexterity_label->SetColor(rlx::RGB(64, 64, 64));
+	field_label_config.h_align = HorizontalAlign::Right;
+
 	UI::Label& label_intelligence = static_cast<UI::Label&>(*m_controls.emplace_back(std::make_unique<UI::Label>()));
 	label_intelligence.SetBounds(60.0f, 275.0f + 16.0f * 3, 130.0f, 14.0f);
 	field_label_config.text = "Intelligence: ";
 	label_intelligence.SetConfig(field_label_config);
+
+	// intelligence stat value label
+	stat_intelligence_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	stat_intelligence_label->SetBounds(193.0f, 276.0f + 16.0f * 3.0f, 36.0f, 14.0f);
+	field_label_config.h_align = HorizontalAlign::Center;
+	field_label_config.text = std::to_string(created_stats.get_stat(StatType::INTELLIGENCE));
+	stat_intelligence_label->SetConfig(field_label_config);
+	stat_intelligence_label->SetColor(rlx::RGB(64, 64, 64));
+	field_label_config.h_align = HorizontalAlign::Right;
 
 	UI::Label& label_magic = static_cast<UI::Label&>(*m_controls.emplace_back(std::make_unique<UI::Label>()));
 	label_magic.SetBounds(60.0f, 275.0f + 16.0f * 4, 130.0f, 14.0f);
 	field_label_config.text = "Magic: ";
 	label_magic.SetConfig(field_label_config);
 
+	// magic stat value label
+	stat_magic_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	stat_magic_label->SetBounds(193.0f, 276.0f + 16.0f * 4.0f, 36.0f, 14.0f);
+	field_label_config.h_align = HorizontalAlign::Center;
+	field_label_config.text = std::to_string(created_stats.get_stat(StatType::MAGIC));
+	stat_magic_label->SetConfig(field_label_config);
+	stat_magic_label->SetColor(rlx::RGB(64, 64, 64));
+	field_label_config.h_align = HorizontalAlign::Right;
+
 	UI::Label& label_charisma = static_cast<UI::Label&>(*m_controls.emplace_back(std::make_unique<UI::Label>()));
 	label_charisma.SetBounds(60.0f, 275.0f + 16.0f * 5, 130.0f, 14.0f);
 	field_label_config.text = "Charisma: ";
 	label_charisma.SetConfig(field_label_config);
+
+	// charisma stat value label
+	stat_charisma_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	stat_charisma_label->SetBounds(193.0f, 276.0f + 16.0f * 5.0f, 36.0f, 14.0f);
+	field_label_config.h_align = HorizontalAlign::Center;
+	field_label_config.text = std::to_string(created_stats.get_stat(StatType::CHARISMA));
+	stat_charisma_label->SetConfig(field_label_config);
+	stat_charisma_label->SetColor(rlx::RGB(64, 64, 64));
+	field_label_config.h_align = HorizontalAlign::Right;
+
+	stat_points_remaining_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	stat_points_remaining_label->SetBounds(60.0f, 275.0f + 16.0f * 6, 241.0f, 15.0f);
+	field_label_config.text = "Available stat points: " + std::to_string(created_stats.get_available_stat_points());
+	field_label_config.h_align = HorizontalAlign::Center;
+	stat_points_remaining_label->SetConfig(field_label_config);
+	field_label_config.h_align = HorizontalAlign::Right;
 
 	// Info labels (right-aligned, font size 14, black color)
 	UI::Label& label_health = static_cast<UI::Label&>(*m_controls.emplace_back(std::make_unique<UI::Label>()));
@@ -569,15 +624,39 @@ void CreateCharacterScene::on_initialize()
 	field_label_config.text = "Health: ";
 	label_health.SetConfig(field_label_config);
 
+	// Health stat value label
+	derived_stat_health_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	derived_stat_health_label->SetBounds(540.0f, 191.0f + 16.0f * 0.0f, 36.0f, 14.0f);
+	field_label_config.text = std::to_string(created_stats.get_max_stat(StatType::HEALTH));
+	field_label_config.h_align = HorizontalAlign::Center;
+	derived_stat_health_label->SetConfig(field_label_config);
+	field_label_config.h_align = HorizontalAlign::Right;
+
 	UI::Label& label_mana = static_cast<UI::Label&>(*m_controls.emplace_back(std::make_unique<UI::Label>()));
 	label_mana.SetBounds(448.0f, 190.0f + 15.0f * 1, 90.0f, 15.0f);
 	field_label_config.text = "Mana: ";
 	label_mana.SetConfig(field_label_config);
 
+	// Mana stat value label
+	derived_stat_mana_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	derived_stat_mana_label->SetBounds(540.0f, 191.0f + 16.0f * 1.0f, 36.0f, 14.0f);
+	field_label_config.text = std::to_string(created_stats.get_max_stat(StatType::MANA));
+	field_label_config.h_align = HorizontalAlign::Center;
+	derived_stat_mana_label->SetConfig(field_label_config);
+	field_label_config.h_align = HorizontalAlign::Right;
+
 	UI::Label& label_stamina = static_cast<UI::Label&>(*m_controls.emplace_back(std::make_unique<UI::Label>()));
 	label_stamina.SetBounds(448.0f, 190.0f + 15.0f * 2, 90.0f, 15.0f);
 	field_label_config.text = "Stamina: ";
 	label_stamina.SetConfig(field_label_config);
+
+	// Stamina stat value label
+	derived_stat_stamina_label = dynamic_cast<UI::Label*>(m_controls.emplace_back(std::make_unique<UI::Label>()).get());
+	derived_stat_stamina_label->SetBounds(540.0f, 191.0f + 16.0f * 2.0f, 36.0f, 14.0f);
+	field_label_config.text = std::to_string(created_stats.get_max_stat(StatType::STAMINA));
+	field_label_config.h_align = HorizontalAlign::Center;
+	derived_stat_stamina_label->SetConfig(field_label_config);
+	field_label_config.h_align = HorizontalAlign::Right;
 
 	UI::InputBox::Config input_box_config;
 	input_box_config.font_index = FontFamily::Default;
@@ -586,10 +665,10 @@ void CreateCharacterScene::on_initialize()
 	input_box_config.text_color = raylib::Color{ 232, 232, 232, 255 };
 	input_box_config.placeholder_text = "Character name...";
 
-	UI::InputBox& character_name = static_cast<UI::InputBox&>(*m_controls.emplace_back(std::make_unique<UI::InputBox>()));
-	character_name.SetBounds(193, 108, 106, 17);
-	character_name.SetAllowedCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_");
-	character_name.SetConfig(input_box_config);
+	character_name_input = dynamic_cast<UI::InputBox*>(m_controls.emplace_back(std::make_unique<UI::InputBox>()).get());
+	character_name_input->SetBounds(193, 108, 106, 17);
+	character_name_input->SetAllowedCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_");
+	character_name_input->SetConfig(input_box_config);
 }
 
 void CreateCharacterScene::on_uninitialize()
@@ -606,6 +685,117 @@ void CreateCharacterScene::on_update()
 	for (auto& control : m_controls) {
 		control->Update();
 	}
+
+	created_stats.calculate_all();
+
+	if (stats_modified)
+	{
+		derived_stat_health_label->SetText(std::to_string(created_stats.get_max_stat(StatType::HEALTH)));
+		derived_stat_mana_label->SetText(std::to_string(created_stats.get_max_stat(StatType::MANA)));
+		derived_stat_stamina_label->SetText(std::to_string(created_stats.get_max_stat(StatType::STAMINA)));
+		stat_points_remaining_label->SetText("Available stat points: " + std::to_string(created_stats.get_available_stat_points()));
+		stats_modified = false;
+	}
+
+	if (selected_class != CLASS_NONE)
+	{
+		switch (selected_class)
+		{
+		case CLASS_WARRIOR:
+			created_stats.set_initial_stat_points(0);
+			created_stats.set_stat(StatType::STRENGTH, 14);
+			created_stats.set_stat(StatType::VITALITY, 14);
+			created_stats.set_stat(StatType::DEXTERITY, 12);
+			created_stats.set_stat(StatType::INTELLIGENCE, 10);
+			created_stats.set_stat(StatType::MAGIC, 10);
+			created_stats.set_stat(StatType::CHARISMA, 10);
+			break;
+		case CLASS_MAGICIAN:
+			created_stats.set_initial_stat_points(0);
+			created_stats.set_stat(StatType::STRENGTH, 10);
+			created_stats.set_stat(StatType::VITALITY, 12);
+			created_stats.set_stat(StatType::DEXTERITY, 10);
+			created_stats.set_stat(StatType::INTELLIGENCE, 14);
+			created_stats.set_stat(StatType::MAGIC, 14);
+			created_stats.set_stat(StatType::CHARISMA, 10);
+			break;
+		case CLASS_MASTER:
+			created_stats.set_initial_stat_points(0);
+			created_stats.set_stat(StatType::STRENGTH, 12);
+			created_stats.set_stat(StatType::VITALITY, 12);
+			created_stats.set_stat(StatType::DEXTERITY, 12);
+			created_stats.set_stat(StatType::INTELLIGENCE, 10);
+			created_stats.set_stat(StatType::MAGIC, 10);
+			created_stats.set_stat(StatType::CHARISMA, 14);
+			break;
+		}
+		stat_strength_label->SetText(std::to_string(created_stats.get_stat(StatType::STRENGTH)));
+		stat_vitality_label->SetText(std::to_string(created_stats.get_stat(StatType::VITALITY)));
+		stat_dexterity_label->SetText(std::to_string(created_stats.get_stat(StatType::DEXTERITY)));
+		stat_intelligence_label->SetText(std::to_string(created_stats.get_stat(StatType::INTELLIGENCE)));
+		stat_magic_label->SetText(std::to_string(created_stats.get_stat(StatType::MAGIC)));
+		stat_charisma_label->SetText(std::to_string(created_stats.get_stat(StatType::CHARISMA)));
+		derived_stat_health_label->SetText(std::to_string(created_stats.get_max_stat(StatType::HEALTH)));
+		derived_stat_mana_label->SetText(std::to_string(created_stats.get_max_stat(StatType::MANA)));
+		derived_stat_stamina_label->SetText(std::to_string(created_stats.get_max_stat(StatType::STAMINA)));
+		stat_points_remaining_label->SetText("Available stat points: " + std::to_string(created_stats.get_available_stat_points()));
+
+		raylib::Color unchanged_color = rlx::RGB(64, 64, 64);
+		raylib::Color changed_color = rlx::RGB(0, 232, 0);
+		if (created_stats.get_stat(StatType::STRENGTH) > 10)
+		{
+			stat_strength_label->SetColor(changed_color);
+		}
+		else {
+			stat_strength_label->SetColor(unchanged_color);
+		}
+
+		if (created_stats.get_stat(StatType::VITALITY) > 10)
+		{
+			stat_vitality_label->SetColor(changed_color);
+		}
+		else {
+			stat_vitality_label->SetColor(unchanged_color);
+		}
+
+		if (created_stats.get_stat(StatType::DEXTERITY) > 10)
+		{
+			stat_dexterity_label->SetColor(changed_color);
+		}
+		else {
+			stat_dexterity_label->SetColor(unchanged_color);
+		}
+
+		if (created_stats.get_stat(StatType::INTELLIGENCE) > 10)
+		{
+			stat_intelligence_label->SetColor(changed_color);
+		}
+		else {
+			stat_intelligence_label->SetColor(unchanged_color);
+		}
+
+		if (created_stats.get_stat(StatType::MAGIC) > 10)
+		{
+			stat_magic_label->SetColor(changed_color);
+		}
+		else {
+			stat_magic_label->SetColor(unchanged_color);
+		}
+
+		if (created_stats.get_stat(StatType::CHARISMA) > 10)
+		{
+			stat_charisma_label->SetColor(changed_color);
+		}
+		else {
+			stat_charisma_label->SetColor(unchanged_color);
+		}
+	}
+
+	if (created_stats.get_available_stat_points() == 0 &&
+		character_name_input->GetText().length() > 0)
+	{
+		create_button->SetEnabled(true);
+	}
 }
 
 void CreateCharacterScene::on_render()
@@ -617,4 +807,94 @@ void CreateCharacterScene::on_render()
 	}
 
 	static_entity_manager.Render();
+}
+
+void CreateCharacterScene::update_stat_label(UI::Label* label, StatType stat_type, int stat_value)
+{
+	uint32_t current_value = created_stats.get_stat(stat_type);
+	int new_value = static_cast<int>(current_value) + stat_value;
+	if (new_value < 10 || new_value > 14) return;
+	if (stat_value > 0 && created_stats.get_available_stat_points() < static_cast<uint32_t>(stat_value)) return;
+	if (stat_value < 0 && current_value <= 10) return;
+
+	created_stats.stat_add(stat_type, stat_value);
+	label->SetText(std::to_string(created_stats.get_stat(stat_type)));
+	sound_player.play_effect_multi(Sound::BUTTON_SOUND);
+	stats_modified = true;
+
+	raylib::Color changed_color = rlx::RGB(64, 64, 64);
+
+	if (new_value < 10)
+	{
+		changed_color = rlx::RGB(128, 0, 0);
+	}
+	else if (new_value > 10)
+	{
+		changed_color = rlx::RGB(0, 232, 0);
+	}
+
+	label->SetColor(changed_color);
+}
+
+void CreateCharacterScene::create_character_click()
+{
+	// Ensure save directory exists
+	if (!rlx::Directory::Exists(constant::SAVE_GAME_PATH)) {
+		rlx::Directory::Create(constant::SAVE_GAME_PATH);
+	}
+
+	// Check if character name already exists
+	std::filesystem::path save_path = constant::SAVE_GAME_PATH / (character_name_input->GetText() + ".jsave");
+	if (std::filesystem::exists(save_path)) {
+		sound_player.play_effect_multi(Sound::FAILURE);
+
+		// Show error dialog
+		scene_manager.push_overlay<MessageBoxDialog>(
+			"Name Already Exists",
+			"Please choose a different name.",
+			MessageBoxDialog::ButtonType::Ok
+		);
+		return;
+	}
+
+	created_character.commit_new_player_stats(created_stats);
+
+	// Create JSON object with character data
+	json character_data;
+	character_data["name"] = character_name_input->GetText();
+	character_data["player"] = created_character;
+
+	// Save to file in SAVEDGAMES directory with .jsave extension
+	std::ofstream file(save_path);
+	if (file.is_open()) {
+		file << character_data.dump(4); // Pretty print with 4 space indentation
+		file.close();
+
+		// Success - play sound and show success dialog
+		sound_player.play_effect_multi(Sound::SUCCESS_SOUND);
+
+		scene_manager.push_overlay<MessageBoxDialog>(
+			"Character Created!",
+			character_name_input->GetText() + " has been created.",
+			MessageBoxDialog::ButtonType::Ok
+		);
+
+		// Navigate to character selection when dialog is closed
+		auto* dialog = static_cast<MessageBoxDialog*>(scene_manager.get_current_overlay());
+		if (dialog) {
+			dialog->SetResultCallback([this](int) {
+				scene_manager.set_scene<CharacterSelectionScene>();
+			});
+		}
+	}
+	else {
+		// Failed to save - show error dialog
+		sound_player.play_effect_multi(Sound::FAILURE);
+
+		scene_manager.push_overlay<MessageBoxDialog>(
+			"Creation Failed",
+			"Could not save character file.",
+			MessageBoxDialog::ButtonType::Ok
+		);
+	}
 }

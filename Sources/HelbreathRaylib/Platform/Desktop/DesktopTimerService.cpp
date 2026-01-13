@@ -62,7 +62,12 @@ void DesktopTimerService::runTimer(TimerID id, Timer* timer) {
 		std::this_thread::sleep_for(duration);
 
 		if (timer->shouldRun.load()) {
-			timer->callback();
+			try {
+				timer->callback();
+			}
+			catch(...) {
+				// Swallow exceptions to prevent thread exception
+			}
 		}
 	} while (timer->repeating && timer->shouldRun.load());
 

@@ -13,6 +13,7 @@ namespace constant {
 	inline const std::filesystem::path SPRITE_FEMALE_PATH			= SPRITE_PATH / "Female";
 	inline const std::filesystem::path SPRITE_MAP_PATH				= SPRITE_PATH / "Maps";
 	inline const std::filesystem::path SPRITE_ITEM_PATH				= SPRITE_PATH / "Items";
+	inline const std::filesystem::path SPRITE_NPC_PATH				= SPRITE_PATH / "NPC";
 	inline const std::filesystem::path FONT_PATH					= "FONTS";
 	inline const std::filesystem::path MAPDATA_PATH					= "MAPDATA";
 	inline const std::filesystem::path MUSIC_PATH					= "MUSIC";

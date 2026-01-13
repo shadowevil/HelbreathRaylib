@@ -31,9 +31,6 @@
     <Filter Include="game\scenes">
       <UniqueIdentifier>{7BA4E9C2-8D6F-4E1A-9F3B-1C5A7D8E4F9A}</UniqueIdentifier>
     </Filter>
-    <Filter Include="game\entities">
-      <UniqueIdentifier>{516089e0-2fb4-44f3-82ea-205d8a8f2494}</UniqueIdentifier>
-    </Filter>
     <Filter Include="constants">
       <UniqueIdentifier>{bc7e80b7-cd5e-4a76-8d8e-7bcc09f92f10}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,15 @@
     </Filter>
     <Filter Include="Core\UI">
       <UniqueIdentifier>{b5f6e8a1-9c3d-4f7e-a2d1-8e9f0c1b2a3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Dialogs">
+      <UniqueIdentifier>{c4d7e9f2-a1b3-5c8d-e0f2-3a4b5c6d7e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\entity">
+      <UniqueIdentifier>{516089e0-2fb4-44f3-82ea-205d8a8f2494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\entity\entities">
+      <UniqueIdentifier>{f8e9f0e6-c84d-4d9b-8cad-caf39dec1c02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,10 +72,10 @@
       <Filter>game\scenes</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
-      <Filter>game\entities</Filter>
+      <Filter>game\entity</Filter>
     </ClCompile>
     <ClCompile Include="entity.cpp">
-      <Filter>game\entities</Filter>
+      <Filter>game\entity</Filter>
     </ClCompile>
     <ClCompile Include="MapIDs.h">
       <Filter>constants</Filter>
@@ -134,6 +140,12 @@
     <ClCompile Include="Platform\Web\WebTimerService.cpp">
       <Filter>Platform\Web</Filter>
     </ClCompile>
+    <ClCompile Include="entity_dummy.cpp">
+      <Filter>game\entity\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="entity_slime.cpp">
+      <Filter>game\entity\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoadingScene.h">
@@ -171,22 +183,22 @@
       <Filter>game\scenes</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
-      <Filter>game\entities</Filter>
+      <Filter>game\entity</Filter>
     </ClInclude>
     <ClInclude Include="entity.h">
-      <Filter>game\entities</Filter>
+      <Filter>game\entity</Filter>
     </ClInclude>
     <ClInclude Include="entities.h">
-      <Filter>game\entities</Filter>
+      <Filter>game\entity</Filter>
     </ClInclude>
     <ClInclude Include="EntityGUID.h">
-      <Filter>game\entities</Filter>
+      <Filter>game\entity</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
-      <Filter>game\entities</Filter>
+      <Filter>game\entity</Filter>
     </ClInclude>
     <ClInclude Include="StaticEntityManager.h">
-      <Filter>game\entities</Filter>
+      <Filter>game\entity</Filter>
     </ClInclude>
     <ClInclude Include="CMap.h">
       <Filter>game</Filter>
@@ -311,6 +323,36 @@
     <ClInclude Include="UI\ToggleButton.h">
       <Filter>Core\UI</Filter>
     </ClInclude>
+    <ClInclude Include="EntityStats.h">
+      <Filter>game\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\Dialogs.h">
+      <Filter>Core\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\OverlayDialog.h">
+      <Filter>Core\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\MessageBoxDialog.h">
+      <Filter>Core\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\NoticementDialog.h">
+      <Filter>Core\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\DropItemDialog.h">
+      <Filter>Core\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\ChangePasswordDialog.h">
+      <Filter>Core\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityIDs.h">
+      <Filter>constants</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_dummy.h">
+      <Filter>game\entity\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_slime.h">
+      <Filter>game\entity\entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\Control.cpp">
@@ -327,6 +369,21 @@
     </ClCompile>
     <ClCompile Include="UI\ToggleButton.cpp">
       <Filter>Core\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\OverlayDialog.cpp">
+      <Filter>Core\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\MessageBoxDialog.cpp">
+      <Filter>Core\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\NoticementDialog.cpp">
+      <Filter>Core\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\DropItemDialog.cpp">
+      <Filter>Core\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\ChangePasswordDialog.cpp">
+      <Filter>Core\Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

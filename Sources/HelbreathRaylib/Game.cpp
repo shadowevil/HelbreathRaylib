@@ -131,7 +131,7 @@ void Game::on_render()
 			);
 		}
 	}
-	FontSystem::draw_text(FontFamily::Default, 15, std::to_string(Application::get_fps()).c_str(), 0, 0, raylib::WHITE, FontStyle::Regular | FontStyle::Shadow);
+	FontSystem::draw_text(FontFamily::Default, 12, std::to_string(static_cast<int>(Application::get_fps())).c_str(), 0, 0, raylib::WHITE, FontStyle::Regular | FontStyle::Shadow);
 }
 
 void Game::on_event(Event& event)
